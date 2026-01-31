@@ -56,3 +56,16 @@ CREATE TABLE doctor(
      CONSTRAINT FK_patient_medical_record
       FOREIGN KEY(patient_id) REFERENCES patient(id)
     );
+
+    CREATE TABLE billing(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    amount BIGINT NOT NULL,
+    patient_id BIGINT NOT NULL,
+    created_by varchar(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by varchar(50) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+     CONSTRAINT FK_billing_patient
+      FOREIGN KEY(patient_id) REFERENCES patient(id)
+    );
