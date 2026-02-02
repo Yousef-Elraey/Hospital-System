@@ -16,12 +16,12 @@ public class PatientController {
     @Autowired
     PatientService service;
 
-    @GetMapping("/getAllPatients")
+    @GetMapping("/patients")
     public ResponseEntity<List<PatientDto>> getAllPatients() {
         return new ResponseEntity<>(service.getAllPatients(), HttpStatus.FOUND);
     }
 
-    @GetMapping("/getPatientById/{id}")
+    @GetMapping("/patients/{id}")
     public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id) {
         if (service.getPatientById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -30,7 +30,7 @@ public class PatientController {
         }
     }
 
-    @PostMapping("/addPatient")
+    @PostMapping("/patients")
     public ResponseEntity<String> addPatient(@RequestBody PatientDto patientDto) {
         if (patientDto != null) {
             service.addPatient(patientDto);
@@ -40,7 +40,7 @@ public class PatientController {
         }
     }
 
-    @PutMapping("/updatePatientData/{id}")
+    @PutMapping("/patients/{id}")
     public ResponseEntity<String> updatePatientData(@PathVariable Long id, @RequestBody PatientDto patientDto) {
         if (patientDto != null) {
             service.updatePatientData(id, patientDto);
@@ -49,7 +49,7 @@ public class PatientController {
             return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @DeleteMapping("/deletePatientById/{id}")
+    @DeleteMapping("/patients/{id}")
     public ResponseEntity<String> deletePatientById(@PathVariable Long id) {
         if (service.deletePatientById(id)) {
             service.deletePatientById(id);

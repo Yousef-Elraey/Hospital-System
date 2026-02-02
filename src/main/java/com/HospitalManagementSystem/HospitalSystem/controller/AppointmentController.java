@@ -16,7 +16,7 @@ public class AppointmentController {
     @Autowired
     AppointmentService service;
 
-    @GetMapping("/getAllAppointments")
+    @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
         if (service.getAllAppointments() != null)
             return new ResponseEntity<>(service.getAllAppointments(), HttpStatus.FOUND);
@@ -25,7 +25,7 @@ public class AppointmentController {
 
     }
 
-    @GetMapping("/getAppointmentById/{id}")
+    @GetMapping("/appointments/{id}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long id) {
         if (service.getAppointmentById(id) != null)
             return new ResponseEntity<>(service.getAppointmentById(id), HttpStatus.FOUND);
@@ -34,7 +34,7 @@ public class AppointmentController {
 
     }
 
-    @PostMapping("/createAppointment")
+    @PostMapping("/appointments")
     public ResponseEntity<String> createAppointment(@RequestBody AppointmentDto appointmentDto) {
         if (appointmentDto != null) {
             service.createAppointment(appointmentDto);
@@ -45,7 +45,7 @@ public class AppointmentController {
 
     }
 
-    @PutMapping("/updateAppointment/{id}")
+    @PutMapping("/appointments/{id}")
     public ResponseEntity<String> updateAppointment(@PathVariable Long id, @RequestBody AppointmentDto appointmentDto) {
         if (appointmentDto != null) {
             service.updateAppointment(id, appointmentDto);
@@ -54,7 +54,7 @@ public class AppointmentController {
             return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @DeleteMapping("/deleteAppointment/{id}")
+    @DeleteMapping("/appointments/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         if (service.deleteAppointment(id))
             return new ResponseEntity<>("Appointment is deleted", HttpStatus.OK);

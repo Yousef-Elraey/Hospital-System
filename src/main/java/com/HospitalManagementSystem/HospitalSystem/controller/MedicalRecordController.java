@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/medical_record")
+@RequestMapping("/medical-record")
 public class MedicalRecordController {
    @Autowired
     MedicalRecordService service;
 
-    @GetMapping("/getAllMedicalRecords")
+    @GetMapping("/medical-records")
     public ResponseEntity<List<MedicalRecordDto>> getAllRecords() {
         if (service.getAllRecords() != null)
             return new ResponseEntity<>(service.getAllRecords(), HttpStatus.FOUND);
@@ -25,7 +25,7 @@ public class MedicalRecordController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/getMedicalRecordById/{id}")
+    @GetMapping("/medical-records/{id}")
     public ResponseEntity<MedicalRecordDto> getMedicalRecordById(@PathVariable Long id) {
         if (service.getMedicalRecordById(id) != null)
             return new ResponseEntity<>(service.getMedicalRecordById(id), HttpStatus.FOUND);
@@ -33,7 +33,7 @@ public class MedicalRecordController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/addMedicalRecord")
+    @PostMapping("/medical-records")
     public ResponseEntity<String> addMedicalRecord(@RequestBody MedicalRecordDto medicalRecordDto) {
         if (medicalRecordDto != null) {
             service.addMedicalRecord(medicalRecordDto);
@@ -43,7 +43,7 @@ public class MedicalRecordController {
         }
     }
 
-    @PutMapping("/updateMedicalRecordData/{id}")
+    @PutMapping("/medical-records/{id}")
     public ResponseEntity<String> updateMedicalRecordData(@PathVariable Long id, @RequestBody MedicalRecordDto medicalRecordDto) {
         if (medicalRecordDto != null) {
             service.updateMedicalRecordData(id, medicalRecordDto);
@@ -54,7 +54,7 @@ public class MedicalRecordController {
 
     }
 
-    @DeleteMapping("/deleteMedicalRecordById/{id}")
+    @DeleteMapping("/medical-records/{id}")
     public ResponseEntity<String> deleteMedicalRecord(@PathVariable Long id) {
         if (service.deleteMedicalRecord(id))
             return new ResponseEntity<>("medical record is deleted", HttpStatus.OK);

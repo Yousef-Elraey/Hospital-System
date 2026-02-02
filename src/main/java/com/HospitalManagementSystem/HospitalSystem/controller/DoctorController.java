@@ -16,12 +16,12 @@ public class DoctorController {
     @Autowired
     DoctorService service;
 
-    @GetMapping("/getAllDoctors")
+    @GetMapping("/doctors")
     public ResponseEntity<List<DoctorDto>> getAllDoctors() {
         return new ResponseEntity<>(service.getAllDoctors(), HttpStatus.FOUND);
     }
 
-    @GetMapping("/getDoctorById/{id}")
+    @GetMapping("/doctors/{id}")
     public ResponseEntity<DoctorDto> getDoctorById(@PathVariable Long id) {
         if (service.getDoctorById(id) != null) {
             return new ResponseEntity<>(service.getDoctorById(id), HttpStatus.FOUND);
@@ -31,7 +31,7 @@ public class DoctorController {
 
     }
 
-    @PostMapping("/addDoctor")
+    @PostMapping("/doctors")
     public ResponseEntity<String> addDoctor(@RequestBody DoctorDto doctorDto) {
         if (doctorDto != null) {
             service.addDoctor(doctorDto);
@@ -41,7 +41,7 @@ public class DoctorController {
         }
     }
 
-    @PutMapping("/updateDoctorData/{id}")
+    @PutMapping("/doctors/{id}")
     public ResponseEntity<String> updateDoctorData(@PathVariable Long id, @RequestBody DoctorDto doctorDto) {
         if (doctorDto != null) {
             service.updateDoctorData(id, doctorDto);
@@ -51,7 +51,7 @@ public class DoctorController {
         }
     }
 
-    @DeleteMapping("/deleteDoctor/{id}")
+    @DeleteMapping("/doctors/{id}")
     public ResponseEntity<String> deleteDoctorById(@PathVariable Long id) {
         if (service.deleteDoctorById(id)) {
             service.deleteDoctorById(id);

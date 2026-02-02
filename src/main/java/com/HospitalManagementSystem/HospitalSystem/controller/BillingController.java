@@ -16,11 +16,11 @@ public class BillingController {
     @Autowired
     BillingService service;
 
- @GetMapping("/getAllBillings")
+ @GetMapping("/billings")
       public ResponseEntity<List<BillingDto>> getAllBillings(){
         return new ResponseEntity<>(service.getAllBillings(), HttpStatus.OK);
     }
-@GetMapping("/getBillingById/{id}")
+@GetMapping("/billings/{id}")
     public ResponseEntity<BillingDto> getBillingById(@PathVariable Long id){
         if (service.getBillingById(id) != null){
             return new ResponseEntity<>(service.getBillingById(id),HttpStatus.FOUND);
@@ -28,7 +28,7 @@ public class BillingController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 }
-@PostMapping("/createBilling")
+@PostMapping("/billings")
     public ResponseEntity<String> createBilling(@RequestBody BillingDto billingDto){
      if (billingDto != null) {
          service.createBilling(billingDto);
@@ -37,7 +37,7 @@ public class BillingController {
          return new ResponseEntity<>("add an accepted data",HttpStatus.NOT_ACCEPTABLE);
      }
 }
-@PutMapping("/updateBilling/{id}")
+@PutMapping("/billings/{id}")
     public ResponseEntity<String> updateBilling(@PathVariable Long id, @RequestBody BillingDto billingDto){
      if (billingDto != null){
          service.updateBilling(id,billingDto);
@@ -46,7 +46,7 @@ public class BillingController {
          return new ResponseEntity<>("add an accepted data",HttpStatus.NOT_ACCEPTABLE);
      }
 }
-@DeleteMapping("/deleteBilling/{id}")
+@DeleteMapping("/billings/{id}")
     public ResponseEntity<String> deleteBilling(@PathVariable Long id){
      if (service.deleteBilling(id)){
          return new ResponseEntity<>("billing is deleted",HttpStatus.OK);
