@@ -1,6 +1,7 @@
 package com.HospitalManagementSystem.HospitalSystem.dto;
 
 
+import com.HospitalManagementSystem.HospitalSystem.entity.AppointmentStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -20,6 +21,7 @@ public class AppointmentDto {
     private LocalDateTime createdAt;
     private String updatedBy;
     private LocalDateTime updatedAt;
+    private AppointmentStatus status;
 
 
 }

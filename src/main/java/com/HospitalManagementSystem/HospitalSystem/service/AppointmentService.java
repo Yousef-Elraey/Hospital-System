@@ -26,18 +26,7 @@ public class AppointmentService {
     public List<AppointmentDto> getAllAppointments() {
         List<Appointment> appointments = repo.findAll();
         List<AppointmentDto> appointmentDtos = new ArrayList<>();
-//        if (!appointments.isEmpty()) {
-//            appointments.stream().forEach(appointment -> {
-//                AppointmentDto appointmentDto = new AppointmentDto();
-//                appointmentDto.setId(appointment.getId());
-//                appointmentDto.setTiming(appointment.getTiming());
-//                appointmentDto.setCreatedBy(appointment.getCreatedBy());
-//                appointmentDto.setCreatedAt(appointment.getCreatedAt());
-//                appointmentDto.setUpdatedBy(appointment.getUpdatedBy());
-//                appointmentDto.setUpdatedAt(appointment.getUpdatedAt());
-//                appointmentDtos.add(appointmentDto);
-//            });
-//    }
+
         for (Appointment appointment : appointments) {
             AppointmentDto appointmentDto = new AppointmentDto();
             appointmentDto.setId(appointment.getId());
@@ -48,7 +37,7 @@ public class AppointmentService {
             appointmentDto.setCreatedAt(appointment.getCreatedAt());
             appointmentDto.setUpdatedBy(appointment.getUpdatedBy());
             appointmentDto.setUpdatedAt(LocalDateTime.now());
-
+            appointmentDto.setStatus(appointment.getStatus());
             appointmentDtos.add(appointmentDto);
         }
 
@@ -69,6 +58,7 @@ public class AppointmentService {
         appointmentDto.setCreatedAt(appointment.getCreatedAt());
         appointmentDto.setUpdatedBy(appointment.getUpdatedBy());
         appointmentDto.setUpdatedAt(LocalDateTime.now());
+        appointmentDto.setStatus(appointment.getStatus());
         return appointmentDto;
         }else {
             return null;
@@ -86,6 +76,7 @@ public class AppointmentService {
         appointment.setUpdatedAt(LocalDateTime.now());
         appointment.setPatient(patientRepository.findById(appointmentDto.getPatientId()).get());
         appointment.setDoctor(doctorRepository.findById(appointmentDto.getDoctorId()).get());
+        appointment.setStatus(appointmentDto.getStatus());
         repo.save(appointment);
     }
 
@@ -99,6 +90,7 @@ public class AppointmentService {
             appointment.setUpdatedBy(appointmentDto.getUpdatedBy());
             appointment.setDoctor(doctorRepository.findById(appointmentDto.getDoctorId()).get());
             appointment.setPatient(patientRepository.findById(appointmentDto.getDoctorId()).get());
+            appointment.setStatus(appointmentDto.getStatus());
             repo.save(appointment);
         } else {
             createAppointment(appointmentDto);

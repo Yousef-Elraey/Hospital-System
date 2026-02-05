@@ -43,6 +43,10 @@ public class Appointment {
     @JoinColumn(name = "doctor_id",referencedColumnName = "id")
     private Doctor doctor;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AppointmentStatus status;
+
 
     @Override
     public String toString() {
