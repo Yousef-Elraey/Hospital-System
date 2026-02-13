@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.time.LocalDateTime;
@@ -16,10 +15,10 @@ import java.time.LocalDateTime;
 @Service
 public class PatientService {
     @Autowired
-    PatientRepository repo;
+    PatientRepository patientRepository;
 
     public List<PatientDto> getAllPatients() {
-        List<Patient> patients = repo.findAll();
+        List<Patient> patients = patientRepository.findAll();
         List<PatientDto> patientDtos = new ArrayList<>();
         if (!patients.isEmpty()) {
             for (Patient patient : patients) {
@@ -40,7 +39,7 @@ public class PatientService {
     }
 
     public PatientDto getPatientById(Long id) {
-        Patient patient = repo.findById(id).orElse(null);
+        Patient patient = patientRepository.findById(id).orElse(null);
         PatientDto patientDto = new PatientDto();
         if (patient != null) {
             patientDto.setId(patient.getId())
@@ -72,14 +71,14 @@ public class PatientService {
                 .setCreatedAt(LocalDateTime.now())
                 .setUpdatedBy(patientDto.getUpdatedBy())
                 .setUpdatedAt(LocalDateTime.now());
-        repo.save(patient);
+        patientRepository.save(patient);
 
 
     }
 
 
     public void updatePatientData(Long id, PatientDto patientDto) {
-        Optional<Patient> patientTemp = repo.findById(id);
+        Optional<Patient> patientTemp = patientRepository.findById(id);
         if (patientTemp.isPresent()) {
             Patient dbPatient = patientTemp.get();
             dbPatient.setName(patientDto.getName())
@@ -88,7 +87,7 @@ public class PatientService {
                     .setDateOfBirth(patientDto.getDateOfBirth())
                     .setUpdatedBy(patientDto.getUpdatedBy())
                     .setUpdatedAt(LocalDateTime.now());
-            repo.save(dbPatient);
+            patientRepository.save(dbPatient);
         } else {
             addPatient(patientDto);
         }
@@ -97,8 +96,8 @@ public class PatientService {
     }
 
     public boolean deletePatientById(Long id) {
-        if (repo.findById(id).isPresent()) {
-            repo.deleteById(id);
+        if (patientRepository.findById(id).isPresent()) {
+            patientRepository.deleteById(id);
             return true;
         } else {
             return false;

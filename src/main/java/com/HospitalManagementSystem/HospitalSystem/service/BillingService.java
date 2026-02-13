@@ -14,14 +14,15 @@ import java.util.Optional;
 
 @Service
 public class BillingService {
-   @Autowired
-    BillingRepository repo;
-   @Autowired
-   PatientRepository patientRepository;
+    @Autowired
+    BillingRepository billingRepository;
+    @Autowired
+    PatientRepository patientRepository;
+
     public List<BillingDto> getAllBillings() {
-       List<Billing> billings = repo.findAll();
-       List<BillingDto> billingDtos = new ArrayList<>();
-        for (Billing billing:billings) {
+        List<Billing> billings = billingRepository.findAll();
+        List<BillingDto> billingDtos = new ArrayList<>();
+        for (Billing billing : billings) {
             BillingDto billingDto = new BillingDto();
             billingDto.setId(billing.getId())
                     .setAmount(billing.getAmount())
@@ -36,7 +37,7 @@ public class BillingService {
     }
 
     public BillingDto getBillingById(Long id) {
-       Billing billing = repo.findById(id).orElse(null);
+        Billing billing = billingRepository.findById(id).orElse(null);
        if (billing != null){
            BillingDto billingDto = new BillingDto();
            billingDto.setId(billing.getId())
@@ -61,28 +62,28 @@ public class BillingService {
                 .setCreatedAt(LocalDateTime.now())
                 .setCreatedBy(billingDto.getCreatedBy())
                 .setUpdatedBy(billingDto.getUpdatedBy());
-        repo.save(billing);
+        billingRepository.save(billing);
     }
 
     public void updateBilling(Long id, BillingDto billingDto) {
-       Optional<Billing> billing = repo.findById(id);
+        Optional<Billing> billing = billingRepository.findById(id);
        if (billing.isPresent()){
            Billing dbbilling = billing.get();
            dbbilling.setAmount(billingDto.getAmount())
                    .setPatient(patientRepository.findById(billingDto.getPatient_id()).get())
                    .setUpdatedBy(billingDto.getUpdatedBy())
                    .setUpdatedAt(LocalDateTime.now());
-           repo.save(dbbilling);
+           billingRepository.save(dbbilling);
        }else {
            createBilling(billingDto);
        }
     }
 
     public boolean deleteBilling(Long id) {
-        if (repo.findById(id).isPresent()){
-            repo.deleteById(id);
+        if (billingRepository.findById(id).isPresent()) {
+            billingRepository.deleteById(id);
             return true;
-        }else {
+        } else {
             return false;
         }
     }

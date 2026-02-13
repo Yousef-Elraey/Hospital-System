@@ -21,7 +21,7 @@ public class AppointmentDto {
     private LocalDateTime createdAt;
     private String updatedBy;
     private LocalDateTime updatedAt;
-    private AppointmentStatus status;
+    private String status;
 
 
 }

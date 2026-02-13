@@ -1,7 +1,6 @@
 package com.HospitalManagementSystem.HospitalSystem.controller;
 
 import com.HospitalManagementSystem.HospitalSystem.dto.PatientDto;
-import com.HospitalManagementSystem.HospitalSystem.entity.Patient;
 import com.HospitalManagementSystem.HospitalSystem.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,29 +10,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/patient")
+@RequestMapping("/")
 public class PatientController {
     @Autowired
-    PatientService service;
+    PatientService patientService;
 
     @GetMapping("/patients")
     public ResponseEntity<List<PatientDto>> getAllPatients() {
-        return new ResponseEntity<>(service.getAllPatients(), HttpStatus.FOUND);
+        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.FOUND);
     }
 
     @GetMapping("/patients/{id}")
     public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id) {
-        if (service.getPatientById(id) == null) {
+        if (patientService.getPatientById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(service.getPatientById(id), HttpStatus.FOUND);
+            return new ResponseEntity<>(patientService.getPatientById(id), HttpStatus.FOUND);
         }
     }
 
     @PostMapping("/patients")
     public ResponseEntity<String> addPatient(@RequestBody PatientDto patientDto) {
         if (patientDto != null) {
-            service.addPatient(patientDto);
+            patientService.addPatient(patientDto);
             return new ResponseEntity<>("patient added successfully", HttpStatus.ACCEPTED);
         } else {
             return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
@@ -43,7 +42,7 @@ public class PatientController {
     @PutMapping("/patients/{id}")
     public ResponseEntity<String> updatePatientData(@PathVariable Long id, @RequestBody PatientDto patientDto) {
         if (patientDto != null) {
-            service.updatePatientData(id, patientDto);
+            patientService.updatePatientData(id, patientDto);
             return new ResponseEntity<>("patient data is updated", HttpStatus.OK);
         } else
             return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
@@ -51,8 +50,8 @@ public class PatientController {
 
     @DeleteMapping("/patients/{id}")
     public ResponseEntity<String> deletePatientById(@PathVariable Long id) {
-        if (service.deletePatientById(id)) {
-            service.deletePatientById(id);
+        if (patientService.deletePatientById(id)) {
+            patientService.deletePatientById(id);
             return new ResponseEntity<>("deleted patient successfully", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("patient not found", HttpStatus.NOT_FOUND);

@@ -1,5 +1,6 @@
 package com.HospitalManagementSystem.HospitalSystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,8 +38,8 @@ public class MedicalRecord {
     @LastModifiedBy
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "patient_id",referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private Patient patient;
     @ManyToOne
     @JoinColumn(name = "doctor_id",referencedColumnName = "id")

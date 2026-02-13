@@ -10,21 +10,20 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class MedicalRecordService {
     @Autowired
-    MedicalRecordRepository repo;
+    MedicalRecordRepository medicalRecordRepository;
     @Autowired
     PatientRepository patientRepository;
     @Autowired
     DoctorRepository doctorRepository;
 
     public List<MedicalRecordDto> getAllRecords() {
-        List<MedicalRecord> medicalRecords = repo.findAll();
+        List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
         List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
         if (!medicalRecords.isEmpty()) {
             for (MedicalRecord record : medicalRecords) {
@@ -48,7 +47,7 @@ public class MedicalRecordService {
     }
 
     public MedicalRecordDto getMedicalRecordById(Long id) {
-        MedicalRecord medicalRecord = repo.findById(id).orElse(null);
+        MedicalRecord medicalRecord = medicalRecordRepository.findById(id).orElse(null);
         MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
         if (medicalRecord != null) {
             medicalRecordDto.setId(medicalRecord.getId())
@@ -79,12 +78,12 @@ public class MedicalRecordService {
                 .setPatient(patientRepository.findById(medicalRecordDto.getPatientId()).get())
                 .setDoctor(doctorRepository.findById(medicalRecordDto.getDoctorId()).get());
 
-        repo.save(dbMedicalRecord);
+        medicalRecordRepository.save(dbMedicalRecord);
 
     }
 
     public void updateMedicalRecordData(Long id, MedicalRecordDto medicalRecordDto) {
-        Optional<MedicalRecord> medicalRecordTemp = repo.findById(id);
+        Optional<MedicalRecord> medicalRecordTemp = medicalRecordRepository.findById(id);
         if (medicalRecordTemp.isPresent()) {
             MedicalRecord medicalRecord = medicalRecordTemp.get();
 
@@ -94,7 +93,7 @@ public class MedicalRecordService {
                     .setUpdatedBy(medicalRecordDto.getUpdatedBy())
                     .setPatient(patientRepository.findById(medicalRecordDto.getPatientId()).get())
                     .setDoctor(doctorRepository.findById(medicalRecordDto.getDoctorId()).get());
-            repo.save(medicalRecord);
+            medicalRecordRepository.save(medicalRecord);
 
         } else {
             addMedicalRecord(medicalRecordDto);
@@ -102,11 +101,32 @@ public class MedicalRecordService {
     }
 
     public boolean deleteMedicalRecord(Long id) {
-        if (repo.findById(id).isPresent()) {
-            repo.deleteById(id);
+        if (medicalRecordRepository.findById(id).isPresent()) {
+            medicalRecordRepository.deleteById(id);
             return true;
         } else {
             return false;
         }
     }
+
+    public List<MedicalRecordDto> getByPatientId(Long id) {
+        List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
+        List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
+        medicalRecords.stream().forEach(medicalRecord -> {
+            MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
+            medicalRecordDto.setId(medicalRecord.getId())
+                    .setDiagnose(medicalRecord.getDiagnose())
+                    .setTreatment(medicalRecord.getTreatment())
+                    .setPatientId(medicalRecord.getPatient().getId())
+                    .setDoctorId(medicalRecord.getDoctor().getId())
+                    .setCreatedAt(medicalRecord.getCreatedAt())
+                    .setCreatedBy(medicalRecord.getCreatedBy())
+                    .setUpdatedAt(medicalRecord.getUpdatedAt())
+                    .setUpdatedBy(medicalRecord.getUpdatedBy());
+           medicalRecordDtos.add(medicalRecordDto);
+
+        });
+        return medicalRecordDtos;
+    }
+
 }

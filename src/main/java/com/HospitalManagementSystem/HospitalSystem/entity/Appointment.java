@@ -43,9 +43,7 @@ public class Appointment {
     @JoinColumn(name = "doctor_id",referencedColumnName = "id")
     private Doctor doctor;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AppointmentStatus status;
+    private String status;
 
 
     @Override

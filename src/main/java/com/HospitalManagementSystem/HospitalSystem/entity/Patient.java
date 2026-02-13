@@ -2,6 +2,7 @@ package com.HospitalManagementSystem.HospitalSystem.entity;
 
 
 
+import com.HospitalManagementSystem.HospitalSystem.dto.MedicalRecordDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "patient")
@@ -27,24 +29,26 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-   @Column(nullable = false)
-    private String name;
-    @Column(nullable = false)
-    private String gender;
-    @Column(nullable = false)
-    private String phone;
-    @Column(nullable = false)
-    private Date dateOfBirth;
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedBy
-    private String updatedBy;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+ @Column(nullable = false)
+ private String name;
+ @Column(nullable = false)
+ private String gender;
+ @Column(nullable = false)
+ private String phone;
+ @Column(nullable = false)
+ private Date dateOfBirth;
+ @OneToMany
+ private List<MedicalRecord> medicalRecords;
+ @CreatedBy
+ @Column(updatable = false)
+ private String createdBy;
+ @CreatedDate
+ @Column(updatable = false)
+ private LocalDateTime createdAt;
+ @LastModifiedBy
+ private String updatedBy;
+ @LastModifiedDate
+ private LocalDateTime updatedAt;
 
 
 

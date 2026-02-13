@@ -1,7 +1,9 @@
 package com.HospitalManagementSystem.HospitalSystem.controller;
 
 import com.HospitalManagementSystem.HospitalSystem.dto.AppointmentDto;
-import com.HospitalManagementSystem.HospitalSystem.entity.Appointment;
+import com.HospitalManagementSystem.HospitalSystem.dto.BookRequestDto;
+import com.HospitalManagementSystem.HospitalSystem.dto.BookResponseDto;
+import com.HospitalManagementSystem.HospitalSystem.dto.PatientDto;
 import com.HospitalManagementSystem.HospitalSystem.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,15 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/appointment")
+@RequestMapping("/")
 public class AppointmentController {
     @Autowired
-    AppointmentService service;
+    AppointmentService appointmentService;
 
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
-        if (service.getAllAppointments() != null)
-            return new ResponseEntity<>(service.getAllAppointments(), HttpStatus.FOUND);
+        if (appointmentService.getAllAppointments() != null)
+            return new ResponseEntity<>(appointmentService.getAllAppointments(), HttpStatus.FOUND);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -27,8 +29,8 @@ public class AppointmentController {
 
     @GetMapping("/appointments/{id}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long id) {
-        if (service.getAppointmentById(id) != null)
-            return new ResponseEntity<>(service.getAppointmentById(id), HttpStatus.FOUND);
+        if (appointmentService.getAppointmentById(id) != null)
+            return new ResponseEntity<>(appointmentService.getAppointmentById(id), HttpStatus.FOUND);
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -37,7 +39,7 @@ public class AppointmentController {
     @PostMapping("/appointments")
     public ResponseEntity<String> createAppointment(@RequestBody AppointmentDto appointmentDto) {
         if (appointmentDto != null) {
-            service.createAppointment(appointmentDto);
+            appointmentService.createAppointment(appointmentDto);
             return new ResponseEntity<>("appointment created", HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>("add an accepted data", HttpStatus.BAD_REQUEST);
@@ -48,7 +50,7 @@ public class AppointmentController {
     @PutMapping("/appointments/{id}")
     public ResponseEntity<String> updateAppointment(@PathVariable Long id, @RequestBody AppointmentDto appointmentDto) {
         if (appointmentDto != null) {
-            service.updateAppointment(id, appointmentDto);
+            appointmentService.updateAppointment(id, appointmentDto);
             return new ResponseEntity<>("appointment updated", HttpStatus.ACCEPTED);
         } else
             return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
@@ -56,10 +58,25 @@ public class AppointmentController {
 
     @DeleteMapping("/appointments/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
-        if (service.deleteAppointment(id))
+        if (appointmentService.deleteAppointment(id))
             return new ResponseEntity<>("Appointment is deleted", HttpStatus.OK);
         else
             return new ResponseEntity<>("Appointment not found", HttpStatus.NOT_FOUND);
 
+    }
+
+    @PostMapping("/appointments/book")
+    public ResponseEntity<BookResponseDto> book(@RequestBody BookRequestDto request) {
+        return new ResponseEntity<>(appointmentService.book(request), HttpStatus.OK);
+    }
+
+    @GetMapping("/appointments/current-patient")
+    public ResponseEntity<PatientDto> currentPatient() {
+        return new ResponseEntity<>(appointmentService.currentPatient(), HttpStatus.OK);
+
+    }
+    @DeleteMapping("/appointments/next")
+    public ResponseEntity<PatientDto> next(){
+        return new ResponseEntity<>(appointmentService.next(),HttpStatus.OK);
     }
 }

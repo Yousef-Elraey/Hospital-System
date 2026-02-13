@@ -8,18 +8,17 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class DoctorService {
     @Autowired
-    DoctorRepository repo;
+    DoctorRepository doctorRepository;
 
 
     public List<DoctorDto> getAllDoctors() {
-        List<Doctor> doctors = repo.findAll();
+        List<Doctor> doctors = doctorRepository.findAll();
         List<DoctorDto> doctorDtos = new ArrayList<>();
         for (Doctor doctor : doctors) {
             DoctorDto doctorDto = new DoctorDto();
@@ -38,7 +37,7 @@ public class DoctorService {
     }
 
     public DoctorDto getDoctorById(Long id) {
-        Doctor doc = repo.findById(id).orElse(null);
+        Doctor doc = doctorRepository.findById(id).orElse(null);
         DoctorDto doctorDto = new DoctorDto();
         if (doc != null) {
             doctorDto.setId(doc.getId());
@@ -67,11 +66,11 @@ public class DoctorService {
         doctor.setUpdatedBy(doctorDto.getUpdatedBy());
         doctor.setUpdatedAt(LocalDateTime.now());
 
-        repo.save(doctor);
+        doctorRepository.save(doctor);
     }
 
     public void updateDoctorData(Long id, DoctorDto doctorDto) {
-        Optional<Doctor> doctor = repo.findById(id);
+        Optional<Doctor> doctor = doctorRepository.findById(id);
         if (doctor.isPresent()) {
             Doctor doc = doctor.get();
             doc.setName(doctorDto.getName());
@@ -79,15 +78,15 @@ public class DoctorService {
             doc.setContactNumber(doctorDto.getContactNumber());
             doc.setUpdatedAt(LocalDateTime.now());
             doc.setUpdatedBy(doctorDto.getUpdatedBy());
-            repo.save(doc);
+            doctorRepository.save(doc);
         }
 
     }
 
 
     public boolean deleteDoctorById(Long id) {
-        if (repo.findById(id).isPresent()) {
-            repo.deleteById(id);
+        if (doctorRepository.findById(id).isPresent()) {
+            doctorRepository.deleteById(id);
             return true;
         } else {
             return false;

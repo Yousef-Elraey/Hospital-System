@@ -1,11 +1,13 @@
 package com.HospitalManagementSystem.HospitalSystem.dto;
 
+import com.HospitalManagementSystem.HospitalSystem.entity.MedicalRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Setter
 @Getter
@@ -15,6 +17,7 @@ public class PatientDto {
     private String name;
     private String gender;
     private String phone;
+    private List<MedicalRecordDto> medicalRecords;
     private Date dateOfBirth;
     private String createdBy;
     private LocalDateTime createdAt;
