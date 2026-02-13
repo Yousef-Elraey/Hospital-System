@@ -1,7 +1,10 @@
 package com.HospitalManagementSystem.HospitalSystem.service;
 
+import com.HospitalManagementSystem.HospitalSystem.dto.MedicalRecordDto;
 import com.HospitalManagementSystem.HospitalSystem.dto.PatientDto;
+import com.HospitalManagementSystem.HospitalSystem.entity.MedicalRecord;
 import com.HospitalManagementSystem.HospitalSystem.entity.Patient;
+import com.HospitalManagementSystem.HospitalSystem.repository.MedicalRecordRepository;
 import com.HospitalManagementSystem.HospitalSystem.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +19,8 @@ import java.time.LocalDateTime;
 public class PatientService {
     @Autowired
     PatientRepository patientRepository;
+    @Autowired
+    MedicalRecordRepository medicalRecordRepository;
 
     public List<PatientDto> getAllPatients() {
         List<Patient> patients = patientRepository.findAll();
@@ -101,6 +106,32 @@ public class PatientService {
             return true;
         } else {
             return false;
+        }
+
+    }
+
+    public List<MedicalRecordDto> showPatientHistory(Long id) {
+        Optional<List<MedicalRecord>> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
+        List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
+        if (medicalRecords.isPresent()) {
+
+            List<MedicalRecord> medicalRecordsDb = medicalRecords.get();
+            medicalRecordsDb.forEach(medicalRecord -> {
+                MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
+                medicalRecordDto.setId(medicalRecord.getId())
+                        .setDiagnose(medicalRecord.getDiagnose())
+                        .setTreatment(medicalRecord.getTreatment())
+                        .setPatientId(medicalRecord.getPatient().getId())
+                        .setDoctorId(medicalRecord.getDoctor().getId())
+                        .setCreatedAt(medicalRecord.getCreatedAt())
+                        .setCreatedBy(medicalRecord.getCreatedBy())
+                        .setUpdatedAt(medicalRecord.getUpdatedAt())
+                        .setUpdatedBy(medicalRecord.getUpdatedBy());
+                medicalRecordDtos.add(medicalRecordDto);
+            });
+        return medicalRecordDtos;
+        }else {
+            return new ArrayList<>();
         }
 
     }

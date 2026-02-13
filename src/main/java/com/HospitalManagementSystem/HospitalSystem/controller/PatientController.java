@@ -1,6 +1,8 @@
 package com.HospitalManagementSystem.HospitalSystem.controller;
 
+import com.HospitalManagementSystem.HospitalSystem.dto.MedicalRecordDto;
 import com.HospitalManagementSystem.HospitalSystem.dto.PatientDto;
+import com.HospitalManagementSystem.HospitalSystem.entity.MedicalRecord;
 import com.HospitalManagementSystem.HospitalSystem.service.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/patients")
 public class PatientController {
     @Autowired
     PatientService patientService;
@@ -20,7 +22,7 @@ public class PatientController {
         return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.FOUND);
     }
 
-    @GetMapping("/patients/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id) {
         if (patientService.getPatientById(id) == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -39,7 +41,7 @@ public class PatientController {
         }
     }
 
-    @PutMapping("/patients/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updatePatientData(@PathVariable Long id, @RequestBody PatientDto patientDto) {
         if (patientDto != null) {
             patientService.updatePatientData(id, patientDto);
@@ -48,7 +50,7 @@ public class PatientController {
             return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @DeleteMapping("/patients/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePatientById(@PathVariable Long id) {
         if (patientService.deletePatientById(id)) {
             patientService.deletePatientById(id);
@@ -56,6 +58,11 @@ public class PatientController {
         } else {
             return new ResponseEntity<>("patient not found", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/history/{id}")
+    public ResponseEntity<List<MedicalRecordDto>> showPatientHistory(@PathVariable Long id) {
+        return new ResponseEntity<>(patientService.showPatientHistory(id), HttpStatus.OK);
     }
 
 

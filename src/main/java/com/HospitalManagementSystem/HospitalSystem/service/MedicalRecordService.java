@@ -111,22 +111,26 @@ public class MedicalRecordService {
 
     public List<MedicalRecordDto> getByPatientId(Long id) {
         List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
-        List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
-        medicalRecords.stream().forEach(medicalRecord -> {
-            MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
-            medicalRecordDto.setId(medicalRecord.getId())
-                    .setDiagnose(medicalRecord.getDiagnose())
-                    .setTreatment(medicalRecord.getTreatment())
-                    .setPatientId(medicalRecord.getPatient().getId())
-                    .setDoctorId(medicalRecord.getDoctor().getId())
-                    .setCreatedAt(medicalRecord.getCreatedAt())
-                    .setCreatedBy(medicalRecord.getCreatedBy())
-                    .setUpdatedAt(medicalRecord.getUpdatedAt())
-                    .setUpdatedBy(medicalRecord.getUpdatedBy());
-           medicalRecordDtos.add(medicalRecordDto);
-
-        });
-        return medicalRecordDtos;
+        Optional<List<MedicalRecord>> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
+        if (medicalRecords.isPresent()) {
+            List<MedicalRecord> medicalRecordsDb = medicalRecords.get();
+            medicalRecordsDb.forEach(medicalRecord -> {
+                MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
+                medicalRecordDto.setId(medicalRecord.getId())
+                        .setDiagnose(medicalRecord.getDiagnose())
+                        .setTreatment(medicalRecord.getTreatment())
+                        .setPatientId(medicalRecord.getPatient().getId())
+                        .setDoctorId(medicalRecord.getDoctor().getId())
+                        .setCreatedAt(medicalRecord.getCreatedAt())
+                        .setCreatedBy(medicalRecord.getCreatedBy())
+                        .setUpdatedAt(medicalRecord.getUpdatedAt())
+                        .setUpdatedBy(medicalRecord.getUpdatedBy());
+                medicalRecordDtos.add(medicalRecordDto);
+            });
+            return medicalRecordDtos;
+        }else {
+            return new ArrayList<>();
+        }
     }
 
 }

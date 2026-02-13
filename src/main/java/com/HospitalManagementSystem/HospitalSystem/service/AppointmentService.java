@@ -170,7 +170,6 @@ public class AppointmentService {
         return patientDto;
         }else
             return new PatientDto();
-
     }
     public  PatientDto next() {
        Optional<Appointment> appointment = appointmentRepository.findFirstByOrderByIdAsc();

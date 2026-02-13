@@ -1,6 +1,9 @@
 package com.HospitalManagementSystem.HospitalSystem.controller;
 
 import com.HospitalManagementSystem.HospitalSystem.dto.DoctorDto;
+import com.HospitalManagementSystem.HospitalSystem.dto.MedicalRecordDto;
+import com.HospitalManagementSystem.HospitalSystem.dto.PatientDto;
+import com.HospitalManagementSystem.HospitalSystem.service.AppointmentService;
 import com.HospitalManagementSystem.HospitalSystem.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/doctor")
 public class DoctorController {
     @Autowired
     DoctorService doctorService;
@@ -20,7 +23,7 @@ public class DoctorController {
         return new ResponseEntity<>(doctorService.getAllDoctors(), HttpStatus.FOUND);
     }
 
-    @GetMapping("/doctors/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<DoctorDto> getDoctorById(@PathVariable Long id) {
         if (doctorService.getDoctorById(id) != null) {
             return new ResponseEntity<>(doctorService.getDoctorById(id), HttpStatus.FOUND);
@@ -40,7 +43,7 @@ public class DoctorController {
         }
     }
 
-    @PutMapping("/doctors/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateDoctorData(@PathVariable Long id, @RequestBody DoctorDto doctorDto) {
         if (doctorDto != null) {
             doctorService.updateDoctorData(id, doctorDto);
@@ -50,7 +53,7 @@ public class DoctorController {
         }
     }
 
-    @DeleteMapping("/doctors/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDoctorById(@PathVariable Long id) {
         if (doctorService.deleteDoctorById(id)) {
             doctorService.deleteDoctorById(id);
@@ -58,6 +61,11 @@ public class DoctorController {
         } else {
             return new ResponseEntity<>("doctor not found", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/start")
+    public ResponseEntity<PatientDto> startSession(@RequestBody MedicalRecordDto medicalRecordDto) {
+        return new ResponseEntity<>(doctorService.startSession(medicalRecordDto), HttpStatus.OK);
     }
 
 

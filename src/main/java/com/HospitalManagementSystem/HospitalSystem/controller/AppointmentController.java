@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/appointment")
 public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
@@ -27,7 +27,7 @@ public class AppointmentController {
 
     }
 
-    @GetMapping("/appointments/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long id) {
         if (appointmentService.getAppointmentById(id) != null)
             return new ResponseEntity<>(appointmentService.getAppointmentById(id), HttpStatus.FOUND);
@@ -47,7 +47,7 @@ public class AppointmentController {
 
     }
 
-    @PutMapping("/appointments/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateAppointment(@PathVariable Long id, @RequestBody AppointmentDto appointmentDto) {
         if (appointmentDto != null) {
             appointmentService.updateAppointment(id, appointmentDto);
@@ -56,7 +56,7 @@ public class AppointmentController {
             return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
     }
 
-    @DeleteMapping("/appointments/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         if (appointmentService.deleteAppointment(id))
             return new ResponseEntity<>("Appointment is deleted", HttpStatus.OK);
@@ -65,18 +65,19 @@ public class AppointmentController {
 
     }
 
-    @PostMapping("/appointments/book")
+    @PostMapping("/book")
     public ResponseEntity<BookResponseDto> book(@RequestBody BookRequestDto request) {
         return new ResponseEntity<>(appointmentService.book(request), HttpStatus.OK);
     }
 
-    @GetMapping("/appointments/current-patient")
+    @GetMapping("/current-patient")
     public ResponseEntity<PatientDto> currentPatient() {
         return new ResponseEntity<>(appointmentService.currentPatient(), HttpStatus.OK);
 
     }
-    @DeleteMapping("/appointments/next")
-    public ResponseEntity<PatientDto> next(){
-        return new ResponseEntity<>(appointmentService.next(),HttpStatus.OK);
+
+    @DeleteMapping("/next")
+    public ResponseEntity<PatientDto> next() {
+        return new ResponseEntity<>(appointmentService.next(), HttpStatus.OK);
     }
 }

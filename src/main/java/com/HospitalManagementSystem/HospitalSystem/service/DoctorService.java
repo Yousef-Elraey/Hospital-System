@@ -1,8 +1,14 @@
 package com.HospitalManagementSystem.HospitalSystem.service;
 
 import com.HospitalManagementSystem.HospitalSystem.dto.DoctorDto;
+import com.HospitalManagementSystem.HospitalSystem.dto.MedicalRecordDto;
+import com.HospitalManagementSystem.HospitalSystem.dto.PatientDto;
 import com.HospitalManagementSystem.HospitalSystem.entity.Doctor;
+import com.HospitalManagementSystem.HospitalSystem.entity.MedicalRecord;
+import com.HospitalManagementSystem.HospitalSystem.entity.Patient;
 import com.HospitalManagementSystem.HospitalSystem.repository.DoctorRepository;
+import com.HospitalManagementSystem.HospitalSystem.repository.MedicalRecordRepository;
+import com.HospitalManagementSystem.HospitalSystem.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +21,12 @@ import java.util.Optional;
 public class DoctorService {
     @Autowired
     DoctorRepository doctorRepository;
+    @Autowired
+    AppointmentService appointmentService;
+    @Autowired
+    PatientRepository patientRepository;
+    @Autowired
+    MedicalRecordRepository medicalRecordRepository;
 
 
     public List<DoctorDto> getAllDoctors() {
@@ -91,5 +103,20 @@ public class DoctorService {
         } else {
             return false;
         }
+    }
+
+    public PatientDto startSession(MedicalRecordDto medicalRecordDto) {
+        PatientDto patientDto = appointmentService.next();
+        MedicalRecord medicalRecordDb = new MedicalRecord();
+        medicalRecordDb.setDiagnose(medicalRecordDto.getDiagnose())
+                .setTreatment(medicalRecordDto.getTreatment())
+                .setCreatedAt(LocalDateTime.now())
+                .setCreatedBy(medicalRecordDto.getCreatedBy())
+                .setUpdatedAt(LocalDateTime.now())
+                .setUpdatedBy(medicalRecordDto.getUpdatedBy())
+                .setPatient(patientRepository.findById(medicalRecordDto.getPatientId()).get())
+                .setDoctor(doctorRepository.findById(medicalRecordDto.getDoctorId()).get());
+        medicalRecordRepository.save(medicalRecordDb);
+        return patientDto;
     }
 }
