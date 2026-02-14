@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/billing")
 public class BillingController {
     @Autowired
     BillingService billingService;
@@ -20,7 +20,7 @@ public class BillingController {
         return new ResponseEntity<>(billingService.getAllBillings(), HttpStatus.OK);
     }
 
-    @GetMapping("/billings/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<BillingDto> getBillingById(@PathVariable Long id) {
         if (billingService.getBillingById(id) != null) {
             return new ResponseEntity<>(billingService.getBillingById(id), HttpStatus.FOUND);
@@ -39,7 +39,7 @@ public class BillingController {
         }
     }
 
-    @PutMapping("/billings/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateBilling(@PathVariable Long id, @RequestBody BillingDto billingDto) {
         if (billingDto != null) {
             billingService.updateBilling(id, billingDto);
@@ -49,7 +49,7 @@ public class BillingController {
         }
     }
 
-    @DeleteMapping("/billings/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBilling(@PathVariable Long id) {
         if (billingService.deleteBilling(id)) {
             return new ResponseEntity<>("billing is deleted", HttpStatus.OK);

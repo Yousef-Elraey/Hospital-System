@@ -68,5 +68,4 @@ public class DoctorController {
         return new ResponseEntity<>(doctorService.startSession(medicalRecordDto), HttpStatus.OK);
     }
 
-
 }

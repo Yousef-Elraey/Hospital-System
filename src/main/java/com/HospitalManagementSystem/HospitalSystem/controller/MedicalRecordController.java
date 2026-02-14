@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/medical-record")
 public class MedicalRecordController {
     @Autowired
     MedicalRecordService medicalRecordService;
@@ -23,7 +23,7 @@ public class MedicalRecordController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/medical-records/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<MedicalRecordDto> getMedicalRecordById(@PathVariable Long id) {
         if (medicalRecordService.getMedicalRecordById(id) != null)
             return new ResponseEntity<>(medicalRecordService.getMedicalRecordById(id), HttpStatus.FOUND);
@@ -41,7 +41,7 @@ public class MedicalRecordController {
         }
     }
 
-    @PutMapping("/medical-records/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<String> updateMedicalRecordData(@PathVariable Long id, @RequestBody MedicalRecordDto medicalRecordDto) {
         if (medicalRecordDto != null) {
             medicalRecordService.updateMedicalRecordData(id, medicalRecordDto);
@@ -52,7 +52,7 @@ public class MedicalRecordController {
 
     }
 
-    @DeleteMapping("/medical-records/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMedicalRecord(@PathVariable Long id) {
         if (medicalRecordService.deleteMedicalRecord(id))
             return new ResponseEntity<>("medical record is deleted", HttpStatus.OK);

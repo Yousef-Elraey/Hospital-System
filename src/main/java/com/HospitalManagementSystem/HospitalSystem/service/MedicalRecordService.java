@@ -47,18 +47,19 @@ public class MedicalRecordService {
     }
 
     public MedicalRecordDto getMedicalRecordById(Long id) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findById(id).orElse(null);
+        Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findById(id);
         MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
-        if (medicalRecord != null) {
-            medicalRecordDto.setId(medicalRecord.getId())
-                    .setDiagnose(medicalRecord.getDiagnose())
-                    .setTreatment(medicalRecord.getTreatment())
-                    .setPatientId(medicalRecord.getPatient().getId())
-                    .setDoctorId(medicalRecord.getDoctor().getId())
-                    .setCreatedAt(medicalRecord.getCreatedAt())
-                    .setCreatedBy(medicalRecord.getCreatedBy())
-                    .setUpdatedAt(medicalRecord.getUpdatedAt())
-                    .setUpdatedBy(medicalRecord.getUpdatedBy());
+        if (medicalRecord.isPresent()) {
+            MedicalRecord medicalRecordDb = medicalRecord.get();
+            medicalRecordDto.setId(medicalRecordDb.getId())
+                    .setDiagnose(medicalRecordDb.getDiagnose())
+                    .setTreatment(medicalRecordDb.getTreatment())
+                    .setPatientId(medicalRecordDb.getPatient().getId())
+                    .setDoctorId(medicalRecordDb.getDoctor().getId())
+                    .setCreatedAt(medicalRecordDb.getCreatedAt())
+                    .setCreatedBy(medicalRecordDb.getCreatedBy())
+                    .setUpdatedAt(medicalRecordDb.getUpdatedAt())
+                    .setUpdatedBy(medicalRecordDb.getUpdatedBy());
             return medicalRecordDto;
         }else {
             return null;
