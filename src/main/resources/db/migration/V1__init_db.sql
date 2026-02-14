@@ -31,8 +31,10 @@ CREATE TABLE doctor(
        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        updated_by varchar(50) NOT NULL,
        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-       patient_id BIGINT,
-       doctor_id BIGINT,
+       patient_id BIGINT NOT NULL,
+       doctor_id BIGINT NOT NULL,
+        status VARCHAR(50) NOT NULL,
+
        CONSTRAINT FK_patient_appointment
         FOREIGN KEY (patient_id) REFERENCES patient(id),
        CONSTRAINT FK_doctor_appointment
