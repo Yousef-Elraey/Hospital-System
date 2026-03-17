@@ -5,8 +5,10 @@ import com.hospital.dto.BookRequestDto;
 import com.hospital.dto.BookResponseDto;
 import com.hospital.dto.PatientDto;
 import com.hospital.entity.Appointment;
+import com.hospital.entity.AppointmentStatus;
 import com.hospital.entity.Patient;
 import com.hospital.repository.AppointmentRepository;
+import com.hospital.repository.AppointmentStatusRepository;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,8 @@ public class AppointmentService {
     DoctorRepository doctorRepository;
     @Autowired
     MedicalRecordService medicalRecordService;
-
+    @Autowired
+    AppointmentStatusRepository appointmentStatusRepository;
 
     public List<AppointmentDto> getAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAll();
@@ -138,7 +141,7 @@ public class AppointmentService {
                 .setUpdatedAt(LocalDateTime.now())
                 .setPatient(patientRepository.findById(request.getPatientId()).get())
                 .setDoctor(doctorRepository.findById(request.getDoctorId()).get())
-                .setStatus(request.getStatus());
+                .setStatus(appointmentStatusRepository.findById(request.getStatusId()).get());
         appointmentRepository.save(appointment);
 
         List<Appointment> appointments = appointmentRepository.findAll();

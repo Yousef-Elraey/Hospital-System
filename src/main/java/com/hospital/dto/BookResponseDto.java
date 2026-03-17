@@ -1,5 +1,6 @@
 package com.hospital.dto;
 
+import com.hospital.entity.AppointmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +12,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class BookResponseDto {
     private int numberOfWaiting;
-    private String status;
+    private AppointmentStatus status;
+
 }

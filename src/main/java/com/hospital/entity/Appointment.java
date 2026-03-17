@@ -39,11 +39,12 @@ public class Appointment {
     private Patient patient;
 
     @ManyToOne
-    @JoinColumn(name = "doctor_id",referencedColumnName = "id")
+    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
 
-    private String status;
-
+    @ManyToOne
+    @JoinColumn(name = "status_id")
+    private AppointmentStatus status;
 
     @Override
     public String toString() {

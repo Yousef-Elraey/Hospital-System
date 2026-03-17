@@ -22,7 +22,11 @@ CREATE TABLE doctor(
     updated_by varchar(50) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
-
+CREATE TABLE appointment_status (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        name_en VARCHAR(50),
+        name_ar VARCHAR(50)
+    );
 
     CREATE TABLE appointment(
        id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -33,14 +37,16 @@ CREATE TABLE doctor(
        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
        patient_id BIGINT NOT NULL,
        doctor_id BIGINT NOT NULL,
-        status VARCHAR(50) NOT NULL,
+       status_id BIGINT NOT NULL,
 
        CONSTRAINT FK_patient_appointment
         FOREIGN KEY (patient_id) REFERENCES patient(id),
        CONSTRAINT FK_doctor_appointment
-        FOREIGN KEY (doctor_id) REFERENCES doctor(id)
-
+        FOREIGN KEY (doctor_id) REFERENCES doctor(id),
+       CONSTRAINT FK_status_appointment
+        FOREIGN KEY (status_id) REFERENCES appointment_status(id)
     );
+
 
     CREATE TABLE medical_record (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
