@@ -47,11 +47,8 @@ public class BillingController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBilling(@PathVariable Long id) {
-        if (billingService.deleteBilling(id)) {
+          billingService.deleteBilling(id);
             return new ResponseEntity<>("billing is deleted", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("billing not found", HttpStatus.NOT_FOUND);
-        }
     }
 
 }

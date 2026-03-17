@@ -2,6 +2,7 @@ package com.hospital.dto;
 
 
 import com.hospital.entity.AppointmentStatus;
+import com.hospital.entity.AppointmentType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -14,13 +15,14 @@ import java.time.LocalDateTime;
 public class AppointmentDto {
     private Long id;
     private LocalDateTime timing;
+    private AppointmentType appointmentType;
     private Long doctorId;
     private Long patientId;
     private String createdBy;
     private LocalDateTime createdAt;
     private String updatedBy;
     private LocalDateTime updatedAt;
-    private AppointmentStatus status;
+    private Long statusId;
 
 
 }

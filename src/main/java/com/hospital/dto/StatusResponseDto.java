@@ -1,17 +1,18 @@
 package com.hospital.dto;
 
-import com.hospital.entity.AppointmentStatus;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class BookResponseDto {
-    private Long numberOfWaiting;
-    private AppointmentStatus status;
-
+public class StatusResponseDto {
+    private Long id;
+    private String name_ar;
+    private String name_en;
 }

@@ -51,12 +51,8 @@ public class PatientController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePatientById(@PathVariable Long id) {
-        if (patientService.deletePatientById(id)) {
-            patientService.deletePatientById(id);
+       patientService.deletePatientById(id);
             return new ResponseEntity<>("deleted patient successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("patient not found", HttpStatus.NOT_FOUND);
-        }
     }
 
     @GetMapping("/history/{id}")

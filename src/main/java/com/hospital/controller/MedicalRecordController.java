@@ -54,10 +54,9 @@ public class MedicalRecordController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMedicalRecord(@PathVariable Long id) {
-        if (medicalRecordService.deleteMedicalRecord(id))
+        medicalRecordService.deleteMedicalRecord(id);
             return new ResponseEntity<>("medical record is deleted", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("medical record not found", HttpStatus.NOT_FOUND);
+
     }
 
     @GetMapping("/medical-record-patient-id/{id}")

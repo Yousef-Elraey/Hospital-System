@@ -1,8 +1,8 @@
 CREATE TABLE patient(
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50) NOT NULL,
-    gender VARCHAR(50) NOT NULL,
-    phone BIGINT NOT NULL,
+    gender VARCHAR(6) NOT NULL,
+    phone BIGINT NOT NULL UNIQUE,
     date_of_birth DATE Not NULL,
     created_by varchar(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -16,7 +16,7 @@ CREATE TABLE doctor(
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL,
     specialty VARCHAR(250) NOT NULL,
-    contact_number BIGINT NOT NULL,
+    contact_number BIGINT NOT NULL UNIQUE ,
     created_by varchar(50) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_by varchar(50) NOT NULL,
@@ -31,6 +31,7 @@ CREATE TABLE appointment_status (
     CREATE TABLE appointment(
        id BIGINT AUTO_INCREMENT PRIMARY KEY,
        timing TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       appointment_type VARCHAR(6) NOT NULL DEFAULT "onsite",
        created_by varchar(50) NOT NULL,
        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        updated_by varchar(50) NOT NULL,

@@ -24,6 +24,8 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDateTime timing;
+    @Enumerated(EnumType.STRING)
+    private AppointmentType appointmentType;
     @CreatedBy
     @Column(updatable = false)
     private String createdBy;
@@ -43,7 +45,7 @@ public class Appointment {
     private Doctor doctor;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "status_id", referencedColumnName = "id")
     private AppointmentStatus status;
 
     @Override

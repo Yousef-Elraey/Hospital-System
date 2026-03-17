@@ -5,6 +5,7 @@ import com.hospital.dto.MedicalRecordDto;
 import com.hospital.dto.PatientDto;
 import com.hospital.entity.Doctor;
 import com.hospital.entity.MedicalRecord;
+import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
@@ -48,9 +49,12 @@ public class DoctorService {
     }
 
     public DoctorDto getDoctorById(Long id) {
-        Doctor doc = doctorRepository.findById(id).orElse(null);
-        DoctorDto doctorDto = new DoctorDto();
-        if (doc != null) {
+        Optional<Doctor> doctorDb = doctorRepository.findById(id);
+        if (doctorDb.isEmpty()) {
+            throw new HospitalBusinessException("no doctor found");
+        } else {
+            Doctor doc = doctorDb.get();
+            DoctorDto doctorDto = new DoctorDto();
             doctorDto.setId(doc.getId());
             doctorDto.setName(doc.getName());
             doctorDto.setSpeciality(doc.getSpecialty());
@@ -60,8 +64,7 @@ public class DoctorService {
             doctorDto.setUpdatedBy(doc.getUpdatedBy());
             doctorDto.setUpdatedAt(doc.getUpdatedAt());
             return doctorDto;
-        }else {
-            return null;
+
         }
 
     }
@@ -90,21 +93,31 @@ public class DoctorService {
             doc.setUpdatedAt(LocalDateTime.now());
             doc.setUpdatedBy(doctorDto.getUpdatedBy());
             doctorRepository.save(doc);
+        } else {
+            throw new HospitalBusinessException("no doctor found");
         }
 
     }
 
 
-    public boolean deleteDoctorById(Long id) {
-        if (doctorRepository.findById(id).isPresent()) {
+    public void deleteDoctorById(Long id) {
+        Optional<Doctor> doctorDb = doctorRepository.findById(id);
+        if (doctorDb.isEmpty())
+            throw new HospitalBusinessException("no doctor found");
+        else
             doctorRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
+
+
     }
 
     public PatientDto startSession(MedicalRecordDto medicalRecordDto) {
+        if (patientRepository.findById(medicalRecordDto.getPatientId()).isEmpty()) {
+            throw new HospitalBusinessException("no patient found");
+        }
+        if (doctorRepository.findById(medicalRecordDto.getDoctorId()).isEmpty()) {
+            throw new HospitalBusinessException("no doctor found");
+        }
+
         PatientDto patientDto = appointmentService.next();
         MedicalRecord medicalRecordDb = new MedicalRecord();
         medicalRecordDb.setDiagnose(medicalRecordDto.getDiagnose())

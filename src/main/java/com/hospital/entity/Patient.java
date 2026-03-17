@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -38,7 +39,7 @@ public class Patient {
      private String phone;
      @Column(nullable = false)
      private LocalDate dateOfBirth;
-     @OneToMany
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
      private List<MedicalRecord> medicalRecords;
      @CreatedBy
      @Column(updatable = false)

@@ -2,6 +2,7 @@ package com.hospital.service;
 
 import com.hospital.dto.BillingDto;
 import com.hospital.entity.Billing;
+import com.hospital.entity.MedicalRecord;
 import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.BillingRepository;
 import com.hospital.repository.PatientRepository;
@@ -56,6 +57,9 @@ public class BillingService {
     }
 
     public void createBilling(BillingDto billingDto) {
+        if (patientRepository.findById(billingDto.getPatient_id()).isEmpty()) {
+            throw new HospitalBusinessException("no patient found");
+        }
         Billing billing = new Billing();
         billing.setAmount(billingDto.getAmount())
                 .setPatient(patientRepository.findById(billingDto.getPatient_id()).get())
@@ -67,25 +71,27 @@ public class BillingService {
     }
 
     public void updateBilling(Long id, BillingDto billingDto) {
+        if (patientRepository.findById(billingDto.getPatient_id()).isEmpty()) {
+            throw new HospitalBusinessException("no patient found");
+        }
         Optional<Billing> billing = billingRepository.findById(id);
-       if (billing.isPresent()){
-           Billing dbbilling = billing.get();
-           dbbilling.setAmount(billingDto.getAmount())
-                   .setPatient(patientRepository.findById(billingDto.getPatient_id()).get())
-                   .setUpdatedBy(billingDto.getUpdatedBy())
-                   .setUpdatedAt(LocalDateTime.now());
-           billingRepository.save(dbbilling);
-       }else {
-           createBilling(billingDto);
-       }
+        if (billing.isPresent()) {
+            Billing dbbilling = billing.get();
+            dbbilling.setAmount(billingDto.getAmount())
+                    .setPatient(patientRepository.findById(billingDto.getPatient_id()).get())
+                    .setUpdatedBy(billingDto.getUpdatedBy())
+                    .setUpdatedAt(LocalDateTime.now());
+            billingRepository.save(dbbilling);
+        } else {
+            throw new HospitalBusinessException("no billing found");
+        }
     }
 
-    public boolean deleteBilling(Long id) {
-        if (billingRepository.findById(id).isPresent()) {
+    public void deleteBilling(Long id) {
+        Optional<Billing> billing = billingRepository.findById(id);
+        if (billing.isEmpty())
+            throw new HospitalBusinessException("medicalRecord not found");
+        else
             billingRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
     }
 }

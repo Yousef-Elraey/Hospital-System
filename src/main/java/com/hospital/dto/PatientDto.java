@@ -1,6 +1,7 @@
 package com.hospital.dto;
 
 import com.hospital.entity.Gender;
+import com.hospital.entity.MedicalRecord;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

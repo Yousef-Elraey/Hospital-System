@@ -54,12 +54,8 @@ public class DoctorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDoctorById(@PathVariable Long id) {
-        if (doctorService.deleteDoctorById(id)) {
             doctorService.deleteDoctorById(id);
             return new ResponseEntity<>("deleted doctor successfully", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("doctor not found", HttpStatus.NOT_FOUND);
-        }
     }
 
     @PostMapping("/start")

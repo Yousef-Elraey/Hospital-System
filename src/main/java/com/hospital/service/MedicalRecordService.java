@@ -1,7 +1,9 @@
 package com.hospital.service;
 
 import com.hospital.dto.MedicalRecordDto;
+import com.hospital.entity.Appointment;
 import com.hospital.entity.MedicalRecord;
+import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
@@ -68,6 +70,13 @@ public class MedicalRecordService {
     }
 
     public void addMedicalRecord(MedicalRecordDto medicalRecordDto) {
+        if (patientRepository.findById(medicalRecordDto.getPatientId()).isEmpty()) {
+            throw new HospitalBusinessException("no patient found");
+        }
+        if (doctorRepository.findById(medicalRecordDto.getDoctorId()).isEmpty()) {
+            throw new HospitalBusinessException("no doctor found");
+        }
+
         MedicalRecord dbMedicalRecord = new MedicalRecord();
         dbMedicalRecord.setId(medicalRecordDto.getId())
                 .setDiagnose(medicalRecordDto.getDiagnose())
@@ -84,6 +93,13 @@ public class MedicalRecordService {
     }
 
     public void updateMedicalRecordData(Long id, MedicalRecordDto medicalRecordDto) {
+        if (patientRepository.findById(medicalRecordDto.getPatientId()).isEmpty()) {
+            throw new HospitalBusinessException("no patient found");
+        }
+        if (doctorRepository.findById(medicalRecordDto.getDoctorId()).isEmpty()) {
+            throw new HospitalBusinessException("no doctor found");
+        }
+
         Optional<MedicalRecord> medicalRecordTemp = medicalRecordRepository.findById(id);
         if (medicalRecordTemp.isPresent()) {
             MedicalRecord medicalRecord = medicalRecordTemp.get();
@@ -97,17 +113,16 @@ public class MedicalRecordService {
             medicalRecordRepository.save(medicalRecord);
 
         } else {
-            addMedicalRecord(medicalRecordDto);
+            throw new HospitalBusinessException("no medical_record found");
         }
     }
 
-    public boolean deleteMedicalRecord(Long id) {
-        if (medicalRecordRepository.findById(id).isPresent()) {
+    public void deleteMedicalRecord(Long id) {
+        Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findById(id);
+        if (medicalRecord.isEmpty())
+            throw new HospitalBusinessException("medicalRecord not found");
+        else
             medicalRecordRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public List<MedicalRecordDto> getByPatientId(Long id) {

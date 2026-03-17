@@ -4,6 +4,7 @@ import com.hospital.dto.MedicalRecordDto;
 import com.hospital.dto.PatientDto;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
+import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class PatientService {
     PatientRepository patientRepository;
     @Autowired
     MedicalRecordRepository medicalRecordRepository;
+    @Autowired
+    MedicalRecordService medicalRecordService;
 
     public List<PatientDto> getAllPatients() {
         List<Patient> patients = patientRepository.findAll();
@@ -31,7 +34,8 @@ public class PatientService {
                 patientDto.setId(patient.getId())
                         .setDateOfBirth(patient.getDateOfBirth())
                         .setName(patient.getName())
-                        .setPhone(patient.getPhone())
+                        .setPhone(patient.getPhone()).
+                        setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
                         .setGender(patient.getGender())
                         .setCreatedAt(patient.getCreatedAt())
                         .setUpdatedAt(patient.getUpdatedAt())
@@ -45,6 +49,7 @@ public class PatientService {
 
     public PatientDto getPatientById(Long id) {
         Patient patient = patientRepository.findById(id).orElse(null);
+
         PatientDto patientDto = new PatientDto();
         if (patient != null) {
             patientDto.setId(patient.getId())
@@ -52,6 +57,7 @@ public class PatientService {
                     .setName(patient.getName())
                     .setGender(patient.getGender())
                     .setPhone(patient.getPhone())
+                    .setMedicalRecords(medicalRecordService.getByPatientId(id))
                     .setCreatedBy(patient.getCreatedBy())
                     .setCreatedAt(patient.getCreatedAt())
                     .setUpdatedBy(patient.getUpdatedBy())
@@ -94,20 +100,17 @@ public class PatientService {
                     .setUpdatedAt(LocalDateTime.now());
             patientRepository.save(dbPatient);
         } else {
-            addPatient(patientDto);
+            throw new HospitalBusinessException("no patient found");
         }
 
 
     }
 
-    public boolean deletePatientById(Long id) {
-        if (patientRepository.findById(id).isPresent()) {
+    public void deletePatientById(Long id) {
+        if (patientRepository.findById(id).isEmpty())
+            throw new HospitalBusinessException("no patient found");
+        else
             patientRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
-        }
-
     }
 
     public List<MedicalRecordDto> showPatientHistory(Long id) {

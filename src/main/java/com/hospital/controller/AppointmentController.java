@@ -58,16 +58,24 @@ public class AppointmentController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
-        if (appointmentService.deleteAppointment(id))
-            return new ResponseEntity<>("Appointment is deleted", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("Appointment not found", HttpStatus.NOT_FOUND);
-
+        appointmentService.deleteAppointment(id);
+        return new ResponseEntity<>("Appointment is deleted", HttpStatus.OK);
     }
 
     @PostMapping("/book")
     public ResponseEntity<BookResponseDto> book(@RequestBody BookRequestDto request) {
+
         return new ResponseEntity<>(appointmentService.book(request), HttpStatus.OK);
+    }
+
+    @PostMapping("/book-with-paid")
+    public ResponseEntity<BookResponseDto> bookWithPaid(@RequestBody BookRequestDto request) {
+        return new ResponseEntity<>(appointmentService.bookWithPaid(request), HttpStatus.OK);
+    }
+
+    @PutMapping("confirm/{phoneNumber}")
+    public ResponseEntity<BookResponseDto> confirmBook(@PathVariable String phoneNumber) {
+        return new ResponseEntity<>(appointmentService.confirmBook(phoneNumber), HttpStatus.OK);
     }
 
     @GetMapping("/current-patient")

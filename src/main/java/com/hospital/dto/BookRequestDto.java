@@ -1,6 +1,7 @@
 package com.hospital.dto;
 
 import com.hospital.entity.AppointmentStatus;
+import com.hospital.entity.AppointmentType;
 import com.hospital.entity.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,15 +18,9 @@ import java.util.Date;
 @Accessors(chain = true)
 public class BookRequestDto {
     private Long id;
-    private String patientName;
-    private Gender patientGender;
-    private String patientPhone;
-    private LocalDate patientDateOfBirth;
-    private String patientCreatedBy;
-    private LocalDateTime patientCreatedAt;
-    private String patientUpdatedBy;
-    private LocalDateTime patientUpdatedAt;
+
     private LocalDateTime appointmentTiming;
+    private AppointmentType appointmentType;
     private Long doctorId;
     private Long patientId;
     private Long statusId;
