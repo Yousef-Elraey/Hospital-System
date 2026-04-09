@@ -16,5 +16,8 @@ public class AppointmentStatus {
     private Long id;
     private String nameEn;
     private String nameAr;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/development
 }
