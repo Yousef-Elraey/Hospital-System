@@ -5,6 +5,7 @@ import com.hospital.dto.BookRequestDto;
 import com.hospital.dto.BookResponseDto;
 import com.hospital.dto.PatientDto;
 import com.hospital.service.AppointmentService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/appointment")
+@RequiredArgsConstructor
 public class AppointmentController {
-    @Autowired
-    AppointmentService appointmentService;
+   private final AppointmentService appointmentService;
 
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
@@ -84,7 +85,7 @@ public class AppointmentController {
 
     }
 
-    @DeleteMapping("/next")
+    @PutMapping("/next")
     public ResponseEntity<PatientDto> next() {
         return new ResponseEntity<>(appointmentService.next(), HttpStatus.OK);
     }

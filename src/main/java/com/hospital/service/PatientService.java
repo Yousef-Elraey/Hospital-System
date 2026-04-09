@@ -7,6 +7,7 @@ import com.hospital.entity.Patient;
 import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,11 @@ import java.time.LocalDateTime;
 
 
 @Service
+@RequiredArgsConstructor
 public class PatientService {
-    @Autowired
-    PatientRepository patientRepository;
-    @Autowired
-    MedicalRecordRepository medicalRecordRepository;
-    @Autowired
-    MedicalRecordService medicalRecordService;
+    private final PatientRepository patientRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
+    private final MedicalRecordService medicalRecordService;
 
     public List<PatientDto> getAllPatients() {
         List<Patient> patients = patientRepository.findAll();

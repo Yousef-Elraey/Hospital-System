@@ -9,6 +9,7 @@ import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +19,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DoctorService {
-    @Autowired
-    DoctorRepository doctorRepository;
-    @Autowired
-    AppointmentService appointmentService;
-    @Autowired
-    PatientRepository patientRepository;
-    @Autowired
-    MedicalRecordRepository medicalRecordRepository;
+   private final DoctorRepository doctorRepository;
+   private final AppointmentService appointmentService;
+   private final PatientRepository patientRepository;
+   private final MedicalRecordRepository medicalRecordRepository;
 
 
     public List<DoctorDto> getAllDoctors() {

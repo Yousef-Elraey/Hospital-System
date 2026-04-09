@@ -2,6 +2,7 @@ package com.hospital.controller;
 
 import com.hospital.dto.BillingDto;
 import com.hospital.service.BillingService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/billing")
+@RequiredArgsConstructor
 public class BillingController {
-    @Autowired
-    BillingService billingService;
+
+    private final BillingService billingService;
 
     @GetMapping("/billings")
     public ResponseEntity<List<BillingDto>> getAllBillings() {

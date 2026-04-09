@@ -3,6 +3,7 @@ package com.hospital.controller;
 import com.hospital.dto.MedicalRecordDto;
 import com.hospital.dto.PatientDto;
 import com.hospital.service.PatientService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/patient")
+@RequiredArgsConstructor
 public class PatientController {
-    @Autowired
-    PatientService patientService;
+
+  private final PatientService patientService;
 
     @GetMapping("/patients")
     public ResponseEntity<List<PatientDto>> getAllPatients() {

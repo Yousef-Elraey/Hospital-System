@@ -11,17 +11,18 @@ import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
-    Optional<Appointment> findFirstByOrderByIdAsc();
+    @Query("from Appointment a where a.status.id <= 3 order by a.createdAt")
+    List<Appointment> appointmentsStatusNewPaidPending();
 
-    @Query("from Appointment a where a.status.id <= 3 order by a.createdAt")  //(new + paid + pending)
-    List<Appointment> appointmentsStatusNewPaidPending(); //(all appointments of type new,paid,pending)
+    @Query("from Appointment a where a.status.id = 2 OR a.status.id = 3")
+    List<Appointment> appointmentsStatusPaidPending();
 
-    @Query("from Appointment a where a.status.id = 2 OR a.status.id = 3")   //(paid+pending)
-    List<Appointment> appointmentsStatusPaidPending(); //(all appointments of type paid,pending)
-
-//    @Query("from Appointment a where a.patient.id = :id and a.status.id = 2 order by createdAt")
     Optional<Appointment> findFirstByPatientIdAndStatusIdOrderByCreatedAtAsc(Long id, Long statusId);
 
-    @Query("from Appointment a where a.status.id = 3")          //(pending)
-    List<Appointment> appointmentsStatusPending(); //(all appointments of type pending)
+    @Query("from Appointment a where a.status.id = 3 order by a.updatedAt")
+    List<Appointment> appointmentsStatusPending();
+
+
+
+
 }

@@ -2,6 +2,7 @@ package com.hospital.controller;
 
 import com.hospital.dto.StatusResponseDto;
 import com.hospital.service.AppointmentStatusService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/status")
+@RequiredArgsConstructor
 public class AppointmentStatusController {
-    @Autowired
-    AppointmentStatusService appointmentStatusService;
+private final AppointmentStatusService appointmentStatusService;
 
     @GetMapping("/")
     public ResponseEntity<List<StatusResponseDto>> getAllStatus(){

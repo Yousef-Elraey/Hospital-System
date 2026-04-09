@@ -6,6 +6,7 @@ import com.hospital.entity.MedicalRecord;
 import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.BillingRepository;
 import com.hospital.repository.PatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class BillingService {
-    @Autowired
-    BillingRepository billingRepository;
-    @Autowired
-    PatientRepository patientRepository;
+   private final BillingRepository billingRepository;
+   private final PatientRepository patientRepository;
 
     public List<BillingDto> getAllBillings() {
         List<Billing> billings = billingRepository.findAll();

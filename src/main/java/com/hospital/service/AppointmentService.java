@@ -12,6 +12,7 @@ import com.hospital.repository.AppointmentRepository;
 import com.hospital.repository.AppointmentStatusRepository;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.PatientRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +24,13 @@ import java.util.Optional;
 import static com.hospital.entity.AppointmentType.online;
 import static com.hospital.entity.AppointmentType.onsite;
 @Service
+@RequiredArgsConstructor
 public class AppointmentService {
-    @Autowired
-    AppointmentRepository appointmentRepository;
-    @Autowired
-    PatientRepository patientRepository;
-    @Autowired
-    DoctorRepository doctorRepository;
-    @Autowired
-    MedicalRecordService medicalRecordService;
-    @Autowired
-    AppointmentStatusRepository appointmentStatusRepository;
+   private final AppointmentRepository appointmentRepository;
+   private final PatientRepository patientRepository;
+   private final DoctorRepository doctorRepository;
+   private final MedicalRecordService medicalRecordService;
+   private final AppointmentStatusRepository appointmentStatusRepository;
 
 
     public List<AppointmentDto> getAllAppointments() {
@@ -236,13 +233,14 @@ public class AppointmentService {
         return bookResponseDto;
     }
 
-    // still need for handle
-    public PatientDto currentPatient() {
-        Optional<Appointment> appointment = appointmentRepository.findFirstByOrderByIdAsc();
 
-        if (appointment.isPresent()) {
-            Appointment appointmentDb = appointment.get();
-            Patient patientDb = appointmentDb.getPatient();
+    public PatientDto currentPatient() {
+        List<Appointment> appointments = appointmentRepository.appointmentsStatusPending();
+        if (appointments.isEmpty()) {
+            throw new HospitalBusinessException("no appointments in pending");
+        }
+            Optional<Appointment> appointmentDb = appointments.stream().findFirst();
+            Patient patientDb = appointmentDb.get().getPatient();
             PatientDto patientDto = new PatientDto();
             patientDto.setId(patientDb.getId())
                     .setName(patientDb.getName())
@@ -255,20 +253,19 @@ public class AppointmentService {
                     .setUpdatedBy(patientDb.getUpdatedBy())
                     .setUpdatedAt(patientDb.getUpdatedAt());
             return patientDto;
-        } else
-            return new PatientDto();
     }
 
 
-    //still need for handle
     public PatientDto next() {
-        Optional<Appointment> appointment = appointmentRepository.findFirstByOrderByIdAsc();
+        List<Appointment> appointments = appointmentRepository.appointmentsStatusPending();
         PatientDto patientDto = currentPatient();
-        if (appointment.isPresent()) {
-            appointmentRepository.delete(appointment.get());
-        } else {
-            throw new HospitalBusinessException("there is no appointments");
-        }
+       if (appointments.isEmpty()){
+           throw new HospitalBusinessException("no appointments in pending");
+       }
+        Optional<Appointment> currentAppointment = appointments.stream().findFirst();
+   currentAppointment.get().setStatus(new AppointmentStatus(5L,"finished","انتهاء"));
+   appointmentRepository.save(currentAppointment.get());
+
         return patientDto;
     }
 
