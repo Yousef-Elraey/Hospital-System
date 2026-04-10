@@ -1,6 +1,8 @@
 package com.hospital.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,16 +13,22 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class DoctorDto {
     private Long id;
-   @NotNull(message = "name is required")
+
+   @NotBlank(message = "name is required")
     private String name;
-    @NotNull(message = "speciality is required")
+
+    @NotBlank(message = "speciality is required")
     private String speciality;
-    @NotNull(message = "contact_number is required")
+
+    @NotBlank(message = "contact_number is required")
+    @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number") // valid for Egyptian numbers only
     private String contactNumber;
-    @NotNull(message = "createdBy is required")
+
+    @NotBlank(message = "createdBy is required")
     private String createdBy;
     private LocalDateTime createdAt;
-    @NotNull(message = "updatedBy is required")
+
+    @NotBlank(message = "updatedBy is required")
     private String updatedBy;
     private LocalDateTime updatedAt;
 
