@@ -1,9 +1,6 @@
 package com.hospital.service;
 
-import com.hospital.dto.AppointmentDto;
-import com.hospital.dto.BookRequestDto;
-import com.hospital.dto.BookResponseDto;
-import com.hospital.dto.PatientDto;
+import com.hospital.dto.*;
 import com.hospital.entity.Appointment;
 import com.hospital.entity.AppointmentStatus;
 import com.hospital.entity.Patient;
@@ -13,7 +10,6 @@ import com.hospital.repository.AppointmentStatusRepository;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,6 +31,9 @@ public class AppointmentService {
 
     public List<AppointmentDto> getAllAppointments() {
         List<Appointment> appointments = appointmentRepository.findAll();
+        if (appointments.isEmpty()){
+            throw new HospitalBusinessException("no appointments found");
+        }
         List<AppointmentDto> appointmentDtos = new ArrayList<>();
 
         for (Appointment appointment : appointments) {
@@ -57,27 +56,28 @@ public class AppointmentService {
     }
 
     public AppointmentDto getAppointmentById(Long id) {
-        Appointment appointment = appointmentRepository.findById(id).orElse(null);
+        Optional<Appointment> appointment = appointmentRepository.findById(id);
+       if (appointment.isEmpty()){
+           throw new HospitalBusinessException("no appointment found");
+       }
+       Appointment appointmentDb = appointment.get();
         AppointmentDto appointmentDto = new AppointmentDto();
 
-        if (appointment != null){
-        appointmentDto.setId(appointment.getId());
-            appointmentDto.setTiming(appointment.getTiming());
-            appointmentDto.setAppointmentType(appointment.getAppointmentType());
-            appointmentDto.setDoctorId(appointment.getDoctor().getId());
-        appointmentDto.setPatientId(appointment.getPatient().getId());
-        appointmentDto.setCreatedBy(appointment.getCreatedBy());
-        appointmentDto.setCreatedAt(appointment.getCreatedAt());
-        appointmentDto.setUpdatedBy(appointment.getUpdatedBy());
+        appointmentDto.setId(appointmentDb.getId());
+            appointmentDto.setTiming(appointmentDb.getTiming());
+            appointmentDto.setAppointmentType(appointmentDb.getAppointmentType());
+            appointmentDto.setDoctorId(appointmentDb.getDoctor().getId());
+        appointmentDto.setPatientId(appointmentDb.getPatient().getId());
+        appointmentDto.setCreatedBy(appointmentDb.getCreatedBy());
+        appointmentDto.setCreatedAt(appointmentDb.getCreatedAt());
+        appointmentDto.setUpdatedBy(appointmentDb.getUpdatedBy());
             appointmentDto.setUpdatedAt(LocalDateTime.now());
-            appointmentDto.setStatusId(appointment.getStatus().getId());
+            appointmentDto.setStatusId(appointmentDb.getStatus().getId());
         return appointmentDto;
-        }else {
-            return null;
-        }
+
     }
 
-    public void createAppointment(AppointmentDto appointmentDto) {
+    public AppointmentDto createAppointment(AppointmentDto appointmentDto) {
         if (appointmentDto.getAppointmentType() == online) {
             appointmentDto.setStatusId(1L);
         } else if (appointmentDto.getAppointmentType() == onsite) {
@@ -105,9 +105,10 @@ public class AppointmentService {
         appointment.setDoctor(doctorRepository.findById(appointmentDto.getDoctorId()).get());
         appointment.setStatus(appointmentStatusRepository.findById(appointmentDto.getStatusId()).get());
         appointmentRepository.save(appointment);
+    return appointmentDto;
     }
 
-    public void updateAppointment(Long id, AppointmentDto appointmentDto) {
+    public AppointmentDto updateAppointment(Long id, AppointmentDto appointmentDto) {
         if (patientRepository.findById(appointmentDto.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
@@ -128,10 +129,8 @@ public class AppointmentService {
             appointment.setPatient(patientRepository.findById(appointmentDto.getPatientId()).get());
             appointment.setStatus(appointmentStatusRepository.findById(appointmentDto.getStatusId()).get());
             appointmentRepository.save(appointment);
-        } else {
-            throw new HospitalBusinessException("no appointment found");
         }
-
+        return appointmentDto;
     }
 
     public void deleteAppointment(Long id) {
@@ -241,17 +240,31 @@ public class AppointmentService {
         }
             Optional<Appointment> appointmentDb = appointments.stream().findFirst();
             Patient patientDb = appointmentDb.get().getPatient();
+      List<MedicalRecordDto> medicalRecordDtos =  medicalRecordService.getByPatientId(patientDb.getId());
             PatientDto patientDto = new PatientDto();
+            if (medicalRecordDtos.isEmpty()){
+                patientDto.setId(patientDb.getId())
+                        .setName(patientDb.getName())
+                        .setGender(patientDb.getGender())
+                        .setPhone(patientDb.getPhone())
+                        .setDateOfBirth(patientDb.getDateOfBirth())
+                        .setMedicalRecords(new ArrayList<>())
+                        .setCreatedBy(patientDb.getCreatedBy())
+                        .setCreatedAt(patientDb.getCreatedAt())
+                        .setUpdatedBy(patientDb.getUpdatedBy())
+                        .setUpdatedAt(patientDb.getUpdatedAt());
+            }else{
             patientDto.setId(patientDb.getId())
                     .setName(patientDb.getName())
                     .setGender(patientDb.getGender())
                     .setPhone(patientDb.getPhone())
                     .setDateOfBirth(patientDb.getDateOfBirth())
-                    .setMedicalRecords(medicalRecordService.getByPatientId(patientDb.getId()))
+                    .setMedicalRecords(medicalRecordDtos)
                     .setCreatedBy(patientDb.getCreatedBy())
                     .setCreatedAt(patientDb.getCreatedAt())
                     .setUpdatedBy(patientDb.getUpdatedBy())
                     .setUpdatedAt(patientDb.getUpdatedAt());
+            }
             return patientDto;
     }
 
@@ -264,6 +277,7 @@ public class AppointmentService {
        }
         Optional<Appointment> currentAppointment = appointments.stream().findFirst();
    currentAppointment.get().setStatus(new AppointmentStatus(5L,"finished","انتهاء"));
+   currentAppointment.get().setUpdatedAt(LocalDateTime.now());
    appointmentRepository.save(currentAppointment.get());
 
         return patientDto;

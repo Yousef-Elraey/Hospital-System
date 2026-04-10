@@ -5,6 +5,7 @@ import com.hospital.dto.MedicalRecordDto;
 import com.hospital.dto.PatientDto;
 import com.hospital.entity.Doctor;
 import com.hospital.entity.MedicalRecord;
+import com.hospital.entity.Patient;
 import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.MedicalRecordRepository;
@@ -67,7 +68,7 @@ public class DoctorService {
 
     }
 
-    public void addDoctor(DoctorDto doctorDto) {
+    public DoctorDto addDoctor(DoctorDto doctorDto) {
         Doctor doctor = new Doctor();
         doctor.setId(doctorDto.getId());
         doctor.setName(doctorDto.getName());
@@ -79,9 +80,10 @@ public class DoctorService {
         doctor.setUpdatedAt(LocalDateTime.now());
 
         doctorRepository.save(doctor);
+        return doctorDto;
     }
 
-    public void updateDoctorData(Long id, DoctorDto doctorDto) {
+    public DoctorDto updateDoctorData(Long id, DoctorDto doctorDto) {
         Optional<Doctor> doctor = doctorRepository.findById(id);
         if (doctor.isPresent()) {
             Doctor doc = doctor.get();
@@ -94,7 +96,7 @@ public class DoctorService {
         } else {
             throw new HospitalBusinessException("no doctor found");
         }
-
+return doctorDto;
     }
 
 
@@ -107,12 +109,14 @@ public class DoctorService {
 
 
     }
-
+// still need for (debug and test)
     public PatientDto startSession(MedicalRecordDto medicalRecordDto) {
-        if (patientRepository.findById(medicalRecordDto.getPatientId()).isEmpty()) {
+       Optional<Patient> patientDb = patientRepository.findById(medicalRecordDto.getPatientId());
+       Optional<Doctor> doctorDb  = doctorRepository.findById(medicalRecordDto.getDoctorId());
+       if (patientDb.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
-        if (doctorRepository.findById(medicalRecordDto.getDoctorId()).isEmpty()) {
+        if (doctorDb.isEmpty()) {
             throw new HospitalBusinessException("no doctor found");
         }
 
@@ -124,8 +128,8 @@ public class DoctorService {
                 .setCreatedBy(medicalRecordDto.getCreatedBy())
                 .setUpdatedAt(LocalDateTime.now())
                 .setUpdatedBy(medicalRecordDto.getUpdatedBy())
-                .setPatient(patientRepository.findById(medicalRecordDto.getPatientId()).get())
-                .setDoctor(doctorRepository.findById(medicalRecordDto.getDoctorId()).get());
+                .setPatient(patientDb.get())
+                .setDoctor(doctorDb.get());
         medicalRecordRepository.save(medicalRecordDb);
         return patientDto;
     }

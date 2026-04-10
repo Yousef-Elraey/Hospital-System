@@ -2,6 +2,7 @@ package com.hospital.controller;
 
 import com.hospital.dto.MedicalRecordDto;
 import com.hospital.service.MedicalRecordService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,38 +20,27 @@ public class MedicalRecordController {
 
     @GetMapping("/medical-records")
     public ResponseEntity<List<MedicalRecordDto>> getAllRecords() {
-        if (medicalRecordService.getAllRecords() != null)
             return new ResponseEntity<>(medicalRecordService.getAllRecords(), HttpStatus.FOUND);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MedicalRecordDto> getMedicalRecordById(@PathVariable Long id) {
-        if (medicalRecordService.getMedicalRecordById(id) != null)
             return new ResponseEntity<>(medicalRecordService.getMedicalRecordById(id), HttpStatus.FOUND);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/medical-records")
-    public ResponseEntity<String> addMedicalRecord(@RequestBody MedicalRecordDto medicalRecordDto) {
-        if (medicalRecordDto != null) {
-            medicalRecordService.addMedicalRecord(medicalRecordDto);
-            return new ResponseEntity<>("medical record added", HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity<>("add an accepted data", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<MedicalRecordDto> addMedicalRecord(@Valid @RequestBody MedicalRecordDto medicalRecordDto) {
+
+            return new ResponseEntity<>(medicalRecordService.addMedicalRecord(medicalRecordDto), HttpStatus.ACCEPTED);
+
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateMedicalRecordData(@PathVariable Long id, @RequestBody MedicalRecordDto medicalRecordDto) {
-        if (medicalRecordDto != null) {
-            medicalRecordService.updateMedicalRecordData(id, medicalRecordDto);
-            return new ResponseEntity<>("medical record updated", HttpStatus.ACCEPTED);
-        } else {
-            return new ResponseEntity<>("add an accepted data", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<MedicalRecordDto> updateMedicalRecordData(@PathVariable Long id,@Valid @RequestBody MedicalRecordDto medicalRecordDto) {
+
+
+            return new ResponseEntity<>(medicalRecordService.updateMedicalRecordData(id, medicalRecordDto), HttpStatus.ACCEPTED);
+
 
     }
 

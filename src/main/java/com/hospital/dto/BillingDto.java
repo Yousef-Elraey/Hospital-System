@@ -1,11 +1,11 @@
 package com.hospital.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.hibernate.annotations.NotFound;
 
 import java.time.LocalDateTime;
@@ -17,10 +17,14 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class BillingDto {
     private Long id;
+    @NotNull(message = "amount is required")
     private Long amount;
+    @NotNull(message = "createdBy is required")
     private String createdBy;
     private LocalDateTime createdAt;
+    @NotNull(message = "updatedBy is required")
     private String updatedBy;
     private LocalDateTime updatedAt;
+    @NotNull(message = "patient_id is required")
     private Long patient_id;
 }

@@ -47,30 +47,26 @@ public class PatientService {
     }
 
     public PatientDto getPatientById(Long id) {
-        Patient patient = patientRepository.findById(id).orElse(null);
-
-        PatientDto patientDto = new PatientDto();
-        if (patient != null) {
-            patientDto.setId(patient.getId())
-                    .setDateOfBirth(patient.getDateOfBirth())
-                    .setName(patient.getName())
-                    .setGender(patient.getGender())
-                    .setPhone(patient.getPhone())
-                    .setMedicalRecords(medicalRecordService.getByPatientId(id))
-                    .setCreatedBy(patient.getCreatedBy())
-                    .setCreatedAt(patient.getCreatedAt())
-                    .setUpdatedBy(patient.getUpdatedBy())
-                    .setUpdatedAt(patient.getUpdatedAt());
-            return patientDto;
-        }else {
-            return null;
+        Optional<Patient> patient = patientRepository.findById(id);
+        if (patient.isEmpty()){
+            throw new HospitalBusinessException("no patient found");
         }
-
-
+        PatientDto patientDto = new PatientDto();
+            patientDto.setId(patient.get().getId())
+                    .setDateOfBirth(patient.get().getDateOfBirth())
+                    .setName(patient.get().getName())
+                    .setGender(patient.get().getGender())
+                    .setPhone(patient.get().getPhone())
+                    .setMedicalRecords(medicalRecordService.getByPatientId(id))
+                    .setCreatedBy(patient.get().getCreatedBy())
+                    .setCreatedAt(patient.get().getCreatedAt())
+                    .setUpdatedBy(patient.get().getUpdatedBy())
+                    .setUpdatedAt(patient.get().getUpdatedAt());
+            return patientDto;
     }
 
 
-    public void addPatient(PatientDto patientDto) {
+    public PatientDto addPatient(PatientDto patientDto) {
         Patient patient = new Patient();
         patient.setId(patientDto.getId())
                 .setName(patientDto.getName())
@@ -83,11 +79,12 @@ public class PatientService {
                 .setUpdatedAt(LocalDateTime.now());
         patientRepository.save(patient);
 
+        return patientDto;
 
     }
 
 
-    public void updatePatientData(Long id, PatientDto patientDto) {
+    public PatientDto updatePatientData(Long id, PatientDto patientDto) {
         Optional<Patient> patientTemp = patientRepository.findById(id);
         if (patientTemp.isPresent()) {
             Patient dbPatient = patientTemp.get();
@@ -101,6 +98,7 @@ public class PatientService {
         } else {
             throw new HospitalBusinessException("no patient found");
         }
+        return patientDto;
 
 
     }
@@ -113,12 +111,12 @@ public class PatientService {
     }
 
     public List<MedicalRecordDto> showPatientHistory(Long id) {
-        Optional<List<MedicalRecord>> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
+        List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
+        if (medicalRecords.isEmpty()){
+            throw new HospitalBusinessException("no medical_records found");
+        }
         List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
-        if (medicalRecords.isPresent()) {
-
-            List<MedicalRecord> medicalRecordsDb = medicalRecords.get();
-            medicalRecordsDb.forEach(medicalRecord -> {
+        medicalRecords.forEach(medicalRecord -> {
                 MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
                 medicalRecordDto.setId(medicalRecord.getId())
                         .setDiagnose(medicalRecord.getDiagnose())
@@ -132,9 +130,5 @@ public class PatientService {
                 medicalRecordDtos.add(medicalRecordDto);
             });
         return medicalRecordDtos;
-        }else {
-            return new ArrayList<>();
-        }
-
     }
 }

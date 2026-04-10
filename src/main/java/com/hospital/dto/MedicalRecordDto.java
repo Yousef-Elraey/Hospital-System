@@ -1,5 +1,6 @@
 package com.hospital.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,13 +16,19 @@ import java.util.Date;
 @Accessors(chain = true)
 public class MedicalRecordDto {
     private Long id;
+    @NotNull(message = "diagnose is required")
     private String diagnose;
+    @NotNull(message = "treatment is required")
     private String treatment;
+    @NotNull(message = "patient_id is required")
     private Long patientId;
+    @NotNull(message = "doctor_id is required")
     private Long doctorId;
     private LocalDateTime createdAt;
+    @NotNull(message = "createdBy is required")
     private String createdBy;
     private LocalDateTime updatedAt;
+    @NotNull(message = "updatedBy is required")
     private String updatedBy;
 
 }

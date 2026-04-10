@@ -2,8 +2,8 @@ package com.hospital.controller;
 
 import com.hospital.dto.BillingDto;
 import com.hospital.service.BillingService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,23 +28,16 @@ public class BillingController {
     }
 
     @PostMapping("/billings")
-    public ResponseEntity<String> createBilling(@RequestBody BillingDto billingDto) {
-        if (billingDto != null) {
-            billingService.createBilling(billingDto);
-            return new ResponseEntity<>("billing is created", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
-        }
+    public ResponseEntity<BillingDto> createBilling(@Valid @RequestBody BillingDto billingDto) {
+
+            return new ResponseEntity<>(billingService.createBilling(billingDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateBilling(@PathVariable Long id, @RequestBody BillingDto billingDto) {
-        if (billingDto != null) {
-            billingService.updateBilling(id, billingDto);
-            return new ResponseEntity<>("billing is updated", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
-        }
+    public ResponseEntity<BillingDto> updateBilling(@PathVariable Long id,@Valid @RequestBody BillingDto billingDto) {
+
+
+            return new ResponseEntity<>(billingService.updateBilling(id, billingDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

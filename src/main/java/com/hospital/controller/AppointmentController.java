@@ -6,11 +6,10 @@ import com.hospital.dto.BookResponseDto;
 import com.hospital.dto.PatientDto;
 import com.hospital.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import jakarta.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -21,40 +20,25 @@ public class AppointmentController {
 
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
-        if (appointmentService.getAllAppointments() != null)
             return new ResponseEntity<>(appointmentService.getAllAppointments(), HttpStatus.FOUND);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long id) {
-        if (appointmentService.getAppointmentById(id) != null)
             return new ResponseEntity<>(appointmentService.getAppointmentById(id), HttpStatus.FOUND);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
     }
 
     @PostMapping("/appointments")
-    public ResponseEntity<String> createAppointment(@RequestBody AppointmentDto appointmentDto) {
-        if (appointmentDto != null) {
-            appointmentService.createAppointment(appointmentDto);
-            return new ResponseEntity<>("appointment created", HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>("add an accepted data", HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<AppointmentDto> createAppointment(@Valid @RequestBody AppointmentDto appointmentDto) {
+
+            return new ResponseEntity<>(appointmentService.createAppointment(appointmentDto), HttpStatus.CREATED);
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateAppointment(@PathVariable Long id, @RequestBody AppointmentDto appointmentDto) {
-        if (appointmentDto != null) {
-            appointmentService.updateAppointment(id, appointmentDto);
-            return new ResponseEntity<>("appointment updated", HttpStatus.ACCEPTED);
-        } else
-            return new ResponseEntity<>("add an accepted data", HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity<AppointmentDto> updateAppointment(@PathVariable Long id, @Valid @RequestBody AppointmentDto appointmentDto) {
+            return new ResponseEntity<>(appointmentService.updateAppointment(id, appointmentDto), HttpStatus.ACCEPTED);
+
     }
 
     @DeleteMapping("/{id}")
@@ -64,13 +48,13 @@ public class AppointmentController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<BookResponseDto> book(@RequestBody BookRequestDto request) {
+    public ResponseEntity<BookResponseDto> book(@Valid @RequestBody BookRequestDto request) {
 
         return new ResponseEntity<>(appointmentService.book(request), HttpStatus.OK);
     }
 
     @PostMapping("/book-with-paid")
-    public ResponseEntity<BookResponseDto> bookWithPaid(@RequestBody BookRequestDto request) {
+    public ResponseEntity<BookResponseDto> bookWithPaid(@Valid @RequestBody BookRequestDto request) {
         return new ResponseEntity<>(appointmentService.bookWithPaid(request), HttpStatus.OK);
     }
 

@@ -1,14 +1,12 @@
 package com.hospital.service;
 
 import com.hospital.dto.MedicalRecordDto;
-import com.hospital.entity.Appointment;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.exception.HospitalBusinessException;
 import com.hospital.repository.DoctorRepository;
 import com.hospital.repository.MedicalRecordRepository;
 import com.hospital.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,8 +24,11 @@ public class MedicalRecordService {
 
     public List<MedicalRecordDto> getAllRecords() {
         List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
+        if (medicalRecords.isEmpty()){
+            throw new HospitalBusinessException("no medical_records found");
+        }
         List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
-        if (!medicalRecords.isEmpty()) {
+
             for (MedicalRecord record : medicalRecords) {
                 MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
                 medicalRecordDto.setId(record.getId())
@@ -40,8 +41,6 @@ public class MedicalRecordService {
                         .setUpdatedAt(record.getUpdatedAt())
                         .setUpdatedBy(record.getUpdatedBy());
                 medicalRecordDtos.add(medicalRecordDto);
-
-            }
         }
 
         return medicalRecordDtos;
@@ -50,8 +49,11 @@ public class MedicalRecordService {
 
     public MedicalRecordDto getMedicalRecordById(Long id) {
         Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findById(id);
+        if (medicalRecord.isEmpty()){
+            throw new HospitalBusinessException("no medical_record found");
+        }
         MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
-        if (medicalRecord.isPresent()) {
+
             MedicalRecord medicalRecordDb = medicalRecord.get();
             medicalRecordDto.setId(medicalRecordDb.getId())
                     .setDiagnose(medicalRecordDb.getDiagnose())
@@ -63,13 +65,9 @@ public class MedicalRecordService {
                     .setUpdatedAt(medicalRecordDb.getUpdatedAt())
                     .setUpdatedBy(medicalRecordDb.getUpdatedBy());
             return medicalRecordDto;
-        }else {
-            return null;
-        }
-
     }
 
-    public void addMedicalRecord(MedicalRecordDto medicalRecordDto) {
+    public MedicalRecordDto addMedicalRecord(MedicalRecordDto medicalRecordDto) {
         if (patientRepository.findById(medicalRecordDto.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
@@ -90,9 +88,10 @@ public class MedicalRecordService {
 
         medicalRecordRepository.save(dbMedicalRecord);
 
+        return medicalRecordDto;
     }
 
-    public void updateMedicalRecordData(Long id, MedicalRecordDto medicalRecordDto) {
+    public MedicalRecordDto updateMedicalRecordData(Long id, MedicalRecordDto medicalRecordDto) {
         if (patientRepository.findById(medicalRecordDto.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
@@ -115,6 +114,7 @@ public class MedicalRecordService {
         } else {
             throw new HospitalBusinessException("no medical_record found");
         }
+    return medicalRecordDto;
     }
 
     public void deleteMedicalRecord(Long id) {
@@ -127,10 +127,12 @@ public class MedicalRecordService {
 
     public List<MedicalRecordDto> getByPatientId(Long id) {
         List<MedicalRecordDto> medicalRecordDtos = new ArrayList<>();
-        Optional<List<MedicalRecord>> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
-        if (medicalRecords.isPresent()) {
-            List<MedicalRecord> medicalRecordsDb = medicalRecords.get();
-            medicalRecordsDb.forEach(medicalRecord -> {
+        List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
+        if (medicalRecords.isEmpty()){
+            return medicalRecordDtos;
+        }
+        else {
+            medicalRecords.forEach(medicalRecord -> {
                 MedicalRecordDto medicalRecordDto = new MedicalRecordDto();
                 medicalRecordDto.setId(medicalRecord.getId())
                         .setDiagnose(medicalRecord.getDiagnose())
@@ -143,10 +145,9 @@ public class MedicalRecordService {
                         .setUpdatedBy(medicalRecord.getUpdatedBy());
                 medicalRecordDtos.add(medicalRecordDto);
             });
-            return medicalRecordDtos;
-        }else {
-            return new ArrayList<>();
         }
+           return medicalRecordDtos;
+
     }
 
 }
