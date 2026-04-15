@@ -37,13 +37,13 @@ public class BillingController {
     public ResponseEntity<BillingDto> updateBilling(@PathVariable Long id,@Valid @RequestBody BillingDto billingDto) {
 
 
-            return new ResponseEntity<>(billingService.updateBilling(id, billingDto), HttpStatus.OK);
+            return new ResponseEntity<>(billingService.updateBilling(id, billingDto), HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteBilling(@PathVariable Long id) {
           billingService.deleteBilling(id);
-            return new ResponseEntity<>("billing is deleted", HttpStatus.OK);
+            return new ResponseEntity<>("billing is deleted", HttpStatus.NO_CONTENT);
     }
 
 }

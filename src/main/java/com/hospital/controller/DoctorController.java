@@ -20,31 +20,31 @@ private final DoctorService doctorService;
 
     @GetMapping("/doctors")
     public ResponseEntity<List<DoctorDto>> getAllDoctors() {
-        return new ResponseEntity<>(doctorService.getAllDoctors(), HttpStatus.FOUND);
+        return new ResponseEntity<>(doctorService.getAllDoctors(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DoctorDto> getDoctorById(@PathVariable Long id) {
-            return new ResponseEntity<>(doctorService.getDoctorById(id), HttpStatus.FOUND);
+            return new ResponseEntity<>(doctorService.getDoctorById(id), HttpStatus.OK);
     }
 
     @PostMapping("/doctors")
     public ResponseEntity<DoctorDto> addDoctor(@Valid @RequestBody DoctorDto doctorDto) {
 
-            return new ResponseEntity<>(doctorService.addDoctor(doctorDto), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(doctorService.addDoctor(doctorDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DoctorDto> updateDoctorData(@PathVariable Long id,@Valid @RequestBody DoctorDto doctorDto) {
 
 
-            return new ResponseEntity<>(doctorService.updateDoctorData(id, doctorDto), HttpStatus.OK);
+            return new ResponseEntity<>(doctorService.updateDoctorData(id, doctorDto), HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDoctorById(@PathVariable Long id) {
             doctorService.deleteDoctorById(id);
-            return new ResponseEntity<>("deleted doctor successfully", HttpStatus.OK);
+            return new ResponseEntity<>("deleted doctor successfully", HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/start")

@@ -20,18 +20,18 @@ public class MedicalRecordController {
 
     @GetMapping("/medical-records")
     public ResponseEntity<List<MedicalRecordDto>> getAllRecords() {
-            return new ResponseEntity<>(medicalRecordService.getAllRecords(), HttpStatus.FOUND);
+            return new ResponseEntity<>(medicalRecordService.getAllRecords(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MedicalRecordDto> getMedicalRecordById(@PathVariable Long id) {
-            return new ResponseEntity<>(medicalRecordService.getMedicalRecordById(id), HttpStatus.FOUND);
+            return new ResponseEntity<>(medicalRecordService.getMedicalRecordById(id), HttpStatus.OK);
     }
 
     @PostMapping("/medical-records")
     public ResponseEntity<MedicalRecordDto> addMedicalRecord(@Valid @RequestBody MedicalRecordDto medicalRecordDto) {
 
-            return new ResponseEntity<>(medicalRecordService.addMedicalRecord(medicalRecordDto), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(medicalRecordService.addMedicalRecord(medicalRecordDto), HttpStatus.CREATED);
 
     }
 
@@ -39,7 +39,7 @@ public class MedicalRecordController {
     public ResponseEntity<MedicalRecordDto> updateMedicalRecordData(@PathVariable Long id,@Valid @RequestBody MedicalRecordDto medicalRecordDto) {
 
 
-            return new ResponseEntity<>(medicalRecordService.updateMedicalRecordData(id, medicalRecordDto), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(medicalRecordService.updateMedicalRecordData(id, medicalRecordDto), HttpStatus.NO_CONTENT);
 
 
     }
@@ -47,7 +47,7 @@ public class MedicalRecordController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteMedicalRecord(@PathVariable Long id) {
         medicalRecordService.deleteMedicalRecord(id);
-            return new ResponseEntity<>("medical record is deleted", HttpStatus.OK);
+            return new ResponseEntity<>("medical record is deleted", HttpStatus.NO_CONTENT);
 
     }
 

@@ -20,12 +20,12 @@ public class AppointmentController {
 
     @GetMapping("/appointments")
     public ResponseEntity<List<AppointmentDto>> getAllAppointments() {
-            return new ResponseEntity<>(appointmentService.getAllAppointments(), HttpStatus.FOUND);
+            return new ResponseEntity<>(appointmentService.getAllAppointments(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long id) {
-            return new ResponseEntity<>(appointmentService.getAppointmentById(id), HttpStatus.FOUND);
+            return new ResponseEntity<>(appointmentService.getAppointmentById(id), HttpStatus.OK);
     }
 
     @PostMapping("/appointments")
@@ -37,30 +37,30 @@ public class AppointmentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentDto> updateAppointment(@PathVariable Long id, @Valid @RequestBody AppointmentDto appointmentDto) {
-            return new ResponseEntity<>(appointmentService.updateAppointment(id, appointmentDto), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(appointmentService.updateAppointment(id, appointmentDto), HttpStatus.NO_CONTENT);
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteAppointment(@PathVariable Long id) {
         appointmentService.deleteAppointment(id);
-        return new ResponseEntity<>("Appointment is deleted", HttpStatus.OK);
+        return new ResponseEntity<>("Appointment is deleted", HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/book")
     public ResponseEntity<BookResponseDto> book(@Valid @RequestBody BookRequestDto request) {
 
-        return new ResponseEntity<>(appointmentService.book(request), HttpStatus.OK);
+        return new ResponseEntity<>(appointmentService.book(request), HttpStatus.CREATED);
     }
 
     @PostMapping("/book-with-paid")
     public ResponseEntity<BookResponseDto> bookWithPaid(@Valid @RequestBody BookRequestDto request) {
-        return new ResponseEntity<>(appointmentService.bookWithPaid(request), HttpStatus.OK);
+        return new ResponseEntity<>(appointmentService.bookWithPaid(request), HttpStatus.CREATED);
     }
 
     @PutMapping("confirm/{phoneNumber}")
     public ResponseEntity<BookResponseDto> confirmBook(@PathVariable String phoneNumber) {
-        return new ResponseEntity<>(appointmentService.confirmBook(phoneNumber), HttpStatus.OK);
+        return new ResponseEntity<>(appointmentService.confirmBook(phoneNumber), HttpStatus.CREATED);
     }
 
     @GetMapping("/current-patient")

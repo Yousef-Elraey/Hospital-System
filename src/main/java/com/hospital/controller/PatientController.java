@@ -21,19 +21,19 @@ public class PatientController {
 
     @GetMapping("/patients")
     public ResponseEntity<List<PatientDto>> getAllPatients() {
-        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.FOUND);
+        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<PatientDto> getPatientById(@PathVariable Long id) {
-            return new ResponseEntity<>(patientService.getPatientById(id), HttpStatus.FOUND);
+            return new ResponseEntity<>(patientService.getPatientById(id), HttpStatus.OK);
 
     }
 
     @PostMapping("/patients")
     public ResponseEntity<PatientDto> addPatient(@Valid @RequestBody PatientDto patientDto) {
 
-            return new ResponseEntity<>(patientService.addPatient(patientDto), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(patientService.addPatient(patientDto), HttpStatus.CREATED);
 
     }
 
@@ -41,14 +41,14 @@ public class PatientController {
     public ResponseEntity<PatientDto> updatePatientData(@PathVariable Long id,@Valid @RequestBody PatientDto patientDto) {
 
 
-            return new ResponseEntity<>(patientService.updatePatientData(id, patientDto), HttpStatus.OK);
+            return new ResponseEntity<>(patientService.updatePatientData(id, patientDto), HttpStatus.NO_CONTENT);
 
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePatientById(@PathVariable Long id) {
        patientService.deletePatientById(id);
-            return new ResponseEntity<>("deleted patient successfully", HttpStatus.OK);
+            return new ResponseEntity<>("deleted patient successfully", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/history/{id}")
