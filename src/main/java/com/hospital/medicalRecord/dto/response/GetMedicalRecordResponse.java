@@ -1,0 +1,29 @@
+package com.hospital.medicalRecord.dto.response;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
+
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+public class GetMedicalRecordResponse {
+    private Long id;
+    private String diagnose;
+    private String treatment;
+    private Long patientId;
+    private Long doctorId;
+    private LocalDateTime createdAt;
+    private String createdBy;
+    private LocalDateTime updatedAt;
+    private String updatedBy;
+
+}
