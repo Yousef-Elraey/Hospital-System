@@ -33,6 +33,12 @@ public class PatientController {
 
     }
 
+    @GetMapping
+    public ResponseEntity<GetPatientResponse> getPatient(@RequestParam(name = "phone") String phoneNumber) {
+        return new ResponseEntity<>(patientService.getPatientByPhone(phoneNumber), HttpStatus.OK);
+
+    }
+
     @PostMapping("/patients")
     public ResponseEntity<CreatePatientResponse> addPatient(@Valid @RequestBody CreatePatientRequest createPatientRequest) {
 
@@ -42,8 +48,6 @@ public class PatientController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UpdatePatientResponse> updatePatientData(@PathVariable Long id, @Valid @RequestBody UpdatePatientRequest updatePatientRequest) {
-
-
         return new ResponseEntity<>(patientService.updatePatientData(id, updatePatientRequest), HttpStatus.OK);
 
     }
@@ -51,7 +55,7 @@ public class PatientController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deletePatientById(@PathVariable Long id) {
        patientService.deletePatientById(id);
-            return new ResponseEntity<>("deleted patient successfully", HttpStatus.NO_CONTENT);
+       return new ResponseEntity<>("deleted patient successfully", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/history/{id}")

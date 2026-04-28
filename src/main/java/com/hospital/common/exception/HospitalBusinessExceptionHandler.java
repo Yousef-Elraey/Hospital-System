@@ -13,7 +13,7 @@ public class HospitalBusinessExceptionHandler {
     // Method to handle generic exceptions
     @ExceptionHandler(HospitalBusinessException.class)
     public ResponseEntity<String> handleGeneralException(Exception ex) {
-        return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

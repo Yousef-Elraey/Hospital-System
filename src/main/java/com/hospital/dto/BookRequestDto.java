@@ -29,15 +29,13 @@ public class BookRequestDto {
     @NotNull(message = "patient_id is required")
     private Long patientId;
 
-    @NotNull(message = "status_id is required")
-    private Long statusId;
 
     @NotBlank(message = "appointment_created_by is required")
-    private String appointmentCreatedBy;
+    private String appointmentCreatedBy = "SYSTEM";
     private LocalDateTime appointmentCreatedAt;
 
     @NotBlank(message = "appointment_updated_by is required")
-    private String appointmentUpdatedBy;
+    private String appointmentUpdatedBy = "SYSTEM";
     private LocalDateTime appointmentUpdatedAt;
 
 

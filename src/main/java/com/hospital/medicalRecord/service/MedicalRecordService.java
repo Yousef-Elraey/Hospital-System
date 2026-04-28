@@ -135,10 +135,7 @@ public class MedicalRecordService {
     public List<GetMedicalRecordResponse> getByPatientId(Long id) {
         List<GetMedicalRecordResponse> medicalRecordsResponse = new ArrayList<>();
         List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
-        if (medicalRecords.isEmpty()){
-        throw  new HospitalBusinessException("no medical-records found");
-        }
-        else {
+        if (!medicalRecords.isEmpty())
             medicalRecords.forEach(medicalRecord -> {
                 GetMedicalRecordResponse medicalRecordResponse = new GetMedicalRecordResponse();
                 medicalRecordResponse.setId(medicalRecord.getId())
@@ -152,8 +149,7 @@ public class MedicalRecordService {
                         .setUpdatedBy(medicalRecord.getUpdatedBy());
                 medicalRecordsResponse.add(medicalRecordResponse);
             });
-        }
-           return medicalRecordsResponse;
+        return medicalRecordsResponse;
 
     }
 

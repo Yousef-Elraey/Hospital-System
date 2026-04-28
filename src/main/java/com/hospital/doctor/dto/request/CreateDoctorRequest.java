@@ -25,11 +25,11 @@ public class CreateDoctorRequest {
  private String contactNumber;
 
  @NotBlank(message = "createdBy is required")
- private String createdBy;
+ private String createdBy ="SYSTEM";
  private LocalDateTime createdAt;
 
  @NotBlank(message = "updatedBy is required")
- private String updatedBy;
+ private String updatedBy="SYSTEM";
  private LocalDateTime updatedAt;
 
 }

@@ -32,10 +32,10 @@ public class CreateMedicalRecordRequest {
     private LocalDateTime createdAt;
 
     @NotBlank(message = "createdBy is required")
-    private String createdBy;
+    private String createdBy="SYSTEM";
     private LocalDateTime updatedAt;
 
     @NotBlank(message = "updatedBy is required")
-    private String updatedBy;
+    private String updatedBy="SYSTEM";
 
 }

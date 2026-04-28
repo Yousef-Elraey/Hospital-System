@@ -29,11 +29,11 @@ public class UpdateAppointmentRequest {
     private Long patientId;
 
     @NotBlank(message = "createdBy is required")
-    private String createdBy;
+    private String createdBy="SYSTEM";
     private LocalDateTime createdAt;
 
     @NotBlank(message = "updatedBy is required")
-    private String updatedBy;
+    private String updatedBy="SYSTEM";
     private LocalDateTime updatedAt;
     @NotNull(message = "status_id is required")
     private Long statusId;

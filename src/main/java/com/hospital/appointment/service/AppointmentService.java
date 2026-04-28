@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hospital.entity.AppointmentType.online;
-import static com.hospital.entity.AppointmentType.onsite;
+import static com.hospital.entity.AppointmentType.FOLLOW_UP_CONSULTATION;
+import static com.hospital.entity.AppointmentType.INITIAL_CONSULTATION;
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
@@ -88,11 +88,6 @@ public class AppointmentService {
     }
 
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest) {
-        if (createAppointmentRequest.getAppointmentType() == online) {
-            createAppointmentRequest.setStatusId(1L);
-        } else if (createAppointmentRequest.getAppointmentType() == onsite) {
-            createAppointmentRequest.setStatusId(2L);
-        }
 
         if (patientRepository.findById(createAppointmentRequest.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");

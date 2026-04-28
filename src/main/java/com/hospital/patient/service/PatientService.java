@@ -37,8 +37,8 @@ public class PatientService {
                 getPatientResponse.setId(patient.getId())
                         .setDateOfBirth(patient.getDateOfBirth())
                         .setName(patient.getName())
-                        .setPhone(patient.getPhone()).
-                        setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
+                        .setPhone(patient.getPhone())
+                        .setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
                         .setGender(patient.getGender())
                         .setCreatedAt(patient.getCreatedAt())
                         .setUpdatedAt(patient.getUpdatedAt())
@@ -62,6 +62,24 @@ public class PatientService {
                 .setGender(patient.get().getGender())
                 .setPhone(patient.get().getPhone())
                 .setMedicalRecords(medicalRecordService.getByPatientId(id))
+                .setCreatedBy(patient.get().getCreatedBy())
+                .setCreatedAt(patient.get().getCreatedAt())
+                .setUpdatedBy(patient.get().getUpdatedBy())
+                .setUpdatedAt(patient.get().getUpdatedAt());
+        return patientResponse;
+    }
+
+    public GetPatientResponse getPatientByPhone(String phoneNumber) {
+        Optional<Patient> patient = patientRepository.findByPhone(phoneNumber);
+        if (patient.isEmpty()) {
+            throw new HospitalBusinessException("no patient found");
+        }
+        GetPatientResponse patientResponse = new GetPatientResponse();
+        patientResponse.setId(patient.get().getId())
+                .setDateOfBirth(patient.get().getDateOfBirth())
+                .setName(patient.get().getName())
+                .setGender(patient.get().getGender())
+                .setPhone(patient.get().getPhone())
                 .setCreatedBy(patient.get().getCreatedBy())
                 .setCreatedAt(patient.get().getCreatedAt())
                 .setUpdatedBy(patient.get().getUpdatedBy())
