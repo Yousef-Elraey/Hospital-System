@@ -1,6 +1,8 @@
 package com.hospital.patient.service;
 
+import com.hospital.common.security.JWTService;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
+import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
@@ -12,6 +14,7 @@ import com.hospital.patient.dto.response.UpdatePatientResponse;
 import com.hospital.medicalRecord.repository.MedicalRecordRepository;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.medicalRecord.service.MedicalRecordService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +30,9 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final MedicalRecordService medicalRecordService;
+    private final JWTService jwtService;
 
-    public List<GetPatientResponse> getAllPatients() {
+    public List<GetPatientResponse> getAllPatients(HttpServletRequest request) {
         List<Patient> patients = patientRepository.findAll();
         List<GetPatientResponse> patientsResponse = new ArrayList<>();
         if (!patients.isEmpty()) {
@@ -38,7 +42,7 @@ public class PatientService {
                         .setDateOfBirth(patient.getDateOfBirth())
                         .setName(patient.getName())
                         .setPhone(patient.getPhone()).
-                        setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
+                        setMedicalRecords(medicalRecordService.getByPatientId(patient.getId(),request))
                         .setGender(patient.getGender())
                         .setCreatedAt(patient.getCreatedAt())
                         .setUpdatedAt(patient.getUpdatedAt())
@@ -50,7 +54,7 @@ public class PatientService {
         return patientsResponse;
     }
 
-    public GetPatientResponse getPatientById(Long id) {
+    public GetPatientResponse getPatientById(Long id, HttpServletRequest request) {
         Optional<Patient> patient = patientRepository.findById(id);
         if (patient.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -61,7 +65,7 @@ public class PatientService {
                 .setName(patient.get().getName())
                 .setGender(patient.get().getGender())
                 .setPhone(patient.get().getPhone())
-                .setMedicalRecords(medicalRecordService.getByPatientId(id))
+                .setMedicalRecords(medicalRecordService.getByPatientId(id,request))
                 .setCreatedBy(patient.get().getCreatedBy())
                 .setCreatedAt(patient.get().getCreatedAt())
                 .setUpdatedBy(patient.get().getUpdatedBy())
@@ -70,8 +74,9 @@ public class PatientService {
     }
 
 
-    public CreatePatientResponse addPatient(CreatePatientRequest createPatientRequest) {
-
+    public CreatePatientResponse addPatient(CreatePatientRequest createPatientRequest,HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.substring(7);
         if (patientRepository.findByPhone(createPatientRequest.getPhone()).isPresent()) {
             throw new HospitalBusinessException("this phone number is already exist");
         }
@@ -81,9 +86,9 @@ public class PatientService {
                 .setGender(createPatientRequest.getGender())
                 .setPhone(createPatientRequest.getPhone())
                 .setDateOfBirth(createPatientRequest.getDateOfBirth())
-                .setCreatedBy(createPatientRequest.getCreatedBy())
+                .setCreatedBy(jwtService.extractUserName(token))
                 .setCreatedAt(LocalDateTime.now())
-                .setUpdatedBy(createPatientRequest.getUpdatedBy())
+                .setUpdatedBy(jwtService.extractUserName(token))
                 .setUpdatedAt(LocalDateTime.now());
         patientRepository.save(patient);
         CreatePatientResponse patientResponse = new CreatePatientResponse();
@@ -93,15 +98,17 @@ public class PatientService {
     }
 
 
-    public UpdatePatientResponse updatePatientData(Long id, UpdatePatientRequest updatePatientRequest) {
-        Optional<Patient> patientTemp = patientRepository.findById(id);
+    public UpdatePatientResponse updatePatientData(UpdatePatientRequest updatePatientRequest,HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.substring(7);
+        Optional<Patient> patientTemp = patientRepository.findById(updatePatientRequest.getId());
         if (patientTemp.isPresent()) {
             Patient dbPatient = patientTemp.get();
             dbPatient.setName(updatePatientRequest.getName())
                     .setGender(updatePatientRequest.getGender())
                     .setPhone(updatePatientRequest.getPhone())
                     .setDateOfBirth(updatePatientRequest.getDateOfBirth())
-                    .setUpdatedBy(updatePatientRequest.getUpdatedBy())
+                    .setUpdatedBy(jwtService.extractUserName(token))
                     .setUpdatedAt(LocalDateTime.now());
             patientRepository.save(dbPatient);
             UpdatePatientResponse patientResponse = new UpdatePatientResponse();
@@ -119,15 +126,16 @@ public class PatientService {
             patientRepository.deleteById(id);
     }
 
-    public List<CreateMedicalRecordRequest> showPatientHistory(Long id) {
+    public List<GetMedicalRecordResponse> showPatientHistory(Long id) {
+
         List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
         if (medicalRecords.isEmpty()){
             throw new HospitalBusinessException("no medical_records found");
         }
-        List<CreateMedicalRecordRequest> createMedicalRecordRequests = new ArrayList<>();
+        List<GetMedicalRecordResponse> getMedicalRecordResponses = new ArrayList<>();
         medicalRecords.forEach(medicalRecord -> {
-                CreateMedicalRecordRequest createMedicalRecordRequest = new CreateMedicalRecordRequest();
-                createMedicalRecordRequest.setId(medicalRecord.getId())
+                GetMedicalRecordResponse getMedicalRecordResponse = new GetMedicalRecordResponse();
+                getMedicalRecordResponse.setId(medicalRecord.getId())
                         .setDiagnose(medicalRecord.getDiagnose())
                         .setTreatment(medicalRecord.getTreatment())
                         .setPatientId(medicalRecord.getPatient().getId())
@@ -136,8 +144,8 @@ public class PatientService {
                         .setCreatedBy(medicalRecord.getCreatedBy())
                         .setUpdatedAt(medicalRecord.getUpdatedAt())
                         .setUpdatedBy(medicalRecord.getUpdatedBy());
-                createMedicalRecordRequests.add(createMedicalRecordRequest);
+                getMedicalRecordResponses.add(getMedicalRecordResponse);
             });
-        return createMedicalRecordRequests;
+        return getMedicalRecordResponses;
     }
 }

@@ -23,13 +23,7 @@ public class CreateDoctorRequest {
  @NotBlank(message = "contact_number is required")
  @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number") // valid for Egyptian numbers only
  private String contactNumber;
-
- @NotBlank(message = "createdBy is required")
- private String createdBy;
  private LocalDateTime createdAt;
-
- @NotBlank(message = "updatedBy is required")
- private String updatedBy;
  private LocalDateTime updatedAt;
 
 }

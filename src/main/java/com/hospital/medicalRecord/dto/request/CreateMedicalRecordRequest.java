@@ -30,12 +30,5 @@ public class CreateMedicalRecordRequest {
     @NotNull(message = "doctor_id is required")
     private Long doctorId;
     private LocalDateTime createdAt;
-
-    @NotBlank(message = "createdBy is required")
-    private String createdBy;
     private LocalDateTime updatedAt;
-
-    @NotBlank(message = "updatedBy is required")
-    private String updatedBy;
-
 }

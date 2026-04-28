@@ -16,4 +16,5 @@ public class HospitalBusinessExceptionHandler {
         return new ResponseEntity<>("An unexpected error occurred: " + ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+
 }
