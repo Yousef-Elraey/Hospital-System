@@ -1,0 +1,26 @@
+package com.hospital.billing.dto.response;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+public class GetBillingResponse {
+    private Long id;
+    private Long amount;
+    private String createdBy;
+    private LocalDateTime createdAt;
+    private String updatedBy;
+    private LocalDateTime updatedAt;
+    private Long patient_id;
+}

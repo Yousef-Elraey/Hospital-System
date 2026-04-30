@@ -1,6 +1,6 @@
 package com.hospital.entity;
 
 public enum AppointmentType {
-    online,
-    onsite
+    INITIAL_CONSULTATION,
+    FOLLOW_UP_CONSULTATION
 }

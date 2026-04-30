@@ -31,7 +31,7 @@ CREATE TABLE appointment_status (
     CREATE TABLE appointment(
        id BIGINT AUTO_INCREMENT PRIMARY KEY,
        timing TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       appointment_type VARCHAR(6) NOT NULL DEFAULT "onsite",
+       appointment_type VARCHAR(50) NOT NULL,
        created_by varchar(50) NOT NULL,
        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        updated_by varchar(50) NOT NULL,
