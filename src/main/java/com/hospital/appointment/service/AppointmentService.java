@@ -185,14 +185,14 @@ public class AppointmentService {
         Appointment appointment = new Appointment();
         appointment.setTiming(bookRequestDto.getAppointmentTiming())
                 .setAppointmentType(bookRequestDto.getAppointmentType())
+                .setPatient(patientRepository.findById(bookRequestDto.getPatientId()).get())
+                .setDoctor(doctorRepository.findById(bookRequestDto.getDoctorId()).get())
+                .setStatus(appointmentStatusRepository.findById(1L).get())
                 .setCreatedBy(jwtService.extractUserName(token))
                 .setCreatedAt(LocalDateTime.now())
                 .setUpdatedBy(jwtService.extractUserName(token))
-                .setUpdatedAt(LocalDateTime.now())
-                .setPatient(patientRepository.findById(bookRequestDto.getPatientId()).get())
-                .setDoctor(doctorRepository.findById(bookRequestDto.getDoctorId()).get())
-                .setStatus(appointmentStatusRepository.findById(1L).get());
-        appointmentRepository.save(appointment);
+                .setUpdatedAt(LocalDateTime.now());
+                   appointmentRepository.save(appointment);
 
       List<Appointment> appointments = appointmentRepository.appointmentsStatusNewPaidPending();
         if (appointments.isEmpty())
@@ -222,14 +222,14 @@ public class AppointmentService {
         Appointment appointment = new Appointment();
         appointment.setTiming(bookRequestDto.getAppointmentTiming())
                 .setAppointmentType(bookRequestDto.getAppointmentType())
+                .setPatient(patientRepository.findById(bookRequestDto.getPatientId()).get())
+                .setDoctor(doctorRepository.findById(bookRequestDto.getDoctorId()).get())
+                .setStatus(appointmentStatusRepository.findById(2L).get())
                 .setCreatedBy(jwtService.extractUserName(token))
                 .setCreatedAt(LocalDateTime.now())
                 .setUpdatedBy(jwtService.extractUserName(token))
-                .setUpdatedAt(LocalDateTime.now())
-                .setPatient(patientRepository.findById(bookRequestDto.getPatientId()).get())
-                .setDoctor(doctorRepository.findById(bookRequestDto.getDoctorId()).get())
-                .setStatus(appointmentStatusRepository.findById(2L).get());
-        appointmentRepository.save(appointment);
+                .setUpdatedAt(LocalDateTime.now());
+                  appointmentRepository.save(appointment);
 
         List<Appointment> appointments = appointmentRepository.appointmentsStatusPaidPending();
         if (appointments.isEmpty())

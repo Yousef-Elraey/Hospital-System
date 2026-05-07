@@ -81,7 +81,7 @@ public class PatientService {
             throw new HospitalBusinessException("this phone number is already exist");
         }
         Patient patient = new Patient();
-        patient.setId(createPatientRequest.getId())
+        patient
                 .setName(createPatientRequest.getName())
                 .setGender(createPatientRequest.getGender())
                 .setPhone(createPatientRequest.getPhone())
@@ -89,7 +89,8 @@ public class PatientService {
                 .setCreatedBy(jwtService.extractUserName(token))
                 .setCreatedAt(LocalDateTime.now())
                 .setUpdatedBy(jwtService.extractUserName(token))
-                .setUpdatedAt(LocalDateTime.now());
+                .setUpdatedAt(LocalDateTime.now())
+                .setId(createPatientRequest.getId());
         patientRepository.save(patient);
         CreatePatientResponse patientResponse = new CreatePatientResponse();
         patientResponse.setId(patient.getId());

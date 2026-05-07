@@ -26,10 +26,8 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Patient {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Patient extends BaseEntity{
+
      @Column(nullable = false)
      private String name;
      @Column(nullable = false)
@@ -41,33 +39,16 @@ public class Patient {
      private LocalDate dateOfBirth;
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
      private List<MedicalRecord> medicalRecords;
-     @CreatedBy
-     @Column(updatable = false)
-     private String createdBy;
-     @CreatedDate
-     @Column(updatable = false)
-     private LocalDateTime createdAt;
-     @LastModifiedBy
-     private String updatedBy;
-     @LastModifiedDate
-     private LocalDateTime updatedAt;
-
-
-
 
 
     @Override
     public String toString() {
         return "Patient{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", gender='" + gender + '\'' +
-                ", phone=" + phone +
+                "name='" + name + '\'' +
+                ", gender=" + gender +
+                ", phone='" + phone + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
-                ", createdBy='" + createdBy + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedBy='" + updatedBy + '\'' +
-                ", updatedAt=" + updatedAt +
-                '}';
+                ", medicalRecords=" + medicalRecords +
+                "} " + super.toString();
     }
 }

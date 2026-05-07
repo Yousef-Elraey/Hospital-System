@@ -85,15 +85,16 @@ public class MedicalRecordService {
         }
 
         MedicalRecord dbMedicalRecord = new MedicalRecord();
-        dbMedicalRecord.setId(medicalRecordRequest.getId())
+        dbMedicalRecord
+                .setPatient(patientRepository.findById(medicalRecordRequest.getPatientId()).get())
+                .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get())
                 .setDiagnose(medicalRecordRequest.getDiagnose())
                 .setTreatment(medicalRecordRequest.getTreatment())
                 .setCreatedAt(LocalDateTime.now())
                 .setCreatedBy(jwtService.extractUserName(token))
                 .setUpdatedAt(LocalDateTime.now())
                 .setUpdatedBy(jwtService.extractUserName(token))
-                .setPatient(patientRepository.findById(medicalRecordRequest.getPatientId()).get())
-                .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get());
+                .setId(medicalRecordRequest.getId());
 
         medicalRecordRepository.save(dbMedicalRecord);
         CreateMedicalRecordResponse medicalRecordResponse = new CreateMedicalRecordResponse();
@@ -117,11 +118,11 @@ public class MedicalRecordService {
 
             medicalRecord.setDiagnose(medicalRecordRequest.getDiagnose())
                     .setTreatment(medicalRecordRequest.getTreatment())
-                    .setUpdatedAt(LocalDateTime.now())
-                    .setUpdatedBy(jwtService.extractUserName(token))
                     .setPatient(patientRepository.findById(medicalRecordRequest.getPatientId()).get())
-                    .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get());
-            medicalRecordRepository.save(medicalRecord);
+                    .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get())
+                    .setUpdatedAt(LocalDateTime.now())
+                    .setUpdatedBy(jwtService.extractUserName(token));
+                              medicalRecordRepository.save(medicalRecord);
             UpdateMedicalRecordResponse medicalRecordResponse = new UpdateMedicalRecordResponse();
             medicalRecordResponse.setId(medicalRecord.getId());
             return medicalRecordResponse;

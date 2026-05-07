@@ -143,12 +143,13 @@ public class DoctorService {
         MedicalRecord medicalRecordDb = new MedicalRecord();
         medicalRecordDb.setDiagnose(createMedicalRecordRequest.getDiagnose())
                 .setTreatment(createMedicalRecordRequest.getTreatment())
+                .setPatient(patientDb.get())
+                .setDoctor(doctorDb.get())
                 .setCreatedAt(LocalDateTime.now())
                 .setCreatedBy(jwtService.extractUserName(token))
                 .setUpdatedAt(LocalDateTime.now())
-                .setUpdatedBy(jwtService.extractUserName(token))
-                .setPatient(patientDb.get())
-                .setDoctor(doctorDb.get());
+                .setUpdatedBy(jwtService.extractUserName(token));
+
         medicalRecordRepository.save(medicalRecordDb);
         return patientResponse;
     }
