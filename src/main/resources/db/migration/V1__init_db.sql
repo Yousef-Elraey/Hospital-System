@@ -1,0 +1,80 @@
+CREATE TABLE patient(
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    gender VARCHAR(6) NOT NULL,
+    phone BIGINT NOT NULL UNIQUE,
+    date_of_birth DATE Not NULL,
+    created_by varchar(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by varchar(50) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+
+
+);
+
+CREATE TABLE doctor(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    specialty VARCHAR(250) NOT NULL,
+    contact_number BIGINT NOT NULL UNIQUE ,
+    created_by varchar(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by varchar(50) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
+CREATE TABLE appointment_status (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        name_en VARCHAR(50),
+        name_ar VARCHAR(50)
+    );
+
+    CREATE TABLE appointment(
+       id BIGINT AUTO_INCREMENT PRIMARY KEY,
+       timing TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       appointment_type VARCHAR(6) NOT NULL DEFAULT "onsite",
+       created_by varchar(50) NOT NULL,
+       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       updated_by varchar(50) NOT NULL,
+       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+       patient_id BIGINT NOT NULL,
+       doctor_id BIGINT NOT NULL,
+       status_id BIGINT NOT NULL,
+
+       CONSTRAINT FK_patient_appointment
+        FOREIGN KEY (patient_id) REFERENCES patient(id),
+       CONSTRAINT FK_doctor_appointment
+        FOREIGN KEY (doctor_id) REFERENCES doctor(id),
+       CONSTRAINT FK_status_appointment
+        FOREIGN KEY (status_id) REFERENCES appointment_status(id)
+    );
+
+
+    CREATE TABLE medical_record (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        diagnose VARCHAR(250) NOT NULL,
+        treatment VARCHAR(250) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        created_by VARCHAR(50) NOT NULL,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        updated_by VARCHAR(50) NOT NULL,
+        doctor_id BIGINT,
+        patient_id BIGINT,
+
+     CONSTRAINT FK_doctor_medical_record
+         FOREIGN KEY(doctor_id) REFERENCES doctor(id),
+     CONSTRAINT FK_patient_medical_record
+      FOREIGN KEY(patient_id) REFERENCES patient(id)
+    );
+
+    CREATE TABLE billing(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    amount BIGINT NOT NULL,
+    patient_id BIGINT NOT NULL,
+    created_by varchar(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_by varchar(50) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+     CONSTRAINT FK_billing_patient
+      FOREIGN KEY(patient_id) REFERENCES patient(id)
+    );
