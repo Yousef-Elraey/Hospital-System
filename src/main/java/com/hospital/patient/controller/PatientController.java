@@ -26,26 +26,26 @@ public class PatientController {
   private final PatientService patientService;
 
     @GetMapping("/patients")
-    public ResponseEntity<List<GetPatientResponse>> getAllPatients(HttpServletRequest request) {
-        return new ResponseEntity<>(patientService.getAllPatients(request), HttpStatus.OK);
+    public ResponseEntity<List<GetPatientResponse>> getAllPatients() {
+        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<GetPatientResponse> getPatientById(@PathVariable Long id,HttpServletRequest request) {
-        return new ResponseEntity<>(patientService.getPatientById(id,request), HttpStatus.OK);
+    public ResponseEntity<GetPatientResponse> getPatientById(@PathVariable Long id) {
+        return new ResponseEntity<>(patientService.getPatientById(id), HttpStatus.OK);
 
     }
 
     @PostMapping("/patients")
-    public ResponseEntity<CreatePatientResponse> addPatient(@Valid @RequestBody CreatePatientRequest createPatientRequest,HttpServletRequest request) {
+    public ResponseEntity<CreatePatientResponse> addPatient(@Valid @RequestBody CreatePatientRequest createPatientRequest) {
 
-        return new ResponseEntity<>(patientService.addPatient(createPatientRequest,request), HttpStatus.CREATED);
+        return new ResponseEntity<>(patientService.addPatient(createPatientRequest), HttpStatus.CREATED);
 
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UpdatePatientResponse> updatePatientData(@Valid @RequestBody UpdatePatientRequest updatePatientRequest,HttpServletRequest request) {
-        return new ResponseEntity<>(patientService.updatePatientData(updatePatientRequest,request ), HttpStatus.OK);
+    public ResponseEntity<UpdatePatientResponse> updatePatientData(@Valid @RequestBody UpdatePatientRequest updatePatientRequest) {
+        return new ResponseEntity<>(patientService.updatePatientData(updatePatientRequest ), HttpStatus.OK);
 
     }
 
@@ -59,11 +59,5 @@ public class PatientController {
     public ResponseEntity<List<GetMedicalRecordResponse>> showPatientHistory(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.showPatientHistory(id), HttpStatus.OK);
     }
-
-    @GetMapping("/get-csrf")
-    public CsrfToken getCsrf(HttpServletRequest request) {
-        return (CsrfToken) request.getAttribute("_csrf");
-    }
-
 
 }

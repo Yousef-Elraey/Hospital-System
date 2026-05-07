@@ -32,7 +32,7 @@ public class PatientService {
     private final MedicalRecordService medicalRecordService;
     private final JWTService jwtService;
 
-    public List<GetPatientResponse> getAllPatients(HttpServletRequest request) {
+    public List<GetPatientResponse> getAllPatients() {
         List<Patient> patients = patientRepository.findAll();
         List<GetPatientResponse> patientsResponse = new ArrayList<>();
         if (!patients.isEmpty()) {
@@ -42,7 +42,7 @@ public class PatientService {
                         .setDateOfBirth(patient.getDateOfBirth())
                         .setName(patient.getName())
                         .setPhone(patient.getPhone()).
-                        setMedicalRecords(medicalRecordService.getByPatientId(patient.getId(),request))
+                        setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
                         .setGender(patient.getGender())
                         .setCreatedAt(patient.getCreatedAt())
                         .setUpdatedAt(patient.getUpdatedAt())
@@ -54,7 +54,7 @@ public class PatientService {
         return patientsResponse;
     }
 
-    public GetPatientResponse getPatientById(Long id, HttpServletRequest request) {
+    public GetPatientResponse getPatientById(Long id) {
         Optional<Patient> patient = patientRepository.findById(id);
         if (patient.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -65,7 +65,7 @@ public class PatientService {
                 .setName(patient.get().getName())
                 .setGender(patient.get().getGender())
                 .setPhone(patient.get().getPhone())
-                .setMedicalRecords(medicalRecordService.getByPatientId(id,request))
+                .setMedicalRecords(medicalRecordService.getByPatientId(id))
                 .setCreatedBy(patient.get().getCreatedBy())
                 .setCreatedAt(patient.get().getCreatedAt())
                 .setUpdatedBy(patient.get().getUpdatedBy())
@@ -74,9 +74,8 @@ public class PatientService {
     }
 
 
-    public CreatePatientResponse addPatient(CreatePatientRequest createPatientRequest,HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public CreatePatientResponse addPatient(CreatePatientRequest createPatientRequest) {
+
         if (patientRepository.findByPhone(createPatientRequest.getPhone()).isPresent()) {
             throw new HospitalBusinessException("this phone number is already exist");
         }
@@ -86,9 +85,7 @@ public class PatientService {
                 .setGender(createPatientRequest.getGender())
                 .setPhone(createPatientRequest.getPhone())
                 .setDateOfBirth(createPatientRequest.getDateOfBirth())
-                .setCreatedBy(jwtService.extractUserName(token))
                 .setCreatedAt(LocalDateTime.now())
-                .setUpdatedBy(jwtService.extractUserName(token))
                 .setUpdatedAt(LocalDateTime.now())
                 .setId(createPatientRequest.getId());
         patientRepository.save(patient);
@@ -99,9 +96,8 @@ public class PatientService {
     }
 
 
-    public UpdatePatientResponse updatePatientData(UpdatePatientRequest updatePatientRequest,HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public UpdatePatientResponse updatePatientData(UpdatePatientRequest updatePatientRequest) {
+
         Optional<Patient> patientTemp = patientRepository.findById(updatePatientRequest.getId());
         if (patientTemp.isPresent()) {
             Patient dbPatient = patientTemp.get();
@@ -109,7 +105,6 @@ public class PatientService {
                     .setGender(updatePatientRequest.getGender())
                     .setPhone(updatePatientRequest.getPhone())
                     .setDateOfBirth(updatePatientRequest.getDateOfBirth())
-                    .setUpdatedBy(jwtService.extractUserName(token))
                     .setUpdatedAt(LocalDateTime.now());
             patientRepository.save(dbPatient);
             UpdatePatientResponse patientResponse = new UpdatePatientResponse();

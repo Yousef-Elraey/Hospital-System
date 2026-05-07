@@ -74,17 +74,14 @@ public class DoctorService {
 
     }
 
-    public CreateDoctorResponse addDoctor(CreateDoctorRequest createDoctorRequest, HttpServletRequest request) {
-       String authHeader = request.getHeader("Authorization");
-       String token = authHeader.substring(7);
+    public CreateDoctorResponse addDoctor(CreateDoctorRequest createDoctorRequest) {
+
         Doctor doctor = new Doctor();
         doctor.setId(createDoctorRequest.getId());
         doctor.setName(createDoctorRequest.getName());
         doctor.setSpecialty(createDoctorRequest.getSpeciality());
         doctor.setContactNumber(createDoctorRequest.getContactNumber());
-        doctor.setCreatedBy(jwtService.extractUserName(token));
         doctor.setCreatedAt(LocalDateTime.now());
-        doctor.setUpdatedBy(jwtService.extractUserName(token));
         doctor.setUpdatedAt(LocalDateTime.now());
         doctorRepository.save(doctor);
         CreateDoctorResponse doctorResponse = new CreateDoctorResponse();
@@ -93,9 +90,8 @@ public class DoctorService {
         return doctorResponse;
     }
 
-    public UpdateDoctorResponse updateDoctorData(UpdateDoctorRequest doctorRequest, HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public UpdateDoctorResponse updateDoctorData(UpdateDoctorRequest doctorRequest) {
+
         Optional<Doctor> doctor = doctorRepository.findById(doctorRequest.getId());
         if (doctor.isPresent()) {
             Doctor doc = doctor.get();
@@ -103,7 +99,6 @@ public class DoctorService {
             doc.setSpecialty(doctorRequest.getSpeciality());
             doc.setContactNumber(doctorRequest.getContactNumber());
             doc.setUpdatedAt(LocalDateTime.now());
-            doc.setUpdatedBy(jwtService.extractUserName(token));
             doctorRepository.save(doc);
             UpdateDoctorResponse doctorResponse = new UpdateDoctorResponse();
             doctorResponse.setId(doc.getId());
@@ -126,9 +121,8 @@ public class DoctorService {
     }
 
     // still need for (debug and test)
-    public GetPatientResponse startSession(CreateMedicalRecordRequest createMedicalRecordRequest, HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public GetPatientResponse startSession(CreateMedicalRecordRequest createMedicalRecordRequest) {
+
 
         Optional<Patient> patientDb = patientRepository.findById(createMedicalRecordRequest.getPatientId());
         Optional<Doctor> doctorDb = doctorRepository.findById(createMedicalRecordRequest.getDoctorId());
@@ -139,17 +133,14 @@ public class DoctorService {
             throw new HospitalBusinessException("no doctor found");
         }
 
-        GetPatientResponse patientResponse = appointmentService.next(request);
+        GetPatientResponse patientResponse = appointmentService.next();
         MedicalRecord medicalRecordDb = new MedicalRecord();
         medicalRecordDb.setDiagnose(createMedicalRecordRequest.getDiagnose())
                 .setTreatment(createMedicalRecordRequest.getTreatment())
                 .setPatient(patientDb.get())
                 .setDoctor(doctorDb.get())
                 .setCreatedAt(LocalDateTime.now())
-                .setCreatedBy(jwtService.extractUserName(token))
-                .setUpdatedAt(LocalDateTime.now())
-                .setUpdatedBy(jwtService.extractUserName(token));
-
+                .setUpdatedAt(LocalDateTime.now());
         medicalRecordRepository.save(medicalRecordDb);
         return patientResponse;
     }

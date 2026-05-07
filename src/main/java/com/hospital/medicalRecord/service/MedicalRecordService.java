@@ -74,9 +74,8 @@ public class MedicalRecordService {
             return medicalRecordResponse;
     }
 
-    public CreateMedicalRecordResponse addMedicalRecord(CreateMedicalRecordRequest medicalRecordRequest, HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public CreateMedicalRecordResponse addMedicalRecord(CreateMedicalRecordRequest medicalRecordRequest) {
+
         if (patientRepository.findById(medicalRecordRequest.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
@@ -91,9 +90,7 @@ public class MedicalRecordService {
                 .setDiagnose(medicalRecordRequest.getDiagnose())
                 .setTreatment(medicalRecordRequest.getTreatment())
                 .setCreatedAt(LocalDateTime.now())
-                .setCreatedBy(jwtService.extractUserName(token))
                 .setUpdatedAt(LocalDateTime.now())
-                .setUpdatedBy(jwtService.extractUserName(token))
                 .setId(medicalRecordRequest.getId());
 
         medicalRecordRepository.save(dbMedicalRecord);
@@ -102,9 +99,8 @@ public class MedicalRecordService {
         return medicalRecordResponse;
     }
 
-    public UpdateMedicalRecordResponse updateMedicalRecordData(UpdateMedicalRecordRequest medicalRecordRequest,HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public UpdateMedicalRecordResponse updateMedicalRecordData(UpdateMedicalRecordRequest medicalRecordRequest) {
+
         if (patientRepository.findById(medicalRecordRequest.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
@@ -120,8 +116,7 @@ public class MedicalRecordService {
                     .setTreatment(medicalRecordRequest.getTreatment())
                     .setPatient(patientRepository.findById(medicalRecordRequest.getPatientId()).get())
                     .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get())
-                    .setUpdatedAt(LocalDateTime.now())
-                    .setUpdatedBy(jwtService.extractUserName(token));
+                    .setUpdatedAt(LocalDateTime.now());
                               medicalRecordRepository.save(medicalRecord);
             UpdateMedicalRecordResponse medicalRecordResponse = new UpdateMedicalRecordResponse();
             medicalRecordResponse.setId(medicalRecord.getId());
@@ -140,9 +135,8 @@ public class MedicalRecordService {
             medicalRecordRepository.deleteById(id);
     }
 
-    public List<GetMedicalRecordResponse> getByPatientId(Long id,HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public List<GetMedicalRecordResponse> getByPatientId(Long id) {
+
         List<GetMedicalRecordResponse> medicalRecordsResponse = new ArrayList<>();
         List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
         if (medicalRecords.isEmpty()){
@@ -157,9 +151,7 @@ public class MedicalRecordService {
                         .setPatientId(medicalRecord.getPatient().getId())
                         .setDoctorId(medicalRecord.getDoctor().getId())
                         .setCreatedAt(medicalRecord.getCreatedAt())
-                        .setCreatedBy(jwtService.extractUserName(token))
-                        .setUpdatedAt(medicalRecord.getUpdatedAt())
-                        .setUpdatedBy(jwtService.extractUserName(token));
+                        .setUpdatedAt(medicalRecord.getUpdatedAt());
                 medicalRecordsResponse.add(medicalRecordResponse);
             });
         }

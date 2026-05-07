@@ -33,15 +33,15 @@ public class MedicalRecordController {
     }
 
     @PostMapping("/medical-records")
-    public ResponseEntity<CreateMedicalRecordResponse> addMedicalRecord(@Valid @RequestBody CreateMedicalRecordRequest createMedicalRecordRequest, HttpServletRequest request) {
+    public ResponseEntity<CreateMedicalRecordResponse> addMedicalRecord(@Valid @RequestBody CreateMedicalRecordRequest createMedicalRecordRequest) {
 
-        return new ResponseEntity<>(medicalRecordService.addMedicalRecord(createMedicalRecordRequest,request), HttpStatus.CREATED);
+        return new ResponseEntity<>(medicalRecordService.addMedicalRecord(createMedicalRecordRequest), HttpStatus.CREATED);
 
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UpdateMedicalRecordResponse> updateMedicalRecordData(@Valid @RequestBody UpdateMedicalRecordRequest medicalRecordRequest, HttpServletRequest request) {
-        return new ResponseEntity<>(medicalRecordService.updateMedicalRecordData(medicalRecordRequest,request), HttpStatus.OK);
+    public ResponseEntity<UpdateMedicalRecordResponse> updateMedicalRecordData(@Valid @RequestBody UpdateMedicalRecordRequest medicalRecordRequest) {
+        return new ResponseEntity<>(medicalRecordService.updateMedicalRecordData(medicalRecordRequest), HttpStatus.OK);
 
     }
 
@@ -53,7 +53,7 @@ public class MedicalRecordController {
     }
 
     @GetMapping("/medical-record-patient-id/{id}")
-    public ResponseEntity<List<GetMedicalRecordResponse>> getByPatientId(@PathVariable Long id, HttpServletRequest request) {
-        return new ResponseEntity<>(medicalRecordService.getByPatientId(id,request), HttpStatus.OK);
+    public ResponseEntity<List<GetMedicalRecordResponse>> getByPatientId(@PathVariable Long id) {
+        return new ResponseEntity<>(medicalRecordService.getByPatientId(id), HttpStatus.OK);
     }
 }
