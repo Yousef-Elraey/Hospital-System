@@ -5,11 +5,13 @@ import com.hospital.billing.dto.request.UpdateBillingRequest;
 import com.hospital.billing.dto.response.CreateBillingResponse;
 import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
+import com.hospital.common.security.JWTService;
 import com.hospital.entity.Billing;
 import com.hospital.entity.Patient;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.billing.repository.BillingRepository;
 import com.hospital.patient.repository.PatientRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import java.util.Optional;
 public class BillingService {
    private final BillingRepository billingRepository;
    private final PatientRepository patientRepository;
+   private final JWTService jwtService;
 
     public List<GetBillingResponse> getAllBillings() {
         List<Billing> billings = billingRepository.findAll();
@@ -62,8 +65,10 @@ public class BillingService {
 
     }
 
-    public CreateBillingResponse createBilling(CreateBillingRequest createBillingRequest) {
-       Optional<Patient> patient = patientRepository.findById(createBillingRequest.getPatient_id());
+    public CreateBillingResponse createBilling(CreateBillingRequest createBillingRequest, HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.substring(7);
+        Optional<Patient> patient = patientRepository.findById(createBillingRequest.getPatient_id());
         if (patient.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
@@ -72,25 +77,27 @@ public class BillingService {
                 .setPatient(patient.get())
                 .setUpdatedAt(LocalDateTime.now())
                 .setCreatedAt(LocalDateTime.now())
-                .setCreatedBy(createBillingRequest.getCreatedBy())
-                .setUpdatedBy(createBillingRequest.getUpdatedBy());
+                .setCreatedBy(jwtService.extractUserName(token))
+                .setUpdatedBy(jwtService.extractUserName(token));
         billingRepository.save(billing);
         CreateBillingResponse billingResponse = new CreateBillingResponse();
         billingResponse.setId(billing.getId());
         return billingResponse;
     }
 
-    public UpdateBillingResponse updateBilling(Long id, UpdateBillingRequest billingRequest) {
-       Optional<Patient> patient = patientRepository.findById(billingRequest.getPatient_id());
+    public UpdateBillingResponse updateBilling(UpdateBillingRequest billingRequest, HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        String token = authHeader.substring(7);
+        Optional<Patient> patient = patientRepository.findById(billingRequest.getPatient_id());
         if (patient.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
-        Optional<Billing> billing = billingRepository.findById(id);
+        Optional<Billing> billing = billingRepository.findById(billingRequest.getId());
         if (billing.isPresent()) {
             Billing dbbilling = billing.get();
             dbbilling.setAmount(billingRequest.getAmount())
                     .setPatient(patient.get())
-                    .setUpdatedBy(billingRequest.getUpdatedBy())
+                    .setUpdatedBy(jwtService.extractUserName(token))
                     .setUpdatedAt(LocalDateTime.now());
             billingRepository.save(dbbilling);
             UpdateBillingResponse billingResponse = new UpdateBillingResponse();

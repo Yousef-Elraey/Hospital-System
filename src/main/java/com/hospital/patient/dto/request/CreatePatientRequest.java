@@ -35,13 +35,7 @@ public class CreatePatientRequest {
     @Past(message = "Date of birth must be in the past")
     @NotNull(message = "dateOfBirth is required")
     private LocalDate dateOfBirth;
-
-    @NotBlank(message = "createdBy is required")
-    private String createdBy ="SYSTEM";
     private LocalDateTime createdAt;
-
-    @NotBlank(message = "updatedBy is required")
-    private String updatedBy="SYSTEM";
     private LocalDateTime updatedAt;
 
 }

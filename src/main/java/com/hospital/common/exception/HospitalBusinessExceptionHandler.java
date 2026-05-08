@@ -16,4 +16,5 @@ public class HospitalBusinessExceptionHandler {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+
 }
