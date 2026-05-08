@@ -65,9 +65,7 @@ public class BillingService {
 
     }
 
-    public CreateBillingResponse createBilling(CreateBillingRequest createBillingRequest, HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public CreateBillingResponse createBilling(CreateBillingRequest createBillingRequest) {
         Optional<Patient> patient = patientRepository.findById(createBillingRequest.getPatient_id());
         if (patient.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -76,18 +74,15 @@ public class BillingService {
         billing.setAmount(createBillingRequest.getAmount())
                 .setPatient(patient.get())
                 .setUpdatedAt(LocalDateTime.now())
-                .setCreatedAt(LocalDateTime.now())
-                .setCreatedBy(jwtService.extractUserName(token))
-                .setUpdatedBy(jwtService.extractUserName(token));
+                .setCreatedAt(LocalDateTime.now());
         billingRepository.save(billing);
         CreateBillingResponse billingResponse = new CreateBillingResponse();
         billingResponse.setId(billing.getId());
         return billingResponse;
     }
 
-    public UpdateBillingResponse updateBilling(UpdateBillingRequest billingRequest, HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public UpdateBillingResponse updateBilling(UpdateBillingRequest billingRequest) {
+
         Optional<Patient> patient = patientRepository.findById(billingRequest.getPatient_id());
         if (patient.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -97,7 +92,6 @@ public class BillingService {
             Billing dbbilling = billing.get();
             dbbilling.setAmount(billingRequest.getAmount())
                     .setPatient(patient.get())
-                    .setUpdatedBy(jwtService.extractUserName(token))
                     .setUpdatedAt(LocalDateTime.now());
             billingRepository.save(dbbilling);
             UpdateBillingResponse billingResponse = new UpdateBillingResponse();

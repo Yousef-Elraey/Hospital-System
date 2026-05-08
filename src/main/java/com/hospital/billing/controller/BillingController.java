@@ -33,14 +33,14 @@ public class BillingController {
     }
 
     @PostMapping("/billings")
-    public ResponseEntity<CreateBillingResponse> createBilling(@Valid @RequestBody CreateBillingRequest createBillingRequest, HttpServletRequest request) {
+    public ResponseEntity<CreateBillingResponse> createBilling(@Valid @RequestBody CreateBillingRequest createBillingRequest) {
 
-        return new ResponseEntity<>(billingService.createBilling(createBillingRequest,request), HttpStatus.CREATED);
+        return new ResponseEntity<>(billingService.createBilling(createBillingRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UpdateBillingResponse> updateBilling(@Valid @RequestBody UpdateBillingRequest billingRequest, HttpServletRequest request) {
-        return new ResponseEntity<>(billingService.updateBilling(billingRequest,request), HttpStatus.OK);
+    public ResponseEntity<UpdateBillingResponse> updateBilling(@Valid @RequestBody UpdateBillingRequest billingRequest) {
+        return new ResponseEntity<>(billingService.updateBilling(billingRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

@@ -78,5 +78,3 @@ CREATE TABLE appointment_status (
      CONSTRAINT FK_billing_patient
       FOREIGN KEY(patient_id) REFERENCES patient(id)
     );
-
-

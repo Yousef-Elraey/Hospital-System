@@ -19,23 +19,12 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Appointment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Appointment extends BaseEntity{
+
     private LocalDateTime timing;
     @Enumerated(EnumType.STRING)
     private AppointmentType appointmentType;
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedBy
-    private String updatedBy;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+
     @ManyToOne
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private Patient patient;
@@ -51,14 +40,11 @@ public class Appointment {
     @Override
     public String toString() {
         return "Appointment{" +
-                "id=" + id +
-                ", timing=" + timing +
-                ", createdBy='" + createdBy + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedBy='" + updatedBy + '\'' +
-                ", updatedAt=" + updatedAt +
+                "timing=" + timing +
+                ", appointmentType=" + appointmentType +
                 ", patient=" + patient +
                 ", doctor=" + doctor +
-                '}';
+                ", status=" + status +
+                "} " + super.toString();
     }
 }

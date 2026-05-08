@@ -19,23 +19,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class MedicalRecord {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class MedicalRecord extends BaseEntity{
+
     private String diagnose;
     private String treatment;
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-    @LastModifiedBy
-    private String updatedBy;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private Patient patient;
@@ -43,15 +30,13 @@ public class MedicalRecord {
     @JoinColumn(name = "doctor_id",referencedColumnName = "id")
     private Doctor doctor;
 
-
     @Override
     public String toString() {
         return "MedicalRecord{" +
-                "id=" + id +
-                ", diagnose='" + diagnose + '\'' +
+                "diagnose='" + diagnose + '\'' +
                 ", treatment='" + treatment + '\'' +
                 ", patient=" + patient +
                 ", doctor=" + doctor +
-                '}';
+                "} " + super.toString();
     }
 }

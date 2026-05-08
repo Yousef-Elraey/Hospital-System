@@ -22,39 +22,22 @@ import java.util.Date;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Doctor {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Doctor extends BaseEntity{
+
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
     private String specialty;
     @Column(name = "contact_number", nullable = false)
     private String contactNumber;
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedBy
-    private String updatedBy;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-
 
     @Override
     public String toString() {
         return "Doctor{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", specialty='" + specialty + '\'' +
-                ", contactNumber=" + contactNumber +
-                ", createdBy='" + createdBy + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedBy='" + updatedBy + '\'' +
-                ", updatedAt=" + updatedAt +
+                ", contactNumber='" + contactNumber + '\'' +
                 '}';
     }
 }
+

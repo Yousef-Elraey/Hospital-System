@@ -90,9 +90,7 @@ public class AppointmentService {
 
     }
 
-    public CreateAppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest, HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public CreateAppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest) {
 
         if (createAppointmentRequest.getAppointmentType() == online) {
             createAppointmentRequest.setStatusId(1L);
@@ -113,9 +111,7 @@ public class AppointmentService {
         appointment.setId(createAppointmentRequest.getId());
         appointment.setTiming(createAppointmentRequest.getTiming());
         appointment.setAppointmentType(createAppointmentRequest.getAppointmentType());
-        appointment.setCreatedBy(jwtService.extractUserName(token));
         appointment.setCreatedAt(LocalDateTime.now());
-        appointment.setUpdatedBy(jwtService.extractUserName(token));
         appointment.setUpdatedAt(LocalDateTime.now());
         appointment.setPatient(patientRepository.findById(createAppointmentRequest.getPatientId()).get());
         appointment.setDoctor(doctorRepository.findById(createAppointmentRequest.getDoctorId()).get());
@@ -128,9 +124,7 @@ public class AppointmentService {
 
     }
 
-    public UpdateAppointmentResponse updateAppointment(UpdateAppointmentRequest updateAppointmentRequest, HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public UpdateAppointmentResponse updateAppointment(UpdateAppointmentRequest updateAppointmentRequest) {
 
         if (patientRepository.findById(updateAppointmentRequest.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -147,7 +141,6 @@ public class AppointmentService {
             appointment.setTiming(updateAppointmentRequest.getTiming());
             appointment.setAppointmentType(updateAppointmentRequest.getAppointmentType());
             appointment.setUpdatedAt(LocalDateTime.now());
-            appointment.setUpdatedBy(jwtService.extractUserName(token));
             appointment.setDoctor(doctorRepository.findById(updateAppointmentRequest.getDoctorId()).get());
             appointment.setPatient(patientRepository.findById(updateAppointmentRequest.getPatientId()).get());
             appointment.setStatus(appointmentStatusRepository.findById(updateAppointmentRequest.getStatusId()).get());
@@ -168,9 +161,7 @@ public class AppointmentService {
 
     }
 
-    public BookResponseDto book(BookRequestDto bookRequestDto,HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public BookResponseDto book(BookRequestDto bookRequestDto) {
 
         if (patientRepository.findById(bookRequestDto.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -185,14 +176,12 @@ public class AppointmentService {
         Appointment appointment = new Appointment();
         appointment.setTiming(bookRequestDto.getAppointmentTiming())
                 .setAppointmentType(bookRequestDto.getAppointmentType())
-                .setCreatedBy(jwtService.extractUserName(token))
-                .setCreatedAt(LocalDateTime.now())
-                .setUpdatedBy(jwtService.extractUserName(token))
-                .setUpdatedAt(LocalDateTime.now())
                 .setPatient(patientRepository.findById(bookRequestDto.getPatientId()).get())
                 .setDoctor(doctorRepository.findById(bookRequestDto.getDoctorId()).get())
-                .setStatus(appointmentStatusRepository.findById(1L).get());
-        appointmentRepository.save(appointment);
+                .setStatus(appointmentStatusRepository.findById(1L).get())
+                .setCreatedAt(LocalDateTime.now())
+                .setUpdatedAt(LocalDateTime.now());
+                   appointmentRepository.save(appointment);
 
       List<Appointment> appointments = appointmentRepository.appointmentsStatusNewPaidPending();
         if (appointments.isEmpty())
@@ -205,9 +194,7 @@ public class AppointmentService {
 
     }
 
-    public BookResponseDto bookWithPaid(BookRequestDto bookRequestDto,HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public BookResponseDto bookWithPaid(BookRequestDto bookRequestDto) {
 
         if (patientRepository.findById(bookRequestDto.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -222,14 +209,12 @@ public class AppointmentService {
         Appointment appointment = new Appointment();
         appointment.setTiming(bookRequestDto.getAppointmentTiming())
                 .setAppointmentType(bookRequestDto.getAppointmentType())
-                .setCreatedBy(jwtService.extractUserName(token))
-                .setCreatedAt(LocalDateTime.now())
-                .setUpdatedBy(jwtService.extractUserName(token))
-                .setUpdatedAt(LocalDateTime.now())
                 .setPatient(patientRepository.findById(bookRequestDto.getPatientId()).get())
                 .setDoctor(doctorRepository.findById(bookRequestDto.getDoctorId()).get())
-                .setStatus(appointmentStatusRepository.findById(2L).get());
-        appointmentRepository.save(appointment);
+                .setStatus(appointmentStatusRepository.findById(2L).get())
+                .setCreatedAt(LocalDateTime.now())
+                .setUpdatedAt(LocalDateTime.now());
+                  appointmentRepository.save(appointment);
 
         List<Appointment> appointments = appointmentRepository.appointmentsStatusPaidPending();
         if (appointments.isEmpty())
@@ -264,9 +249,8 @@ public class AppointmentService {
     }
 
 
-    public GetPatientResponse currentPatient(HttpServletRequest request) {
-        String authHeader = request.getHeader("Authorization");
-        String token = authHeader.substring(7);
+    public GetPatientResponse currentPatient() {
+
 
         List<Appointment> appointments = appointmentRepository.appointmentsStatusPending();
         if (appointments.isEmpty()) {
@@ -274,7 +258,7 @@ public class AppointmentService {
         }
         Optional<Appointment> appointmentDb = appointments.stream().findFirst();
         Patient patientDb = appointmentDb.get().getPatient();
-        List<GetMedicalRecordResponse> medicalRecordsResponse = medicalRecordService.getByPatientId(patientDb.getId(),request);
+        List<GetMedicalRecordResponse> medicalRecordsResponse = medicalRecordService.getByPatientId(patientDb.getId());
         GetPatientResponse patientResponse = new GetPatientResponse();
         if (medicalRecordsResponse.isEmpty()) {
             patientResponse.setId(patientDb.getId())
@@ -283,9 +267,7 @@ public class AppointmentService {
                     .setPhone(patientDb.getPhone())
                     .setDateOfBirth(patientDb.getDateOfBirth())
                     .setMedicalRecords(new ArrayList<>())
-                    .setCreatedBy(jwtService.extractUserName(token))
                     .setCreatedAt(patientDb.getCreatedAt())
-                    .setUpdatedBy(jwtService.extractUserName(token))
                     .setUpdatedAt(patientDb.getUpdatedAt());
         } else {
             patientResponse.setId(patientDb.getId())
@@ -294,18 +276,16 @@ public class AppointmentService {
                     .setPhone(patientDb.getPhone())
                     .setDateOfBirth(patientDb.getDateOfBirth())
                     .setMedicalRecords(medicalRecordsResponse)
-                    .setCreatedBy(jwtService.extractUserName(token))
                     .setCreatedAt(patientDb.getCreatedAt())
-                    .setUpdatedBy(jwtService.extractUserName(token))
                     .setUpdatedAt(patientDb.getUpdatedAt());
         }
         return patientResponse;
     }
 
 
-    public GetPatientResponse next(HttpServletRequest request) {
+    public GetPatientResponse next() {
         List<Appointment> appointments = appointmentRepository.appointmentsStatusPending();
-        GetPatientResponse patientResponse = currentPatient(request);
+        GetPatientResponse patientResponse = currentPatient();
         if (appointments.isEmpty()) {
             throw new HospitalBusinessException("no appointments in pending");
         }

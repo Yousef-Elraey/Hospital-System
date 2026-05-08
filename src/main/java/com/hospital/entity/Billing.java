@@ -19,23 +19,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class Billing {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Billing extends BaseEntity{
+
     private Long amount;
-    @CreatedBy
-    @Column(updatable = false)
-    private String createdBy;
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-    @LastModifiedBy
-    private String updatedBy;
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+
     @OneToOne
     @JoinColumn(name = "patient_id",referencedColumnName = "id")
     private Patient patient;
 
+    @Override
+    public String toString() {
+        return "Billing{" +
+                "amount=" + amount +
+                ", patient=" + patient +
+                "} " + super.toString();
+    }
 }

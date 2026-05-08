@@ -23,9 +23,10 @@ public class AppointmentStatusService {
     }
     appointmentStatusDb.forEach(appointmentStatus -> {
       StatusResponseDto appointmentStatus1 = new StatusResponseDto();
-      appointmentStatus1.setId(appointmentStatus.getId())
+      appointmentStatus1
               .setName_ar(appointmentStatus.getNameAr())
-              .setName_en(appointmentStatus.getNameEn());
+              .setName_en(appointmentStatus.getNameEn())
+              .setId(appointmentStatus.getId());
       statusResponseDtos.add(appointmentStatus1);
     });
     return statusResponseDtos;
