@@ -18,6 +18,7 @@ import java.util.List;
 @Getter
 @Accessors(chain = true)
 public class UpdatePatientRequest {
+    @NotNull(message = "id is required")
     private Long id;
 
     @NotBlank(message = "name is required")
@@ -34,13 +35,7 @@ public class UpdatePatientRequest {
     @Past(message = "Date of birth must be in the past")
     @NotNull(message = "dateOfBirth is required")
     private LocalDate dateOfBirth;
-
-    @NotBlank(message = "createdBy is required")
-    private String createdBy;
     private LocalDateTime createdAt;
-
-    @NotBlank(message = "updatedBy is required")
-    private String updatedBy;
     private LocalDateTime updatedAt;
 
 }

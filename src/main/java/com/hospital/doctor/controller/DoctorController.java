@@ -9,6 +9,7 @@ import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.doctor.service.DoctorService;
 import com.hospital.patient.dto.response.GetPatientResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,27 +35,24 @@ private final DoctorService doctorService;
     }
 
     @PostMapping("/doctors")
-    public ResponseEntity<CreateDoctorResponse> addDoctor(@Valid @RequestBody CreateDoctorRequest createDoctorRequest) {
-
-        return new ResponseEntity<>(doctorService.addDoctor(createDoctorRequest), HttpStatus.CREATED);
+    public ResponseEntity<CreateDoctorResponse> addDoctor(@Valid @RequestBody CreateDoctorRequest createDoctorRequest, HttpServletRequest request) {
+        return new ResponseEntity<>(doctorService.addDoctor(createDoctorRequest,request), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UpdateDoctorResponse> updateDoctorData(@PathVariable Long id, @Valid @RequestBody UpdateDoctorRequest DoctorRequest) {
-
-
-        return new ResponseEntity<>(doctorService.updateDoctorData(id, DoctorRequest), HttpStatus.OK);
+    @PutMapping("/update")
+    public ResponseEntity<UpdateDoctorResponse> updateDoctorData(@Valid @RequestBody UpdateDoctorRequest DoctorRequest, HttpServletRequest request) {
+        return new ResponseEntity<>(doctorService.updateDoctorData(DoctorRequest,request), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDoctorById(@PathVariable Long id) {
-            doctorService.deleteDoctorById(id);
-            return new ResponseEntity<>("deleted doctor successfully", HttpStatus.NO_CONTENT);
+        doctorService.deleteDoctorById(id);
+        return new ResponseEntity<>("deleted doctor successfully", HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/start")
-    public ResponseEntity<GetPatientResponse> startSession(@Valid @RequestBody CreateMedicalRecordRequest createMedicalRecordRequest) {
-        return new ResponseEntity<>(doctorService.startSession(createMedicalRecordRequest), HttpStatus.OK);
+    public ResponseEntity<GetPatientResponse> startSession(@Valid @RequestBody CreateMedicalRecordRequest createMedicalRecordRequest, HttpServletRequest request) {
+        return new ResponseEntity<>(doctorService.startSession(createMedicalRecordRequest,request), HttpStatus.OK);
     }
 
 }

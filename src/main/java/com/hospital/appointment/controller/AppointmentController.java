@@ -9,6 +9,7 @@ import com.hospital.dto.BookResponseDto;
 import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.appointment.service.AppointmentService;
 import com.hospital.patient.dto.response.GetPatientResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,15 +35,15 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointments")
-    public ResponseEntity<CreateAppointmentResponse> createAppointment(@Valid @RequestBody CreateAppointmentRequest createAppointmentRequest) {
+    public ResponseEntity<CreateAppointmentResponse> createAppointment(@Valid @RequestBody CreateAppointmentRequest createAppointmentRequest, HttpServletRequest request) {
 
-        return new ResponseEntity<>(appointmentService.createAppointment(createAppointmentRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>(appointmentService.createAppointment(createAppointmentRequest,request), HttpStatus.CREATED);
 
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UpdateAppointmentResponse> updateAppointment(@PathVariable Long id, @Valid @RequestBody UpdateAppointmentRequest updateAppointmentRequest) {
-        return new ResponseEntity<>(appointmentService.updateAppointment(id, updateAppointmentRequest), HttpStatus.OK);
+    @PutMapping("/update")
+    public ResponseEntity<UpdateAppointmentResponse> updateAppointment(@Valid @RequestBody UpdateAppointmentRequest updateAppointmentRequest, HttpServletRequest request) {
+        return new ResponseEntity<>(appointmentService.updateAppointment(updateAppointmentRequest,request), HttpStatus.OK);
 
     }
 
@@ -53,14 +54,14 @@ public class AppointmentController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<BookResponseDto> book(@Valid @RequestBody BookRequestDto request) {
+    public ResponseEntity<BookResponseDto> book(@Valid @RequestBody BookRequestDto bookRequestDto, HttpServletRequest request) {
 
-        return new ResponseEntity<>(appointmentService.book(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(appointmentService.book(bookRequestDto,request), HttpStatus.CREATED);
     }
 
     @PostMapping("/book-with-paid")
-    public ResponseEntity<BookResponseDto> bookWithPaid(@Valid @RequestBody BookRequestDto request) {
-        return new ResponseEntity<>(appointmentService.bookWithPaid(request), HttpStatus.CREATED);
+    public ResponseEntity<BookResponseDto> bookWithPaid(@Valid @RequestBody BookRequestDto bookRequestDto, HttpServletRequest request) {
+        return new ResponseEntity<>(appointmentService.bookWithPaid(bookRequestDto,request), HttpStatus.CREATED);
     }
 
     @PutMapping("confirm/{phoneNumber}")
@@ -69,13 +70,13 @@ public class AppointmentController {
     }
 
     @GetMapping("/current-patient")
-    public ResponseEntity<GetPatientResponse> currentPatient() {
-        return new ResponseEntity<>(appointmentService.currentPatient(), HttpStatus.OK);
+    public ResponseEntity<GetPatientResponse> currentPatient(HttpServletRequest request) {
+        return new ResponseEntity<>(appointmentService.currentPatient(request), HttpStatus.OK);
 
     }
 
     @PutMapping("/next")
-    public ResponseEntity<GetPatientResponse> next() {
-        return new ResponseEntity<>(appointmentService.next(), HttpStatus.OK);
+    public ResponseEntity<GetPatientResponse> next(HttpServletRequest request) {
+        return new ResponseEntity<>(appointmentService.next(request), HttpStatus.OK);
     }
 }
