@@ -35,13 +35,13 @@ private final DoctorService doctorService;
     }
 
     @PostMapping("/doctors")
-    public ResponseEntity<CreateDoctorResponse> addDoctor(@Valid @RequestBody CreateDoctorRequest createDoctorRequest, HttpServletRequest request) {
-        return new ResponseEntity<>(doctorService.addDoctor(createDoctorRequest,request), HttpStatus.CREATED);
+    public ResponseEntity<CreateDoctorResponse> addDoctor(@Valid @RequestBody CreateDoctorRequest createDoctorRequest) {
+        return new ResponseEntity<>(doctorService.addDoctor(createDoctorRequest), HttpStatus.CREATED);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UpdateDoctorResponse> updateDoctorData(@Valid @RequestBody UpdateDoctorRequest DoctorRequest, HttpServletRequest request) {
-        return new ResponseEntity<>(doctorService.updateDoctorData(DoctorRequest,request), HttpStatus.OK);
+    public ResponseEntity<UpdateDoctorResponse> updateDoctorData(@Valid @RequestBody UpdateDoctorRequest DoctorRequest) {
+        return new ResponseEntity<>(doctorService.updateDoctorData(DoctorRequest), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -51,8 +51,8 @@ private final DoctorService doctorService;
     }
 
     @PostMapping("/start")
-    public ResponseEntity<GetPatientResponse> startSession(@Valid @RequestBody CreateMedicalRecordRequest createMedicalRecordRequest, HttpServletRequest request) {
-        return new ResponseEntity<>(doctorService.startSession(createMedicalRecordRequest,request), HttpStatus.OK);
+    public ResponseEntity<GetPatientResponse> startSession(@Valid @RequestBody CreateMedicalRecordRequest createMedicalRecordRequest) {
+        return new ResponseEntity<>(doctorService.startSession(createMedicalRecordRequest), HttpStatus.OK);
     }
 
 }
