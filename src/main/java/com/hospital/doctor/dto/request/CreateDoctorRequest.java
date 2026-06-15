@@ -1,6 +1,8 @@
 package com.hospital.doctor.dto.request;
 
+import com.hospital.entity.Speciality;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +19,8 @@ public class CreateDoctorRequest {
  @NotBlank(message = "name is required")
  private String name;
 
- @NotBlank(message = "speciality is required")
- private String speciality;
+ @NotNull(message = "speciality_id is required")
+ private Long specialityId;
 
  @NotBlank(message = "contact_number is required")
  @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number") // valid for Egyptian numbers only

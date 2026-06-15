@@ -26,9 +26,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import static com.hospital.entity.AppointmentType.online;
-import static com.hospital.entity.AppointmentType.onsite;
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
@@ -50,16 +47,17 @@ public class AppointmentService {
         for (Appointment appointment : appointments) {
             GetAppointmentResponse appointmentResponse = new GetAppointmentResponse();
 
-            appointmentResponse.setId(appointment.getId());
-            appointmentResponse.setTiming(appointment.getTiming());
-            appointmentResponse.setAppointmentType(appointment.getAppointmentType());
-            appointmentResponse.setDoctorId(appointment.getDoctor().getId());
-            appointmentResponse.setPatientId(appointment.getPatient().getId());
-            appointmentResponse.setCreatedBy(appointment.getCreatedBy());
-            appointmentResponse.setCreatedAt(appointment.getCreatedAt());
-            appointmentResponse.setUpdatedBy(appointment.getUpdatedBy());
-            appointmentResponse.setUpdatedAt(LocalDateTime.now());
-            appointmentResponse.setStatusId(appointment.getDoctor().getId());
+            appointmentResponse
+                    .setId(appointment.getId())
+                    .setTiming(appointment.getTiming())
+                    .setAppointmentType(appointment.getAppointmentType())
+                    .setDoctorId(appointment.getDoctor().getId())
+                    .setPatientId(appointment.getPatient().getId())
+                    .setCreatedBy(appointment.getCreatedBy())
+                    .setCreatedAt(appointment.getCreatedAt())
+                    .setUpdatedBy(appointment.getUpdatedBy())
+                    .setUpdatedAt(LocalDateTime.now())
+                    .setStatusId(appointment.getDoctor().getId());
 
             appointmentsResponse.add(appointmentResponse);
         }
@@ -76,27 +74,22 @@ public class AppointmentService {
         Appointment appointmentDb = appointment.get();
         GetAppointmentResponse appointmentResponse = new GetAppointmentResponse();
 
-        appointmentResponse.setId(appointmentDb.getId());
-        appointmentResponse.setTiming(appointmentDb.getTiming());
-        appointmentResponse.setAppointmentType(appointmentDb.getAppointmentType());
-        appointmentResponse.setDoctorId(appointmentDb.getDoctor().getId());
-        appointmentResponse.setPatientId(appointmentDb.getPatient().getId());
-        appointmentResponse.setCreatedBy(appointmentDb.getCreatedBy());
-        appointmentResponse.setCreatedAt(appointmentDb.getCreatedAt());
-        appointmentResponse.setUpdatedBy(appointmentDb.getUpdatedBy());
-        appointmentResponse.setUpdatedAt(LocalDateTime.now());
-        appointmentResponse.setStatusId(appointmentDb.getStatus().getId());
+        appointmentResponse
+                .setId(appointmentDb.getId())
+                .setTiming(appointmentDb.getTiming())
+                .setAppointmentType(appointmentDb.getAppointmentType())
+                .setDoctorId(appointmentDb.getDoctor().getId())
+                .setPatientId(appointmentDb.getPatient().getId())
+                .setCreatedBy(appointmentDb.getCreatedBy())
+                .setCreatedAt(appointmentDb.getCreatedAt())
+                .setUpdatedBy(appointmentDb.getUpdatedBy())
+                .setUpdatedAt(LocalDateTime.now())
+                .setStatusId(appointmentDb.getStatus().getId());
         return appointmentResponse;
 
     }
 
     public CreateAppointmentResponse createAppointment(CreateAppointmentRequest createAppointmentRequest) {
-
-        if (createAppointmentRequest.getAppointmentType() == online) {
-            createAppointmentRequest.setStatusId(1L);
-        } else if (createAppointmentRequest.getAppointmentType() == onsite) {
-            createAppointmentRequest.setStatusId(2L);
-        }
 
         if (patientRepository.findById(createAppointmentRequest.getPatientId()).isEmpty()) {
             throw new HospitalBusinessException("no patient found");
@@ -172,7 +165,9 @@ public class AppointmentService {
         if (appointmentStatusRepository.findById(1L).isEmpty()) {
             throw new HospitalBusinessException("invalid status id");
         }
-
+        if (appointmentRepository.findFirstByPatientIdOrderByCreatedAtAsc(bookRequestDto.getPatientId()).isPresent()) {
+            throw new HospitalBusinessException("");
+        }
         Appointment appointment = new Appointment();
         appointment.setTiming(bookRequestDto.getAppointmentTiming())
                 .setAppointmentType(bookRequestDto.getAppointmentType())
@@ -181,9 +176,9 @@ public class AppointmentService {
                 .setStatus(appointmentStatusRepository.findById(1L).get())
                 .setCreatedAt(LocalDateTime.now())
                 .setUpdatedAt(LocalDateTime.now());
-                   appointmentRepository.save(appointment);
+        appointmentRepository.save(appointment);
 
-      List<Appointment> appointments = appointmentRepository.appointmentsStatusNewPaidPending();
+        List<Appointment> appointments = appointmentRepository.appointmentsStatusNewPaidPending();
         if (appointments.isEmpty())
             throw new HospitalBusinessException("there is no appointments before you");
         BookResponseDto responseDto = new BookResponseDto();
@@ -231,20 +226,39 @@ public class AppointmentService {
         if (patient.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
-        Optional<Appointment> appointment = appointmentRepository.findFirstByPatientIdAndStatusIdOrderByCreatedAtAsc(patient.get().getId(),2L);
-        if (appointment.isEmpty()) {
+
+        Optional<Appointment> appointment1 = appointmentRepository.findFirstByPatientIdAndStatusIdOrderByCreatedAtAsc(patient.get().getId(), 1L);
+
+        Optional<Appointment> appointment2 = appointmentRepository.findFirstByPatientIdAndStatusIdOrderByCreatedAtAsc(patient.get().getId(), 2L);
+
+        if (appointment1.isEmpty() && appointment2.isEmpty()) {
             throw new HospitalBusinessException("no appointments found");
         }
         Optional<AppointmentStatus> appointmentStatus = appointmentStatusRepository.findById(3L);
         if (appointmentStatus.isEmpty()) {
             throw new HospitalBusinessException("invalid status id");
         }
-        appointment.get().setStatus(appointmentStatus.get());
-        appointment.get().setUpdatedAt(LocalDateTime.now());
-        appointmentRepository.save(appointment.get());
+
+        if (appointment1.isPresent()) {
+            Appointment appointmentDb1 = appointment1.get();
+            appointmentDb1.setStatus(appointmentStatus.get());
+            appointmentDb1.setUpdatedAt(LocalDateTime.now());
+            appointmentRepository.save(appointmentDb1);
+
+            BookResponseDto bookResponseDto = new BookResponseDto();
+            bookResponseDto.setNumberOfWaiting(((long) appointmentRepository.appointmentsStatusPending().size()) - 1)              // number of (pending)
+                    .setStatus(appointmentStatus.get());
+            return bookResponseDto;
+        }
+
+        Appointment appointmentDb2 = appointment2.get();
+        appointmentDb2.setStatus(appointmentStatus.get());
+        appointmentDb2.setUpdatedAt(LocalDateTime.now());
+        appointmentRepository.save(appointmentDb2);
+
         BookResponseDto bookResponseDto = new BookResponseDto();
-        bookResponseDto.setNumberOfWaiting(((long) appointmentRepository.appointmentsStatusPending().size())-1)              // number of (pending)
-                .setStatus(appointment.get().getStatus());
+        bookResponseDto.setNumberOfWaiting(((long) appointmentRepository.appointmentsStatusPending().size()) - 1)              // number of (pending)
+                .setStatus(appointmentStatus.get());
         return bookResponseDto;
     }
 
@@ -290,9 +304,10 @@ public class AppointmentService {
             throw new HospitalBusinessException("no appointments in pending");
         }
         Optional<Appointment> currentAppointment = appointments.stream().findFirst();
-        currentAppointment.get().setStatus(new AppointmentStatus(5L, "finished", "انتهاء"));
-        currentAppointment.get().setUpdatedAt(LocalDateTime.now());
-        appointmentRepository.save(currentAppointment.get());
+        Appointment currentAppointmentDb = currentAppointment.get();
+        currentAppointmentDb.setStatus(new AppointmentStatus(5L, "finished", "انتهاء"));
+        currentAppointmentDb.setUpdatedAt(LocalDateTime.now());
+        appointmentRepository.save(currentAppointmentDb);
 
         return patientResponse;
     }

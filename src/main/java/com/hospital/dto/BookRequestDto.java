@@ -1,7 +1,8 @@
 package com.hospital.dto;
 
 import com.hospital.entity.AppointmentType;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,6 +31,8 @@ public class BookRequestDto {
     private Long patientId;
 
     @NotNull(message = "status_id is required")
+    @Min(value = 1, message = "status_id must be at least 1")
+    @Max(value = 5, message = "status_id must not exceed 5")
     private Long statusId;
     private LocalDateTime appointmentCreatedAt;
     private LocalDateTime appointmentUpdatedAt;

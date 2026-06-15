@@ -16,6 +16,7 @@ import com.hospital.medicalRecord.repository.MedicalRecordRepository;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.appointment.service.AppointmentService;
+import com.hospital.speciality.repository.SpecialityRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class DoctorService {
    private final AppointmentService appointmentService;
    private final PatientRepository patientRepository;
    private final MedicalRecordRepository medicalRecordRepository;
+    private final SpecialityRepository specialityRepository;
    private final JWTService jwtService;
 
     public List<GetDoctorResponse> getAllDoctors() {
@@ -41,7 +43,7 @@ public class DoctorService {
             GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
             getDoctorResponse.setId(doctor.getId());
             getDoctorResponse.setName(doctor.getName());
-            getDoctorResponse.setSpeciality(doctor.getSpecialty());
+            getDoctorResponse.setSpeciality(doctor.getSpeciality());
             getDoctorResponse.setContactNumber(doctor.getContactNumber());
             getDoctorResponse.setCreatedBy(doctor.getCreatedBy());
             getDoctorResponse.setCreatedAt(doctor.getCreatedAt());
@@ -62,7 +64,7 @@ public class DoctorService {
             GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
             getDoctorResponse.setId(doc.getId());
             getDoctorResponse.setName(doc.getName());
-            getDoctorResponse.setSpeciality(doc.getSpecialty());
+            getDoctorResponse.setSpeciality(doc.getSpeciality());
             getDoctorResponse.setContactNumber(doc.getContactNumber());
             getDoctorResponse.setCreatedBy(doc.getCreatedBy());
             getDoctorResponse.setCreatedAt(doc.getCreatedAt());
@@ -79,7 +81,7 @@ public class DoctorService {
         Doctor doctor = new Doctor();
         doctor.setId(createDoctorRequest.getId());
         doctor.setName(createDoctorRequest.getName());
-        doctor.setSpecialty(createDoctorRequest.getSpeciality());
+        doctor.setSpeciality(specialityRepository.findById(createDoctorRequest.getSpecialityId()).get());
         doctor.setContactNumber(createDoctorRequest.getContactNumber());
         doctor.setCreatedAt(LocalDateTime.now());
         doctor.setUpdatedAt(LocalDateTime.now());
@@ -96,7 +98,7 @@ public class DoctorService {
         if (doctor.isPresent()) {
             Doctor doc = doctor.get();
             doc.setName(doctorRequest.getName());
-            doc.setSpecialty(doctorRequest.getSpeciality());
+            doc.setSpeciality(specialityRepository.findById(doctorRequest.getSpecialityId()).get());
             doc.setContactNumber(doctorRequest.getContactNumber());
             doc.setUpdatedAt(LocalDateTime.now());
             doctorRepository.save(doc);

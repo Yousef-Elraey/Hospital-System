@@ -22,22 +22,25 @@ import java.util.Date;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Doctor extends BaseEntity{
+public class Doctor extends BaseEntity {
 
     @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String specialty;
+
     @Column(name = "contact_number", nullable = false)
     private String contactNumber;
+    @ManyToOne
+    @JoinColumn(name = "speciality_id", referencedColumnName = "id")
+    private Speciality speciality;
+
 
     @Override
     public String toString() {
         return "Doctor{" +
                 "name='" + name + '\'' +
-                ", specialty='" + specialty + '\'' +
                 ", contactNumber='" + contactNumber + '\'' +
-                '}';
+                ", speciality=" + speciality +
+                "} " + super.toString();
     }
 }
 

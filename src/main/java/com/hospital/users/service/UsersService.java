@@ -63,13 +63,17 @@ public class UsersService {
     }
 
     public CreateUserResponse register(CreateUserRequest userRequest){
-      Users userDb = new Users();
+        if (usersRepository.findByUserName(userRequest.getUserName()).isPresent()) {
+            throw new HospitalBusinessException("user already exist");
+        }
+
+        Users userDb = new Users();
         userDb.setUserName(userRequest.getUserName())
                 .setPassword(userRequest.getPassword());
 
         userDb.setPassword(encoder.encode(userDb.getPassword()));
         usersRepository.save(userDb);
-       CreateUserResponse userResponse = new CreateUserResponse();
+        CreateUserResponse userResponse = new CreateUserResponse();
         userResponse.setId(userDb.getId());
         return userResponse;
     }

@@ -1,5 +1,6 @@
 package com.hospital.doctor.dto.response;
 
+import com.hospital.entity.Speciality;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class GetDoctorResponse {
     private Long id;
     private String name;
-    private String speciality;
+    private Speciality speciality;
     private String contactNumber;
     private String createdBy;
     private LocalDateTime createdAt;
