@@ -1,15 +1,14 @@
 package com.hospital.doctor.service;
 
 import com.hospital.common.security.JWTService;
+import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.dto.request.CreateDoctorRequest;
 import com.hospital.doctor.dto.request.UpdateDoctorRequest;
 import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.doctor.dto.response.UpdateDoctorResponse;
+import com.hospital.entity.*;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
-import com.hospital.entity.Doctor;
-import com.hospital.entity.MedicalRecord;
-import com.hospital.entity.Patient;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.medicalRecord.repository.MedicalRecordRepository;
@@ -17,6 +16,7 @@ import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.appointment.service.AppointmentService;
 import com.hospital.speciality.repository.SpecialityRepository;
+import com.hospital.treatment.repository.TreatmentRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,12 +29,14 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class DoctorService {
-   private final DoctorRepository doctorRepository;
-   private final AppointmentService appointmentService;
-   private final PatientRepository patientRepository;
-   private final MedicalRecordRepository medicalRecordRepository;
+    private final DoctorRepository doctorRepository;
+    private final AppointmentService appointmentService;
+    private final PatientRepository patientRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
     private final SpecialityRepository specialityRepository;
-   private final JWTService jwtService;
+    private final DiagnoseRepository diagnoseRepository;
+    private final TreatmentRepository treatmentRepository;
+    private final JWTService jwtService;
 
     public List<GetDoctorResponse> getAllDoctors() {
         List<Doctor> doctors = doctorRepository.findAll();
@@ -128,17 +130,22 @@ public class DoctorService {
 
         Optional<Patient> patientDb = patientRepository.findById(createMedicalRecordRequest.getPatientId());
         Optional<Doctor> doctorDb = doctorRepository.findById(createMedicalRecordRequest.getDoctorId());
-        if (patientDb.isEmpty()) {
+        Optional<Diagnose> diagnoseDb = diagnoseRepository.findById(createMedicalRecordRequest.getDiagnoseId());
+        Optional<Treatment> treatmentDb = treatmentRepository.findById(createMedicalRecordRequest.getTreatmentId());
+        if (patientDb.isEmpty())
             throw new HospitalBusinessException("no patient found");
-        }
-        if (doctorDb.isEmpty()) {
+        if (doctorDb.isEmpty())
             throw new HospitalBusinessException("no doctor found");
-        }
+        if (diagnoseDb.isEmpty())
+            throw new HospitalBusinessException("no diagnose found");
+        if (treatmentDb.isEmpty())
+            throw new HospitalBusinessException("no treatment found");
+
 
         GetPatientResponse patientResponse = appointmentService.next();
         MedicalRecord medicalRecordDb = new MedicalRecord();
-        medicalRecordDb.setDiagnose(createMedicalRecordRequest.getDiagnose())
-                .setTreatment(createMedicalRecordRequest.getTreatment())
+        medicalRecordDb.setDiagnose(diagnoseDb.get())
+                .setTreatment(treatmentDb.get())
                 .setPatient(patientDb.get())
                 .setDoctor(doctorDb.get())
                 .setCreatedAt(LocalDateTime.now())

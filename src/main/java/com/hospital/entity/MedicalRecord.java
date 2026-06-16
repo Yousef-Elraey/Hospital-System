@@ -19,15 +19,19 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class MedicalRecord extends BaseEntity{
+public class MedicalRecord extends BaseEntity {
 
-    private String diagnose;
-    private String treatment;
+    @ManyToOne
+    @JoinColumn(name = "diagnose_id", referencedColumnName = "id")
+    private Diagnose diagnose;
+    @ManyToOne
+    @JoinColumn(name = "treatment_id", referencedColumnName = "id")
+    private Treatment treatment;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id", referencedColumnName = "id")
     private Patient patient;
     @ManyToOne
-    @JoinColumn(name = "doctor_id",referencedColumnName = "id")
+    @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
 
     @Override

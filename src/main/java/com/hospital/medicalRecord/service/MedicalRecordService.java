@@ -1,6 +1,7 @@
 package com.hospital.medicalRecord.service;
 
 import com.hospital.common.security.JWTService;
+import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.common.exception.HospitalBusinessException;
@@ -11,6 +12,7 @@ import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.medicalRecord.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medicalRecord.repository.MedicalRecordRepository;
 import com.hospital.patient.repository.PatientRepository;
+import com.hospital.treatment.repository.TreatmentRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,8 @@ public class MedicalRecordService {
     private final MedicalRecordRepository medicalRecordRepository;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
+    private final DiagnoseRepository diagnoseRepository;
+    private final TreatmentRepository treatmentRepository;
     private final JWTService jwtService;
 
     public List<GetMedicalRecordResponse> getAllRecords() {
@@ -39,8 +43,8 @@ public class MedicalRecordService {
             for (MedicalRecord record : medicalRecords) {
                 GetMedicalRecordResponse medicalRecordResponse = new GetMedicalRecordResponse();
                 medicalRecordResponse.setId(record.getId())
-                        .setDiagnose(record.getDiagnose())
-                        .setTreatment(record.getTreatment())
+                        .setDiagnoseId(record.getDiagnose().getId())
+                        .setTreatmentId(record.getTreatment().getId())
                         .setPatientId(record.getPatient().getId())
                         .setDoctorId(record.getDoctor().getId())
                         .setCreatedAt(record.getCreatedAt())
@@ -63,8 +67,8 @@ public class MedicalRecordService {
 
             MedicalRecord medicalRecordDb = medicalRecord.get();
             medicalRecordResponse.setId(medicalRecordDb.getId())
-                    .setDiagnose(medicalRecordDb.getDiagnose())
-                    .setTreatment(medicalRecordDb.getTreatment())
+                    .setDiagnoseId(medicalRecordDb.getDiagnose().getId())
+                    .setTreatmentId(medicalRecordDb.getTreatment().getId())
                     .setPatientId(medicalRecordDb.getPatient().getId())
                     .setDoctorId(medicalRecordDb.getDoctor().getId())
                     .setCreatedAt(medicalRecordDb.getCreatedAt())
@@ -82,13 +86,18 @@ public class MedicalRecordService {
         if (doctorRepository.findById(medicalRecordRequest.getDoctorId()).isEmpty()) {
             throw new HospitalBusinessException("no doctor found");
         }
+        if (diagnoseRepository.findById(medicalRecordRequest.getDiagnoseId()).isEmpty()) {
+            throw new HospitalBusinessException("no diagnose found");
+        }   if (treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).isEmpty()) {
+            throw new HospitalBusinessException("no treatment found");
+        }
 
         MedicalRecord dbMedicalRecord = new MedicalRecord();
         dbMedicalRecord
                 .setPatient(patientRepository.findById(medicalRecordRequest.getPatientId()).get())
                 .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get())
-                .setDiagnose(medicalRecordRequest.getDiagnose())
-                .setTreatment(medicalRecordRequest.getTreatment())
+                .setDiagnose(diagnoseRepository.findById(medicalRecordRequest.getDiagnoseId()).get())
+                .setTreatment(treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).get())
                 .setCreatedAt(LocalDateTime.now())
                 .setUpdatedAt(LocalDateTime.now())
                 .setId(medicalRecordRequest.getId());
@@ -107,13 +116,18 @@ public class MedicalRecordService {
         if (doctorRepository.findById(medicalRecordRequest.getDoctorId()).isEmpty()) {
             throw new HospitalBusinessException("no doctor found");
         }
+        if (diagnoseRepository.findById(medicalRecordRequest.getDiagnoseId()).isEmpty()) {
+            throw new HospitalBusinessException("no diagnose found");
+        }   if (treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).isEmpty()) {
+            throw new HospitalBusinessException("no treatment found");
+        }
 
         Optional<MedicalRecord> medicalRecordTemp = medicalRecordRepository.findById(medicalRecordRequest.getId());
         if (medicalRecordTemp.isPresent()) {
             MedicalRecord medicalRecord = medicalRecordTemp.get();
 
-            medicalRecord.setDiagnose(medicalRecordRequest.getDiagnose())
-                    .setTreatment(medicalRecordRequest.getTreatment())
+            medicalRecord.setDiagnose(diagnoseRepository.findById(medicalRecordRequest.getDiagnoseId()).get())
+                    .setTreatment(treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).get())
                     .setPatient(patientRepository.findById(medicalRecordRequest.getPatientId()).get())
                     .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get())
                     .setUpdatedAt(LocalDateTime.now());
@@ -146,8 +160,8 @@ public class MedicalRecordService {
             medicalRecords.forEach(medicalRecord -> {
                 GetMedicalRecordResponse medicalRecordResponse = new GetMedicalRecordResponse();
                 medicalRecordResponse.setId(medicalRecord.getId())
-                        .setDiagnose(medicalRecord.getDiagnose())
-                        .setTreatment(medicalRecord.getTreatment())
+                        .setDiagnoseId(medicalRecord.getDiagnose().getId())
+                        .setTreatmentId(medicalRecord.getTreatment().getId())
                         .setPatientId(medicalRecord.getPatient().getId())
                         .setDoctorId(medicalRecord.getDoctor().getId())
                         .setCreatedAt(medicalRecord.getCreatedAt())

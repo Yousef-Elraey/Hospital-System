@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 public class GetMedicalRecordResponse {
     private Long id;
-    private String diagnose;
-    private String treatment;
+    private Long diagnoseId;
+    private Long treatmentId;
     private Long patientId;
     private Long doctorId;
     private LocalDateTime createdAt;

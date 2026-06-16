@@ -34,8 +34,8 @@ public class SpecialityController {
     }
 
     @PostMapping("/specialities")
-    public ResponseEntity<CreateSpecialityResponse> addSpeciality(@Valid @RequestBody CreateSpecialityRequest createSpecialityRequest) {
-        return new ResponseEntity<>(specialityService.addSpeciality(createSpecialityRequest), HttpStatus.CREATED);
+    public ResponseEntity<CreateSpecialityResponse> createSpeciality(@Valid @RequestBody CreateSpecialityRequest createSpecialityRequest) {
+        return new ResponseEntity<>(specialityService.createSpeciality(createSpecialityRequest), HttpStatus.CREATED);
 
     }
 

@@ -132,8 +132,8 @@ public class PatientService {
         medicalRecords.forEach(medicalRecord -> {
                 GetMedicalRecordResponse getMedicalRecordResponse = new GetMedicalRecordResponse();
                 getMedicalRecordResponse.setId(medicalRecord.getId())
-                        .setDiagnose(medicalRecord.getDiagnose())
-                        .setTreatment(medicalRecord.getTreatment())
+                        .setDiagnoseId(medicalRecord.getDiagnose().getId())
+                        .setTreatmentId(medicalRecord.getTreatment().getId())
                         .setPatientId(medicalRecord.getPatient().getId())
                         .setDoctorId(medicalRecord.getDoctor().getId())
                         .setCreatedAt(medicalRecord.getCreatedAt())

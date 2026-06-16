@@ -19,11 +19,11 @@ public class UpdateMedicalRecordRequest {
     @NotNull(message = "id is required")
     private Long id;
 
-    @NotBlank(message = "diagnose is required")
-    private String diagnose;
+    @NotNull(message = "diagnose is required")
+    private Long diagnoseId;
 
-    @NotBlank(message = "treatment is required")
-    private String treatment;
+    @NotNull(message = "treatment is required")
+    private Long treatmentId;
 
     @NotNull(message = "patient_id is required")
     private Long patientId;

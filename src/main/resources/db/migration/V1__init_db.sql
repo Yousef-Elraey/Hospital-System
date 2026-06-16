@@ -13,8 +13,8 @@ CREATE TABLE patient(
 
 CREATE TABLE speciality(
             id BIGINT PRIMARY KEY AUTO_INCREMENT,
-            name_en VARCHAR(50),
-            name_ar VARCHAR(50)
+            name_en VARCHAR(50) NOT NULL,
+            name_ar VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE doctor(
@@ -64,11 +64,23 @@ CREATE TABLE appointment(
         FOREIGN KEY (status_id) REFERENCES appointment_status(id)
 );
 
+CREATE TABLE diagnose(
+        id BIGINT AUTO_INCREMENT PRIMARY key,
+        name_en VARCHAR(255) NOT NULL,
+        name_ar VARCHAR(255) NOT NULL
+      );
+
+CREATE TABLE treatment(
+        id BIGINT AUTO_INCREMENT PRIMARY key,
+        name_en VARCHAR(255) NOT NULL,
+        name_ar VARCHAR(255) NOT NULL,
+        active_ingredient varchar(255) NOT NULL
+      );
 
 CREATE TABLE medical_record (
         id BIGINT AUTO_INCREMENT PRIMARY KEY,
-        diagnose VARCHAR(250) NOT NULL,
-        treatment VARCHAR(250) NOT NULL,
+        diagnose_id BIGINT NOT NULL,
+        treatment_id BIGINT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         created_by VARCHAR(50) NOT NULL,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -79,7 +91,11 @@ CREATE TABLE medical_record (
      CONSTRAINT FK_doctor_medical_record
          FOREIGN KEY(doctor_id) REFERENCES doctor(id),
      CONSTRAINT FK_patient_medical_record
-      FOREIGN KEY(patient_id) REFERENCES patient(id)
+      FOREIGN KEY(patient_id) REFERENCES patient(id),
+     CONSTRAINT FK_diagnose_medical_record
+            FOREIGN KEY(diagnose_id) REFERENCES diagnose(id),
+     CONSTRAINT FK_treatment_medical_record
+            FOREIGN KEY(treatment_id) REFERENCES treatment(id)
 );
 
 CREATE TABLE billing(
