@@ -3,6 +3,7 @@ package com.hospital.doctor.service;
 import com.hospital.common.security.JWTService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.dto.request.CreateDoctorRequest;
+import com.hospital.doctor.dto.request.SearchDoctorRequest;
 import com.hospital.doctor.dto.request.UpdateDoctorRequest;
 import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
@@ -152,5 +153,32 @@ public class DoctorService {
                 .setUpdatedAt(LocalDateTime.now());
         medicalRecordRepository.save(medicalRecordDb);
         return patientResponse;
+    }
+
+    public GetDoctorResponse searchDoctor(SearchDoctorRequest searchDoctorRequest) {
+        Optional<Speciality> specialityOp = specialityRepository.findByName(searchDoctorRequest.getSpeciality());
+        if (specialityOp.isEmpty()) {
+            throw new HospitalBusinessException("no speciality found");
+        }
+        Speciality speciality = specialityOp.get();
+
+       Optional<Doctor> doctorOp = doctorRepository.findByNameAndContactNumber(searchDoctorRequest.getName(),
+                                                                    searchDoctorRequest.getContactNumber());
+        if (doctorOp.isEmpty()){
+            throw new HospitalBusinessException("no doctor found");
+        }
+        Doctor doctor = doctorOp.get();
+
+       GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
+        getDoctorResponse.setId(doctor.getId())
+                .setName(doctor.getName())
+                .setSpeciality(speciality)
+                .setContactNumber(doctor.getContactNumber())
+                .setCreatedBy(doctor.getCreatedBy())
+                .setCreatedAt(doctor.getCreatedAt())
+                .setUpdatedBy(doctor.getUpdatedBy())
+                .setUpdatedAt(doctor.getUpdatedAt());
+
+        return getDoctorResponse;
     }
 }

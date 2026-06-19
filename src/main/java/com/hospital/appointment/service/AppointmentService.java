@@ -165,9 +165,9 @@ public class AppointmentService {
         if (appointmentStatusRepository.findById(1L).isEmpty()) {
             throw new HospitalBusinessException("invalid status id");
         }
-        if (appointmentRepository.findFirstByPatientIdOrderByCreatedAtAsc(bookRequestDto.getPatientId()).isPresent()) {
-            throw new HospitalBusinessException("");
-        }
+//        if (appointmentRepository.findFirstByPatientIdOrderByCreatedAtAsc(bookRequestDto.getPatientId()).isPresent()) {
+//            throw new HospitalBusinessException("");
+//        }
         Appointment appointment = new Appointment();
         appointment.setTiming(bookRequestDto.getAppointmentTiming())
                 .setAppointmentType(bookRequestDto.getAppointmentType())

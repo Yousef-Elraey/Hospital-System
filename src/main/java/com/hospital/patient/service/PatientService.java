@@ -7,6 +7,7 @@ import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
 import com.hospital.common.exception.HospitalBusinessException;
+import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.request.UpdatePatientRequest;
 import com.hospital.patient.dto.response.CreatePatientResponse;
 import com.hospital.patient.dto.response.GetPatientResponse;
@@ -55,21 +56,22 @@ public class PatientService {
     }
 
     public GetPatientResponse getPatientById(Long id) {
-        Optional<Patient> patient = patientRepository.findById(id);
-        if (patient.isEmpty()) {
+        Optional<Patient> patientOp = patientRepository.findById(id);
+        if (patientOp.isEmpty()) {
             throw new HospitalBusinessException("no patient found");
         }
+        Patient patient = patientOp.get();
         GetPatientResponse patientResponse = new GetPatientResponse();
-        patientResponse.setId(patient.get().getId())
-                .setDateOfBirth(patient.get().getDateOfBirth())
-                .setName(patient.get().getName())
-                .setGender(patient.get().getGender())
-                .setPhone(patient.get().getPhone())
+        patientResponse.setId(patient.getId())
+                .setDateOfBirth(patient.getDateOfBirth())
+                .setName(patient.getName())
+                .setGender(patient.getGender())
+                .setPhone(patient.getPhone())
                 .setMedicalRecords(medicalRecordService.getByPatientId(id))
-                .setCreatedBy(patient.get().getCreatedBy())
-                .setCreatedAt(patient.get().getCreatedAt())
-                .setUpdatedBy(patient.get().getUpdatedBy())
-                .setUpdatedAt(patient.get().getUpdatedAt());
+                .setCreatedBy(patient.getCreatedBy())
+                .setCreatedAt(patient.getCreatedAt())
+                .setUpdatedBy(patient.getUpdatedBy())
+                .setUpdatedAt(patient.getUpdatedAt());
         return patientResponse;
     }
 
@@ -130,18 +132,42 @@ public class PatientService {
         }
         List<GetMedicalRecordResponse> getMedicalRecordResponses = new ArrayList<>();
         medicalRecords.forEach(medicalRecord -> {
-                GetMedicalRecordResponse getMedicalRecordResponse = new GetMedicalRecordResponse();
-                getMedicalRecordResponse.setId(medicalRecord.getId())
-                        .setDiagnoseId(medicalRecord.getDiagnose().getId())
-                        .setTreatmentId(medicalRecord.getTreatment().getId())
-                        .setPatientId(medicalRecord.getPatient().getId())
-                        .setDoctorId(medicalRecord.getDoctor().getId())
-                        .setCreatedAt(medicalRecord.getCreatedAt())
-                        .setCreatedBy(medicalRecord.getCreatedBy())
-                        .setUpdatedAt(medicalRecord.getUpdatedAt())
-                        .setUpdatedBy(medicalRecord.getUpdatedBy());
-                getMedicalRecordResponses.add(getMedicalRecordResponse);
-            });
+            GetMedicalRecordResponse getMedicalRecordResponse = new GetMedicalRecordResponse();
+            getMedicalRecordResponse.setId(medicalRecord.getId())
+                    .setDiagnoseId(medicalRecord.getDiagnose().getId())
+                    .setTreatmentId(medicalRecord.getTreatment().getId())
+                    .setPatientId(medicalRecord.getPatient().getId())
+                    .setDoctorId(medicalRecord.getDoctor().getId())
+                    .setCreatedAt(medicalRecord.getCreatedAt())
+                    .setCreatedBy(medicalRecord.getCreatedBy())
+                    .setUpdatedAt(medicalRecord.getUpdatedAt())
+                    .setUpdatedBy(medicalRecord.getUpdatedBy());
+            getMedicalRecordResponses.add(getMedicalRecordResponse);
+        });
         return getMedicalRecordResponses;
+    }
+
+    public GetPatientResponse searchPatient(SearchPatientRequest searchPatientRequest) {
+        Optional<Patient> patientOp = patientRepository.findByNameAndDateOfBirthAndPhone(
+                searchPatientRequest.getName()
+                , searchPatientRequest.getDateOfBirth()
+                , searchPatientRequest.getPhone());
+        if (patientOp.isEmpty()) {
+            throw new HospitalBusinessException("no patient found");
+        }
+        Patient patient = patientOp.get();
+        GetPatientResponse getPatientResponse = new GetPatientResponse();
+        getPatientResponse.setId(patient.getId())
+                .setName(patient.getName())
+                .setGender(patient.getGender())
+                .setPhone(patient.getPhone())
+                .setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
+                .setDateOfBirth(patient.getDateOfBirth())
+                .setCreatedBy(patient.getCreatedBy())
+                .setCreatedAt(patient.getCreatedAt())
+                .setUpdatedBy(patient.getUpdatedBy())
+                .setUpdatedAt(patient.getUpdatedAt());
+
+        return getPatientResponse;
     }
 }

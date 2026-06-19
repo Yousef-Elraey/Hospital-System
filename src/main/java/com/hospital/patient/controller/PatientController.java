@@ -3,6 +3,7 @@ package com.hospital.patient.controller;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.patient.dto.request.CreatePatientRequest;
+import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.request.UpdatePatientRequest;
 import com.hospital.patient.dto.response.CreatePatientResponse;
 import com.hospital.patient.dto.response.GetPatientResponse;
@@ -58,6 +59,11 @@ public class PatientController {
     @GetMapping("/history/{id}")
     public ResponseEntity<List<GetMedicalRecordResponse>> showPatientHistory(@PathVariable Long id) {
         return new ResponseEntity<>(patientService.showPatientHistory(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<GetPatientResponse> searchPatient(@Valid @RequestBody SearchPatientRequest searchPatientRequest) {
+        return new ResponseEntity<>(patientService.searchPatient(searchPatientRequest), HttpStatus.OK);
     }
 
 }

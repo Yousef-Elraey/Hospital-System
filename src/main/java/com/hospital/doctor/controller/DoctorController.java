@@ -1,6 +1,7 @@
 package com.hospital.doctor.controller;
 
 import com.hospital.doctor.dto.request.CreateDoctorRequest;
+import com.hospital.doctor.dto.request.SearchDoctorRequest;
 import com.hospital.doctor.dto.request.UpdateDoctorRequest;
 import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
@@ -53,6 +54,11 @@ private final DoctorService doctorService;
     @PostMapping("/start")
     public ResponseEntity<GetPatientResponse> startSession(@Valid @RequestBody CreateMedicalRecordRequest createMedicalRecordRequest) {
         return new ResponseEntity<>(doctorService.startSession(createMedicalRecordRequest), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<GetDoctorResponse> searchDoctor(@Valid @RequestBody SearchDoctorRequest searchDoctorRequest) {
+        return new ResponseEntity<>(doctorService.searchDoctor(searchDoctorRequest), HttpStatus.OK);
     }
 
 }

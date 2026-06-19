@@ -6,10 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Repository
-public interface PatientRepository extends JpaRepository<Patient,Long> {
+public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByPhone(String phoneNumber);
+
+    Optional<Patient> findByNameAndDateOfBirthAndPhone(String name, LocalDate dateOfBirth, String phone);
+
 
 }

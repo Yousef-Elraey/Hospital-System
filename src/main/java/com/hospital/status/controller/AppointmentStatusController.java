@@ -17,7 +17,7 @@ import java.util.List;
 public class AppointmentStatusController {
 private final AppointmentStatusService appointmentStatusService;
 
-    @GetMapping("/")
+    @GetMapping("/statuses")
     public ResponseEntity<List<StatusResponseDto>> getAllStatus(){
     return new ResponseEntity<>(appointmentStatusService.getAllStatus(), HttpStatus.OK);
 }
