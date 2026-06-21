@@ -20,6 +20,10 @@ import com.hospital.patient.repository.PatientRepository;
 import com.hospital.medicalRecord.service.MedicalRecordService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,8 +41,13 @@ public class AppointmentService {
     private final JWTService jwtService;
 
 
-    public List<GetAppointmentResponse> getAllAppointments() {
-        List<Appointment> appointments = appointmentRepository.findAll();
+    public PageResponse<GetAppointmentResponse> getAllAppointments(int page,int size,String sortBy,String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Appointment> appointmentPage = appointmentRepository.findAll(pageable);
+        List<Appointment> appointments = appointmentPage.getContent();
         if (appointments.isEmpty()) {
             throw new HospitalBusinessException("no appointments found");
         }
@@ -62,7 +71,15 @@ public class AppointmentService {
             appointmentsResponse.add(appointmentResponse);
         }
 
-        return appointmentsResponse;
+        return PageResponse.<GetAppointmentResponse>builder()
+                .data(appointmentsResponse)
+                .page(appointmentPage.getNumber())
+                .size(appointmentPage.getSize())
+                .totalElements(appointmentPage.getTotalElements())
+                .totalPages(appointmentPage.getTotalPages())
+                .first(appointmentPage.isFirst())
+                .last(appointmentPage.isLast())
+                .build();
 
     }
 

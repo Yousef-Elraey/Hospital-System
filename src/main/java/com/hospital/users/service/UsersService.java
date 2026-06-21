@@ -1,7 +1,9 @@
 package com.hospital.users.service;
 
+import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JWTService;
+import com.hospital.dto.PageResponse;
 import com.hospital.entity.Users;
 import com.hospital.users.dto.request.CreateUserRequest;
 import com.hospital.users.dto.request.UpdateUserRequest;
@@ -10,6 +12,10 @@ import com.hospital.users.dto.response.GetUserResponse;
 import com.hospital.users.dto.response.UpdateUserResponse;
 import com.hospital.users.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,8 +38,14 @@ public class UsersService {
     @Autowired
    private JWTService jwtService;
 
-    public List<GetUserResponse> getAllUsers() {
-        List<Users> usersAll = usersRepository.findAll();
+    public PageResponse<GetUserResponse> getAllUsers(int page,int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Users> usersPage = usersRepository.findAll(pageable);
+        List<Users> usersAll = usersPage.getContent();
         if (usersAll.isEmpty()){
             throw new HospitalBusinessException("no users found");
         }
@@ -47,7 +59,15 @@ public class UsersService {
             userResponseList.add(userResponse);
 
         });
-        return userResponseList;
+        return PageResponse.<GetUserResponse>builder()
+                .data(userResponseList)
+                .page(usersPage.getNumber())
+                .size(usersPage.getSize())
+                .totalElements(usersPage.getTotalElements())
+                .totalPages(usersPage.getTotalPages())
+                .first(usersPage.isFirst())
+                .last(usersPage.isLast())
+                .build();
     }
     public GetUserResponse getUserById(Long id) {
         Optional<Users> user = usersRepository.findById(id);

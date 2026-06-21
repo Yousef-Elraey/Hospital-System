@@ -2,6 +2,7 @@ package com.hospital.medicalRecord.service;
 
 import com.hospital.common.security.JWTService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
+import com.hospital.dto.PageResponse;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.common.exception.HospitalBusinessException;
@@ -13,8 +14,11 @@ import com.hospital.medicalRecord.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medicalRecord.repository.MedicalRecordRepository;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.treatment.repository.TreatmentRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,8 +37,14 @@ public class MedicalRecordService {
     private final TreatmentRepository treatmentRepository;
     private final JWTService jwtService;
 
-    public List<GetMedicalRecordResponse> getAllRecords() {
-        List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
+    public PageResponse<GetMedicalRecordResponse> getAllMedicalRecords(int page, int size,String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<MedicalRecord> medicalRecordPage = medicalRecordRepository.findAll(pageable);
+       List<MedicalRecord> medicalRecords = medicalRecordPage.getContent();
         if (medicalRecords.isEmpty()){
             throw new HospitalBusinessException("no medical_records found");
         }
@@ -54,7 +64,15 @@ public class MedicalRecordService {
                 medicalRecordsResponse.add(medicalRecordResponse);
         }
 
-        return medicalRecordsResponse;
+        return PageResponse.<GetMedicalRecordResponse>builder()
+                .data(medicalRecordsResponse)
+                .page(medicalRecordPage.getNumber())
+                .size(medicalRecordPage.getSize())
+                .totalElements(medicalRecordPage.getTotalElements())
+                .totalPages(medicalRecordPage.getTotalPages())
+                .first(medicalRecordPage.isFirst())
+                .last(medicalRecordPage.isLast())
+                .build();
 
     }
 

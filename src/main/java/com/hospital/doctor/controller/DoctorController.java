@@ -6,6 +6,7 @@ import com.hospital.doctor.dto.request.UpdateDoctorRequest;
 import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.doctor.dto.response.UpdateDoctorResponse;
+import com.hospital.dto.PageResponse;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.doctor.service.DoctorService;
@@ -26,8 +27,11 @@ public class DoctorController {
 private final DoctorService doctorService;
 
     @GetMapping("/doctors")
-    public ResponseEntity<List<GetDoctorResponse>> getAllDoctors() {
-        return new ResponseEntity<>(doctorService.getAllDoctors(), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetDoctorResponse>> getAllDoctors(@RequestParam(defaultValue = "0")int page,
+                                                                         @RequestParam(defaultValue = "10")int size,
+                                                                         @RequestParam(defaultValue = "id") String sortBy,
+                                                                         @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(doctorService.getAllDoctors(page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.hospital.users.controller;
 
+import com.hospital.dto.PageResponse;
 import com.hospital.entity.Users;
 import com.hospital.users.dto.request.CreateUserRequest;
 import com.hospital.users.dto.request.UpdateUserRequest;
@@ -22,8 +23,11 @@ public class UsersController {
     private UsersService usersService;
 
     @GetMapping("/users")
-    public ResponseEntity<List<GetUserResponse>> getAllUsers(){
-        return new ResponseEntity<>(usersService.getAllUsers(),HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetUserResponse>> getAllUsers(@RequestParam(defaultValue = "0")int page,
+                                                                     @RequestParam(defaultValue = "10")int size,
+                                                                     @RequestParam(defaultValue = "id") String sortBy,
+                                                                     @RequestParam(defaultValue = "asc") String direction){
+        return new ResponseEntity<>(usersService.getAllUsers(page,size,sortBy,direction),HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<GetUserResponse> getUserById(@PathVariable Long id){

@@ -1,12 +1,12 @@
 package com.hospital.medicalRecord.controller;
 
+import com.hospital.dto.PageResponse;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.request.UpdateMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.response.CreateMedicalRecordResponse;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.medicalRecord.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medicalRecord.service.MedicalRecordService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,8 +23,11 @@ public class MedicalRecordController {
    private final MedicalRecordService medicalRecordService;
 
     @GetMapping("/medical-records")
-    public ResponseEntity<List<GetMedicalRecordResponse>> getAllRecords() {
-            return new ResponseEntity<>(medicalRecordService.getAllRecords(), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetMedicalRecordResponse>> getAllRecords(@RequestParam(defaultValue = "0")int page,
+                                                                                @RequestParam(defaultValue = "10")int size,
+                                                                                @RequestParam(defaultValue = "id") String sortBy,
+                                                                                @RequestParam(defaultValue = "asc") String direction) {
+            return new ResponseEntity<>(medicalRecordService.getAllMedicalRecords(page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

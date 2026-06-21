@@ -1,6 +1,7 @@
 package com.hospital.patient.service;
 
 import com.hospital.common.security.JWTService;
+import com.hospital.dto.PageResponse;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.patient.dto.request.CreatePatientRequest;
@@ -17,6 +18,10 @@ import com.hospital.patient.repository.PatientRepository;
 import com.hospital.medicalRecord.service.MedicalRecordService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,8 +38,15 @@ public class PatientService {
     private final MedicalRecordService medicalRecordService;
     private final JWTService jwtService;
 
-    public List<GetPatientResponse> getAllPatients() {
-        List<Patient> patients = patientRepository.findAll();
+    public PageResponse<GetPatientResponse> getAllPatients(int page, int size, String sortBy, String direction){
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Patient> patientPage = patientRepository.findAll(pageable);
+        List<Patient> patients = patientPage.getContent();
+
         List<GetPatientResponse> patientsResponse = new ArrayList<>();
         if (!patients.isEmpty()) {
             for (Patient patient : patients) {
@@ -52,7 +64,15 @@ public class PatientService {
                 patientsResponse.add(getPatientResponse);
             }
         }
-        return patientsResponse;
+        return PageResponse.<GetPatientResponse>builder()
+                .data(patientsResponse)
+                .page(patientPage.getNumber())
+                .size(patientPage.getSize())
+                .totalElements(patientPage.getTotalElements())
+                .totalPages(patientPage.getTotalPages())
+                .first(patientPage.isFirst())
+                .last(patientPage.isLast())
+                .build();
     }
 
     public GetPatientResponse getPatientById(Long id) {

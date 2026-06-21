@@ -1,5 +1,6 @@
 package com.hospital.speciality.controller;
 
+import com.hospital.dto.PageResponse;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.speciality.dto.request.CreateSpecialityRequest;
 import com.hospital.speciality.dto.request.UpdateSpecialityRequest;
@@ -23,8 +24,11 @@ public class SpecialityController {
   private final SpecialityService specialityService;
 
     @GetMapping("/specialities")
-    public ResponseEntity<List<GetSpecialityResponse>> getAllSpecialities() {
-        return new ResponseEntity<>(specialityService.getAllSpecialities(), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetSpecialityResponse>> getAllSpecialities(@RequestParam(defaultValue = "0")int page,
+                                                                                  @RequestParam(defaultValue = "10")int size,
+                                                                                  @RequestParam(defaultValue = "id") String sortBy,
+                                                                                  @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(specialityService.getAllSpecialities(page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
