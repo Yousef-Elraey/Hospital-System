@@ -8,6 +8,7 @@ import com.hospital.users.dto.response.CreateUserResponse;
 import com.hospital.users.dto.response.GetUserResponse;
 import com.hospital.users.dto.response.UpdateUserResponse;
 import com.hospital.users.service.UsersService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,12 @@ public class UsersController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Users user){
         return new ResponseEntity<>(usersService.verify(user),HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request) {
+        usersService.logout(request);
+        return new ResponseEntity<>("Logged out successfully",HttpStatus.OK);
     }
 
     @PutMapping("/update")

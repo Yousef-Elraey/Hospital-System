@@ -1,10 +1,12 @@
 package com.hospital.common.security;
 
+import com.hospital.redis.service.TokenBlackListService;
 import com.hospital.users.service.MyUsersDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,11 +19,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
-    @Autowired
-    private JWTService jwtService;
-    @Autowired
-    ApplicationContext context;
+
+    private final JWTService jwtService;
+
+    private final ApplicationContext context;
+    private final TokenBlackListService tokenBlackListService;
+
 //    @Autowired
 //    MyUsersDetailsService usersDetailsService;
 
@@ -35,6 +40,16 @@ public class JwtFilter extends OncePerRequestFilter {
         String userName = null;
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             token = authHeader.substring(7);
+            if(tokenBlackListService
+                    .isBlacklisted(token)) {
+
+                response.sendError(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Token has been revoked"
+                );
+
+                return;
+            }
             userName = jwtService.extractUserName(token);
         }
 

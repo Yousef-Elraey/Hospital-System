@@ -5,17 +5,21 @@ import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JWTService;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.Users;
+import com.hospital.redis.service.TokenBlackListService;
 import com.hospital.users.dto.request.CreateUserRequest;
 import com.hospital.users.dto.request.UpdateUserRequest;
 import com.hospital.users.dto.response.CreateUserResponse;
 import com.hospital.users.dto.response.GetUserResponse;
 import com.hospital.users.dto.response.UpdateUserResponse;
 import com.hospital.users.repository.UsersRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,20 +27,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UsersService {
-    @Autowired
-    private UsersRepository usersRepository;
-
+    private final UsersRepository usersRepository;
    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+    private final AuthenticationManager authenticationManager;
+   private final JWTService jwtService;
+    private final TokenBlackListService tokenBlacklistService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-   private JWTService jwtService;
 
     public PageResponse<GetUserResponse> getAllUsers(int page,int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
@@ -107,6 +110,27 @@ public class UsersService {
         }
         throw new HospitalBusinessException("you are not authenticated");
 
+    }
+
+    public void logout(HttpServletRequest request) {
+        String authHeader =
+                request.getHeader("Authorization");
+
+        if(authHeader == null ||
+                !authHeader.startsWith("Bearer ")) {
+            throw new HospitalBusinessException("Token not found");
+        }
+
+        String token = authHeader.substring(7);
+        Date expiration = jwtService.extractExpiration(token);
+        long ttl = expiration.getTime() - System.currentTimeMillis();
+        if(ttl > 0) {
+            tokenBlacklistService
+                    .blacklistToken(
+                            token,
+                            ttl
+                    );
+        }
     }
 
     public UpdateUserResponse updateUser(UpdateUserRequest userRequest) {
