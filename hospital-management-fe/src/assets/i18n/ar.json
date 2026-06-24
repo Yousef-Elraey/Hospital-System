@@ -1,0 +1,350 @@
+{
+  "app": {
+    "title": "إدارة المستشفى"
+  },
+  "footer": {
+    "copyright": "© {{year}} إدارة المستشفى. جميع الحقوق محفوظة."
+  },
+  "nav": {
+    "menu": "القائمة",
+    "patients": "المرضى",
+    "doctors": "الأطباء",
+    "specialities": "التخصصات",
+    "appointments": "المواعيد",
+    "appointmentSlots": "الفترات الزمنية للمواعيد",
+    "billing": "الفواتير",
+    "reports": "التقارير والتحليلات",
+    "medicalRecords": "السجلات الطبية",
+    "logout": "تسجيل الخروج"
+  },
+  "breadcrumb": {
+    "home": "لوحة التحكم",
+    "patients": "المرضى",
+    "doctors": "الأطباء",
+    "specialities": "التخصصات",
+    "appointments": "المواعيد",
+    "appointmentSlots": "الفترات الزمنية للمواعيد",
+    "billing": "الفواتير",
+    "reports": "التقارير والتحليلات",
+    "medicalRecords": "السجلات الطبية",
+    "add": "إضافة",
+    "edit": "تعديل",
+    "view": "عرض",
+    "book": "حجز",
+    "slots": "الفترات الزمنية"
+  },
+  "confirm": {
+    "title": "تأكيد الحذف",
+    "confirm": "حذف",
+    "cancel": "إلغاء",
+    "deletePatient": "هل أنت متأكد من حذف هذا المريض؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteDoctor": "هل أنت متأكد من حذف هذا الطبيب؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteSpeciality": "هل أنت متأكد من حذف هذا التخصص؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteAppointment": "هل أنت متأكد من حذف هذا الموعد؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteSlot": "هل أنت متأكد من حذف هذه الفترة الزمنية؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteBilling": "هل أنت متأكد من حذف سجل الفاتورة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteRecord": "هل أنت متأكد من حذف السجل الطبي هذا؟ لا يمكن التراجع عن هذا الإجراء."
+  },
+  "common": {
+    "back": "رجوع",
+    "ok": "موافق",
+    "next": "التالي",
+    "previous": "السابق",
+    "add": "إضافة",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "edit": "تعديل",
+    "view": "عرض",
+    "delete": "حذف",
+    "loading": "جاري التحميل...",
+    "noData": "لا توجد بيانات.",
+    "namePlaceholder": "محمد أحمد علي",
+    "filterList": "تصفية…",
+    "search": "بحث",
+    "clear": "مسح"
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب.",
+    "phoneFormat": "رقم الهاتف يجب أن يبدأ بـ 01 ويتكون من 11 رقمًا."
+  },
+  "login": {
+    "title": "إدارة المستشفى",
+    "subtitle": "سجّل الدخول للمتابعة",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "usernamePlaceholder": "أدخل اسم المستخدم",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "signIn": "تسجيل الدخول",
+    "errorRequired": "يرجى إدخال اسم المستخدم.",
+    "errorInvalid": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+    "noAccount": "ليس لديك حساب؟",
+    "goToRegister": "إنشاء حساب"
+  },
+  "register": {
+    "title": "إنشاء حساب",
+    "subtitle": "تسجيل مستخدم جديد",
+    "username": "اسم المستخدم",
+    "password": "كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+    "usernamePlaceholder": "أدخل اسم المستخدم",
+    "passwordPlaceholder": "أدخل كلمة المرور",
+    "confirmPasswordPlaceholder": "أعد إدخال كلمة المرور",
+    "signUp": "تسجيل",
+    "hasAccount": "لديك حساب بالفعل؟",
+    "goToLogin": "تسجيل الدخول",
+    "errorRequiredUsername": "يرجى إدخال اسم المستخدم.",
+    "errorRequiredPassword": "يرجى إدخال كلمة المرور.",
+    "errorPasswordMismatch": "كلمتا المرور غير متطابقتين.",
+    "errorFailed": "فشل التسجيل. حاول مرة أخرى."
+  },
+  "dashboard": {
+    "title": "لوحة التحكم",
+    "subtitle": "إدارة عمليات المستشفى من الوحدات أدناه.",
+    "desc": {
+      "patients": "تسجيل وإدارة سجلات المرضى",
+      "doctors": "ملفات الأطباء والتعيينات",
+      "appointments": "جدولة ومتابعة الزيارات",
+      "appointmentSlots": "إنشاء الفترات الزمنية المتاحة",
+      "reports": "مخططات ومؤشرات وتحليلات",
+      "billing": "الفواتير والمدفوعات",
+      "medicalRecords": "التشخيصات والعلاجات"
+    }
+  },
+  "patients": {
+    "title": "المرضى",
+    "subtitle": "إدارة سجلات المرضى",
+    "addPatient": "إضافة مريض",
+    "newPatient": "مريض جديد",
+    "editPatient": "تعديل المريض",
+    "name": "الاسم",
+    "dateOfBirth": "تاريخ الميلاد",
+    "gender": "النوع",
+    "gender.MALE": "ذكر",
+    "gender.FEMALE": "أنثى",
+    "gender.OTHER": "آخر",
+    "selectGender": "اختر النوع",
+    "phone": "رقم الهاتف",
+    "genderPlaceholder": "مثل: ذ / ؤ",
+    "noPatients": "لا يوجد مرضى.",
+    "viewPatient": "عرض المريض"
+  },
+  "doctors": {
+    "title": "الأطباء",
+    "subtitle": "إدارة ملفات الأطباء",
+    "addDoctor": "إضافة طبيب",
+    "newDoctor": "طبيب جديد",
+    "editDoctor": "تعديل الطبيب",
+    "name": "الاسم",
+    "speciality": "التخصص",
+    "contact": "رقم الهاتف",
+    "noDoctors": "لا يوجد أطباء.",
+    "viewDoctor": "عرض الطبيب"
+  },
+  "specialities": {
+    "title": "التخصصات",
+    "subtitle": "إدارة قائمة التخصصات",
+    "addSpeciality": "إضافة تخصص",
+    "newSpeciality": "تخصص جديد",
+    "editSpeciality": "تعديل التخصص",
+    "viewSpeciality": "عرض التخصص",
+    "nameEn": "التخصص (English)",
+    "nameAr": "التخصص (العربية)",
+    "noSpecialities": "لا توجد تخصصات."
+  },
+  "appointments": {
+    "title": "المواعيد",
+    "subtitle": "جدولة وإدارة المواعيد",
+    "addAppointment": "إضافة موعد",
+    "bookNewPatient": "حجز (مريض جديد)",
+    "newAppointment": "موعد جديد",
+    "editAppointment": "تعديل الموعد",
+    "bookTitle": "حجز موعد (مريض جديد)",
+    "dateTime": "التاريخ والوقت",
+    "date": "التاريخ",
+    "time": "الوقت",
+    "doctor": "الطبيب",
+    "patient": "المريض",
+    "patientName": "اسم المريض",
+    "patientDataStep": "بيانات المريض",
+    "appointmentDetailsStep": "تفاصيل الموعد",
+    "visitTypeQuestion": "هل هذه زيارتك الأولى؟",
+    "visitTypeNew": "نعم (مريض جديد)",
+    "visitTypeExisting": "لا (مريض سبق له الحضور)",
+    "patientNotFound": "لا يوجد مريض بهذا الرقم.",
+    "patientSelectedLocked": "تم تحديد المريض تلقائيًا ولا يمكن تغييره.",
+    "type": "نوع الموعد",
+    "selectType": "اختر نوع الموعد",
+    "appointmentType": {
+      "INITIAL_CONSULTATION": "كشف",
+      "FOLLOW_UP_CONSULTATION": "استشارة(اعادة)"
+    },
+    "selectDoctor": "اختر الطبيب",
+    "selectPatient": "اختر المريض",
+    "bookWithoutPaid": "حجز بدون دفع",
+    "bookWithPaid": "حجز ودفع",
+    "book": "حجز",
+    "status": "الحالة",
+    "noAppointments": "لا توجد مواعيد.",
+    "viewAppointment": "عرض الموعد",
+    "bookValidationError": "أدخل اسم المريض والطبيب والوقت."
+  },
+  "appointmentSlots": {
+    "title": "الفترات الزمنية للمواعيد",
+    "subtitle": "إنشاء وإدارة أوقات توفر الأطباء للحجز",
+    "manageSlots": "إدارة الفترات الزمنية",
+    "backToAppointments": "العودة إلى المواعيد",
+    "backToSlots": "العودة إلى الفترات الزمنية",
+    "generateTitle": "إنشاء فترات زمنية",
+    "generateHint": "حدد نطاق التاريخ وساعات العمل اليومية. تُنشأ الفترات بالفاصل الزمني المختار لكل يوم.",
+    "startDate": "بداية الفترة",
+    "endDate": "نهاية الفترة",
+    "dailyStartTime": "وقت البدء اليومي",
+    "dailyEndTime": "وقت الانتهاء اليومي",
+    "slotDuration": "مدة الفترة",
+    "minutes": "دقيقة",
+    "excludeWeekends": "استبعاد عطلة نهاية الأسبوع",
+    "preview": "معاينة العدد",
+    "generate": "إنشاء الفترات",
+    "previewCount": "سيتم إنشاء {{count}} فترة زمنية.",
+    "generateSuccess": "تم إنشاء {{count}} فترة زمنية بنجاح.",
+    "existingTitle": "الفترات الزمنية الحالية",
+    "fromDate": "من",
+    "toDate": "إلى",
+    "startTime": "البداية",
+    "endTime": "النهاية",
+    "allStatuses": "كل الحالات",
+    "noSlots": "لا توجد فترات زمنية.",
+    "cannotDeleteBooked": "لا يمكن حذف الفترات المحجوزة.",
+    "status": {
+      "AVAILABLE": "متاح",
+      "BOOKED": "محجوز",
+      "BLOCKED": "محظور"
+    },
+    "validation": {
+      "doctorRequired": "يرجى اختيار الطبيب.",
+      "dateRangeRequired": "يرجى اختيار تاريخ بداية ونهاية صالحين.",
+      "endBeforeStart": "يجب أن يكون تاريخ النهاية في أو بعد تاريخ البداية.",
+      "timeRangeRequired": "يرجى تحديد وقت البدء والانتهاء اليومي.",
+      "endTimeBeforeStart": "يجب أن يكون وقت الانتهاء اليومي بعد وقت البدء.",
+      "durationRequired": "يرجى اختيار مدة فترة صالحة.",
+      "noSlotsToCreate": "لن يتم إنشاء أي فترات بالإعدادات الحالية."
+    }
+  },
+  "billing": {
+    "title": "الفواتير",
+    "subtitle": "إدارة فواتير المرضى",
+    "addBilling": "إضافة فاتورة",
+    "newBilling": "فاتورة جديدة",
+    "editBilling": "تعديل الفاتورة",
+    "amount": "المبلغ",
+    "noBillings": "لا توجد فواتير.",
+    "viewBilling": "عرض الفاتورة"
+  },
+  "apiFeedback": {
+    "successTitle": "تم بنجاح",
+    "errorTitle": "خطأ",
+    "ok": "موافق",
+    "successDefault": "تمت العملية بنجاح.",
+    "errorNetwork": "خطأ في الشبكة. تحقق من الاتصال.",
+    "errorGeneric": "فشل الطلب (HTTP {{status}}).",
+    "bookSuccess": "تم حجز الموعد. في الانتظار: {{count}}، الحالة: {{status}}."
+  },
+  "apiErrors": {
+    "detail": {
+      "phoneAlreadyExists": "رقم الهاتف هذا مسجّل مسبقاً.",
+      "noBillingsFound": "لا توجد فواتير.",
+      "noAppointmentsFound": "لا توجد مواعيد.",
+      "noMedicalRecordsFound": "لا توجد سجلات طبية."
+    }
+  },
+  "medicalRecords": {
+    "title": "السجلات الطبية",
+    "subtitle": "عرض وإدارة السجلات الطبية",
+    "addRecord": "إضافة سجل",
+    "newRecord": "سجل طبي جديد",
+    "editRecord": "تعديل السجل الطبي",
+    "diagnose": "التشخيص",
+    "treatment": "العلاج",
+    "noRecords": "لا توجد سجلات طبية.",
+    "viewRecord": "عرض السجل الطبي"
+  },
+  "reports": {
+    "title": "التقارير والتحليلات",
+    "subtitle": "رؤى المستشفى للمرضى والأطباء والمالية",
+    "mockNotice": "يتم عرض بيانات تجريبية — اربط واجهة التقارير الخلفية لتحميل البيانات الحية.",
+    "sections": {
+      "patients": "المرضى",
+      "doctors": "الأطباء",
+      "financial": "المالية"
+    },
+    "kpi": {
+      "totalPatients": "إجمالي المرضى",
+      "totalDoctors": "الأطباء النشطون",
+      "monthlyRevenue": "الإيرادات الشهرية",
+      "pendingBills": "الفواتير المعلقة",
+      "vsLastMonth": "مقارنة بالشهر الماضي"
+    },
+    "charts": {
+      "patientRegistrations": "تسجيلات المرضى الجدد (12 شهراً)",
+      "patientsByGender": "المرضى حسب الجنس",
+      "doctorsBySpeciality": "الأطباء حسب التخصص",
+      "appointmentsByDoctor": "أكثر الأطباء مواعيداً",
+      "revenueVsExpenses": "الإيرادات مقابل المصروفات",
+      "revenue": "الإيرادات",
+      "expenses": "المصروفات",
+      "paymentStatus": "الفواتير حسب حالة الدفع",
+      "recentTransactions": "المعاملات الأخيرة"
+    },
+    "table": {
+      "date": "التاريخ",
+      "patient": "المريض",
+      "description": "الوصف",
+      "amount": "المبلغ",
+      "status": "الحالة"
+    },
+    "months": {
+      "jan": "يناير",
+      "feb": "فبراير",
+      "mar": "مارس",
+      "apr": "أبريل",
+      "may": "مايو",
+      "jun": "يونيو",
+      "jul": "يوليو",
+      "aug": "أغسطس",
+      "sep": "سبتمبر",
+      "oct": "أكتوبر",
+      "nov": "نوفمبر",
+      "dec": "ديسمبر"
+    },
+    "specialities": {
+      "cardiology": "أمراض القلب",
+      "pediatrics": "طب الأطفال",
+      "orthopedics": "العظام",
+      "neurology": "الأعصاب",
+      "general": "الطب العام",
+      "dermatology": "الجلدية",
+      "other": "أخرى"
+    },
+    "doctors": {
+      "ahmed": "د. أحمد حسن",
+      "sara": "د. سارة محمود",
+      "omar": "د. عمر خليل",
+      "lina": "د. لينا إبراهيم",
+      "khalid": "د. خالد ناصر"
+    },
+    "paymentStatus": {
+      "paid": "مدفوع",
+      "pending": "معلق",
+      "overdue": "متأخر",
+      "partial": "مدفوع جزئياً"
+    },
+    "transactions": {
+      "consultation": "استشارة",
+      "labTest": "تحليل مخبري",
+      "surgery": "عملية جراحية",
+      "emergency": "زيارة طوارئ",
+      "radiology": "أشعة",
+      "pharmacy": "صيدلية"
+    }
+  }
+}

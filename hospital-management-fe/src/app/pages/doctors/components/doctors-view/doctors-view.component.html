@@ -1,0 +1,21 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="doctors.viewDoctor" subtitleKey="doctors.subtitle" iconName="doctors"></app-page-header>
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else if (doctor) {
+    <div class="card form-card">
+      <dl class="view-dl">
+        <dt>{{ 'doctors.name' | translate }}</dt>
+        <dd>{{ doctor.name }}</dd>
+        <dt>{{ 'doctors.speciality' | translate }}</dt>
+        <dd>{{ doctor.speciality || '-' }}</dd>
+        <dt>{{ 'doctors.contact' | translate }}</dt>
+        <dd>{{ doctor.contactNumber || '-' }}</dd>
+      </dl>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <a [routerLink]="['/doctors', id, 'edit']" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> {{ 'common.edit' | translate }}</a>
+        <a routerLink="/doctors" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> {{ 'common.back' | translate }}</a>
+      </div>
+    </div>
+  }
+</div>

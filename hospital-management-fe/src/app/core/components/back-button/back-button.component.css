@@ -1,0 +1,28 @@
+.back-btn {
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  padding: 0.35rem 0.85rem;
+  border-color: var(--hm-border, #e2e8f0);
+  color: var(--hm-text-secondary, #64748b);
+  background: var(--hm-surface, #fff);
+  box-shadow: var(--hm-shadow-sm);
+}
+
+.back-btn:hover {
+  background: var(--hm-surface-muted, #f1f5f9);
+  border-color: var(--hm-border-strong, #cbd5e1);
+  color: var(--hm-text, #0f172a);
+}
+
+.back-icon {
+  font-size: 0.85rem;
+}
+
+html[dir='rtl'] .back-icon {
+  transform: scaleX(-1);
+}
+
+.back-label {
+  white-space: nowrap;
+}

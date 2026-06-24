@@ -1,0 +1,46 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="billing.editBilling" subtitleKey="billing.subtitle" iconName="billing"></app-page-header>
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card form-card">
+      <form #formRef="ngForm" (ngSubmit)="save(formRef)">
+        <div class="mb-3">
+          <label class="form-label" for="editBillPatient">{{ 'appointments.patient' | translate }}</label>
+          <ng-select
+            id="editBillPatient"
+            class="w-100"
+            [items]="patientSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="model.patient_id"
+            name="patient_id"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectPatient' | translate"
+            appendTo="body"
+            #patRef="ngModel"
+            required
+            [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
+          />
+          @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="editBillAmount">{{ 'billing.amount' | translate }}</label>
+          <input id="editBillAmount" type="number" class="form-control" [(ngModel)]="model.amount" name="amount" required min="0" step="any"
+                 #amtRef="ngModel"
+                 [class.is-invalid]="amtRef.invalid && (amtRef.touched || formRef.submitted)" />
+          @if (amtRef.invalid && (amtRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>
+          <a [routerLink]="['/billing', id]" class="btn btn-outline-secondary"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</a>
+        </div>
+      </form>
+    </div>
+  }
+</div>

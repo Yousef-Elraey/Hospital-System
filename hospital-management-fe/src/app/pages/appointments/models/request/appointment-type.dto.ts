@@ -1,0 +1,1 @@
+export type AppointmentType = 'INITIAL_CONSULTATION' | 'FOLLOW_UP_CONSULTATION';

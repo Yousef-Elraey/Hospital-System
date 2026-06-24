@@ -1,0 +1,57 @@
+<div class="auth-page min-vh-100 position-relative d-flex flex-column align-items-center justify-content-center p-4">
+  <div class="position-absolute top-0 p-3" [ngClass]="locale.isRtl ? 'start-0' : 'end-0'">
+    <div class="btn-group btn-group-sm" role="group">
+      <button type="button" class="btn"
+              [class.btn-primary]="locale.currentLang === 'en'"
+              [class.btn-outline-secondary]="locale.currentLang !== 'en'"
+              (click)="locale.setLanguage('en')">EN</button>
+      <button type="button" class="btn"
+              [class.btn-primary]="locale.currentLang === 'ar'"
+              [class.btn-outline-secondary]="locale.currentLang !== 'ar'"
+              (click)="locale.setLanguage('ar')">ع</button>
+    </div>
+  </div>
+
+  <div class="card auth-card border-0">
+    <div class="card-body p-4 p-md-5">
+      <div class="auth-logo auth-logo--register mb-3">
+        <i class="fa-solid fa-user-plus fs-4"></i>
+      </div>
+      <h1 class="h3 fw-bold mb-2">{{ 'register.title' | translate }}</h1>
+      <p class="text-muted small mb-4">{{ 'register.subtitle' | translate }}</p>
+      <form (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label class="form-label small text-uppercase fw-semibold text-muted">
+            <i class="fa-solid fa-user me-1 opacity-75"></i>{{ 'register.username' | translate }}
+          </label>
+          <input type="text" class="form-control" [(ngModel)]="username" name="username" [placeholder]="'register.usernamePlaceholder' | translate" autocomplete="username" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-uppercase fw-semibold text-muted">
+            <i class="fa-solid fa-lock me-1 opacity-75"></i>{{ 'register.password' | translate }}
+          </label>
+          <input type="password" class="form-control" [(ngModel)]="password" name="password" [placeholder]="'register.passwordPlaceholder' | translate" autocomplete="new-password" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label small text-uppercase fw-semibold text-muted">
+            <i class="fa-solid fa-lock me-1 opacity-75"></i>{{ 'register.confirmPassword' | translate }}
+          </label>
+          <input type="password" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" [placeholder]="'register.confirmPasswordPlaceholder' | translate" autocomplete="new-password" />
+        </div>
+        @if (error) {
+          <div class="alert alert-danger d-flex align-items-center gap-2 py-2 small mb-3" role="alert">
+            <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+          </div>
+        }
+        <button type="submit" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2" [disabled]="submitting">
+          <i class="fa-solid fa-user-plus"></i> {{ 'register.signUp' | translate }}
+        </button>
+        <div class="text-center small mt-3">
+          {{ 'register.hasAccount' | translate }}
+          <a routerLink="/login">{{ 'register.goToLogin' | translate }}</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

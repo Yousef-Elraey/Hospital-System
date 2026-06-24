@@ -1,0 +1,77 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="billing.title" subtitleKey="billing.subtitle" iconName="billing">
+    <a pageActions routerLink="/billing/add" class="btn btn-primary">
+      <i class="fa-solid fa-plus"></i>
+      {{ 'billing.addBilling' | translate }}
+    </a>
+  </app-page-header>
+  <div class="card filter-panel">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-6">
+        <label class="form-label">{{ 'appointments.patient' | translate }}</label>
+        <ng-select
+          class="w-100"
+          [items]="patientSelectOptions"
+          bindLabel="label"
+          bindValue="value"
+          [(ngModel)]="filters.patient_id"
+          name="blFilterPatient"
+          [clearable]="true"
+          [searchable]="true"
+          [placeholder]="'appointments.selectPatient' | translate"
+        />
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">{{ 'billing.amount' | translate }}</label>
+        <input type="number" class="form-control" [(ngModel)]="filters.amount" name="blFilterAmount" />
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card data-table-card">
+      <div class="table-responsive">
+        <table class="table hm-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ 'appointments.patient' | translate }}</th>
+            <th>{{ 'billing.amount' | translate }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (b of list; track b.id) {
+            <tr>
+              <td>{{ b.id }}</td>
+              <td><a [routerLink]="['/billing', b.id]" class="fw-semibold link-primary text-decoration-none">{{ patientName(b.patient_id) }}</a></td>
+              <td>{{ b.amount }}</td>
+              <td>
+                <div class="table-actions" role="group" [attr.aria-label]="'common.view' | translate">
+                  <a [routerLink]="['/billing', b.id]" class="btn btn-light btn-sm" [attr.title]="'common.view' | translate" [attr.aria-label]="'common.view' | translate"><i class="fa-solid fa-eye text-info"></i></a>
+                  <a [routerLink]="['/billing', b.id, 'edit']" class="btn btn-light btn-sm" [attr.title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"><i class="fa-solid fa-pen-to-square text-primary"></i></a>
+                  <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate" (click)="delete(b)"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      </div>
+        @if (list.length === 0) {
+        <p class="data-table-empty mb-0">{{ 'billing.noBillings' | translate }}</p>
+      }
+    </div>
+  }
+</div>
+
+
+
+
+

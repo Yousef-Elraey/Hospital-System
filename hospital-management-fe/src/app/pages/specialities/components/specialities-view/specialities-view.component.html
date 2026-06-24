@@ -1,0 +1,19 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="specialities.viewSpeciality" subtitleKey="specialities.subtitle" iconName="specialities"></app-page-header>
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else if (speciality) {
+    <div class="card form-card">
+      <dl class="view-dl">
+        <dt>{{ 'specialities.nameEn' | translate }}</dt>
+        <dd>{{ speciality.nameEn || '-' }}</dd>
+        <dt>{{ 'specialities.nameAr' | translate }}</dt>
+        <dd>{{ speciality.nameAr || '-' }}</dd>
+      </dl>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <a [routerLink]="['/specialities', id, 'edit']" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> {{ 'common.edit' | translate }}</a>
+        <a routerLink="/specialities" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> {{ 'common.back' | translate }}</a>
+      </div>
+    </div>
+  }
+</div>

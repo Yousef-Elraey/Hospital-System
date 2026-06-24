@@ -1,0 +1,73 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="appointments.newAppointment" subtitleKey="appointments.subtitle" iconName="appointmentsClipboard"></app-page-header>
+  @if (selectedPatient) {
+    <div class="patient-summary mb-3" [attr.dir]="locale.currentLang === 'ar' ? 'rtl' : 'ltr'">
+      <div class="patient-summary__icon">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="patient-summary__content">
+        <div class="patient-summary__label">{{ 'appointments.patient' | translate }}</div>
+        <div class="patient-summary__name">{{ selectedPatient.name }}</div>
+      </div>
+      <div class="patient-summary__meta">
+        <div class="patient-summary__meta-label">{{ 'patients.phone' | translate }}</div>
+        <div class="patient-summary__phone">{{ selectedPatient.phone }}</div>
+      </div>
+    </div>
+  }
+  <div class="card form-card">
+    <form #formRef="ngForm" (ngSubmit)="bookWithoutPaid(formRef)">
+      <app-appointment-details-form
+        [doctorSelectOptions]="doctorSelectOptions"
+        [minDate]="apptMinNgb"
+        [maxDate]="apptMaxNgb"
+        [(doctorId)]="model.doctorId"
+        [(appointmentType)]="model.appointmentType"
+        [(dateStr)]="apptDateStr"
+        [(time)]="apptTime"
+        doctorName="doctorId"
+        appointmentTypeName="appointmentType"
+        dateName="apptDate"
+        timeName="apptTime"
+        doctorInputId="apptDoctor"
+        appointmentTypeInputId="apptType"
+        timeInputId="apptTime"
+        [submitted]="formRef.submitted"
+      />
+      @if (!selectedPatient) {
+        <div class="mb-3">
+          <label class="form-label" for="apptPatient">{{ 'appointments.patient' | translate }}</label>
+          <ng-select
+            id="apptPatient"
+            class="w-100"
+            [items]="patientSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="model.patientId"
+            name="patientId"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectPatient' | translate"
+            #patRef="ngModel"
+            required
+            [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
+          />
+          @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+      }
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-calendar-check"></i>
+          {{ 'appointments.bookWithoutPaid' | translate }}
+        </button>
+        <button type="button" class="btn btn-success" (click)="bookWithPaid(formRef)">
+          <i class="fa-solid fa-credit-card"></i>
+          {{ 'appointments.bookWithPaid' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="cancel()"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</button>
+      </div>
+    </form>
+  </div>
+</div>

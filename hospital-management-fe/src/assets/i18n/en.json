@@ -1,0 +1,350 @@
+{
+  "app": {
+    "title": "Hospital Management"
+  },
+  "footer": {
+    "copyright": "© {{year}} Hospital Management. All rights reserved."
+  },
+  "nav": {
+    "menu": "Menu",
+    "patients": "Patients",
+    "doctors": "Doctors",
+    "specialities": "Specialities",
+    "appointments": "Appointments",
+    "appointmentSlots": "Appointment Time Slots",
+    "billing": "Billing",
+    "reports": "Reports & Analytics",
+    "medicalRecords": "Medical Records",
+    "logout": "Logout"
+  },
+  "breadcrumb": {
+    "home": "Dashboard",
+    "patients": "Patients",
+    "doctors": "Doctors",
+    "specialities": "Specialities",
+    "appointments": "Appointments",
+    "appointmentSlots": "Appointment Time Slots",
+    "billing": "Billing",
+    "reports": "Reports & Analytics",
+    "medicalRecords": "Medical Records",
+    "add": "Add",
+    "edit": "Edit",
+    "view": "View",
+    "book": "Book",
+    "slots": "Time Slots"
+  },
+  "confirm": {
+    "title": "Confirm deletion",
+    "confirm": "Delete",
+    "cancel": "Cancel",
+    "deletePatient": "Are you sure you want to delete this patient? This cannot be undone.",
+    "deleteDoctor": "Are you sure you want to delete this doctor? This cannot be undone.",
+    "deleteSpeciality": "Are you sure you want to delete this speciality? This cannot be undone.",
+    "deleteAppointment": "Are you sure you want to delete this appointment? This cannot be undone.",
+    "deleteSlot": "Are you sure you want to delete this time slot? This cannot be undone.",
+    "deleteBilling": "Are you sure you want to delete this billing record? This cannot be undone.",
+    "deleteRecord": "Are you sure you want to delete this medical record? This cannot be undone."
+  },
+  "common": {
+    "back": "Back",
+    "ok": "OK",
+    "next": "Next",
+    "previous": "Previous",
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "view": "View",
+    "delete": "Delete",
+    "loading": "Loading...",
+    "noData": "No data.",
+    "namePlaceholder": "mohamed ahmed ali",
+    "filterList": "Filter…",
+    "search": "Search",
+    "clear": "Clear"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "phoneFormat": "Phone must start with 01 and be exactly 11 digits."
+  },
+  "login": {
+    "title": "Hospital Management",
+    "subtitle": "Sign in to continue",
+    "username": "Username",
+    "password": "Password",
+    "usernamePlaceholder": "Enter your username",
+    "passwordPlaceholder": "Enter your password",
+    "signIn": "Sign in",
+    "errorRequired": "Please enter a username.",
+    "errorInvalid": "Invalid username or password.",
+    "noAccount": "Don't have an account?",
+    "goToRegister": "Create one"
+  },
+  "register": {
+    "title": "Create account",
+    "subtitle": "Register a new user account",
+    "username": "Username",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "usernamePlaceholder": "Enter username",
+    "passwordPlaceholder": "Enter password",
+    "confirmPasswordPlaceholder": "Re-enter password",
+    "signUp": "Sign up",
+    "hasAccount": "Already have an account?",
+    "goToLogin": "Sign in",
+    "errorRequiredUsername": "Please enter a username.",
+    "errorRequiredPassword": "Please enter a password.",
+    "errorPasswordMismatch": "Passwords do not match.",
+    "errorFailed": "Registration failed. Please try again."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Manage hospital operations from the modules below.",
+    "desc": {
+      "patients": "Register and manage patient records",
+      "doctors": "Doctor profiles and assignments",
+      "appointments": "Schedule and track visits",
+      "appointmentSlots": "Generate available time slots",
+      "reports": "Charts, KPIs, and analytics",
+      "billing": "Invoices and payments",
+      "medicalRecords": "Diagnoses and treatments"
+    }
+  },
+  "patients": {
+    "title": "Patients",
+    "subtitle": "Manage patient records",
+    "addPatient": "Add Patient",
+    "newPatient": "New Patient",
+    "editPatient": "Edit Patient",
+    "name": "Name",
+    "dateOfBirth": "Date of birth",
+    "gender": "Gender",
+    "gender.MALE": "Male",
+    "gender.FEMALE": "Female",
+    "gender.OTHER": "Other",
+    "selectGender": "Select gender",
+    "phone": "Phone",
+    "genderPlaceholder": "e.g. M/F",
+    "noPatients": "No patients.",
+    "viewPatient": "View Patient"
+  },
+  "doctors": {
+    "title": "Doctors",
+    "subtitle": "Manage doctor profiles",
+    "addDoctor": "Add Doctor",
+    "newDoctor": "New Doctor",
+    "editDoctor": "Edit Doctor",
+    "name": "Name",
+    "speciality": "Speciality",
+    "contact": "Contact",
+    "noDoctors": "No doctors.",
+    "viewDoctor": "View Doctor"
+  },
+  "specialities": {
+    "title": "Specialities",
+    "subtitle": "Manage speciality catalog",
+    "addSpeciality": "Add Speciality",
+    "newSpeciality": "New Speciality",
+    "editSpeciality": "Edit Speciality",
+    "viewSpeciality": "View Speciality",
+    "nameEn": "Speciality (English)",
+    "nameAr": "Speciality (Arabic)",
+    "noSpecialities": "No specialities."
+  },
+  "appointments": {
+    "title": "Appointments",
+    "subtitle": "Schedule and manage appointments",
+    "addAppointment": "Add Appointment",
+    "bookNewPatient": "Book (new patient)",
+    "newAppointment": "New Appointment",
+    "editAppointment": "Edit Appointment",
+    "bookTitle": "Book appointment (new patient)",
+    "dateTime": "Date & time",
+    "date": "Date",
+    "time": "Time",
+    "doctor": "Doctor",
+    "patient": "Patient",
+    "patientName": "Patient name",
+    "patientDataStep": "Patient data",
+    "appointmentDetailsStep": "Appointment details",
+    "visitTypeQuestion": "Is this your first visit?",
+    "visitTypeNew": "Yes (new patient)",
+    "visitTypeExisting": "No (returning patient)",
+    "patientNotFound": "No patient found with this phone number.",
+    "patientSelectedLocked": "Patient is pre-selected from phone lookup and cannot be changed.",
+    "type": "Appointment type",
+    "selectType": "Select type",
+    "appointmentType": {
+      "INITIAL_CONSULTATION": "Initial consultation",
+      "FOLLOW_UP_CONSULTATION": "Follow-up consultation"
+    },
+    "selectDoctor": "Select doctor",
+    "selectPatient": "Select patient",
+    "bookWithoutPaid": "Book (unpaid)",
+    "bookWithPaid": "Book & pay",
+    "book": "Book",
+    "status": "Status",
+    "noAppointments": "No appointments.",
+    "viewAppointment": "View Appointment",
+    "bookValidationError": "Fill patient name, doctor and timing."
+  },
+  "appointmentSlots": {
+    "title": "Appointment Time Slots",
+    "subtitle": "Generate and manage doctor availability for booking",
+    "manageSlots": "Manage time slots",
+    "backToAppointments": "Back to appointments",
+    "backToSlots": "Back to time slots",
+    "generateTitle": "Generate time slots",
+    "generateHint": "Define a date range and daily working hours. Slots are created at the chosen interval for each day.",
+    "startDate": "Period start",
+    "endDate": "Period end",
+    "dailyStartTime": "Daily start time",
+    "dailyEndTime": "Daily end time",
+    "slotDuration": "Slot duration",
+    "minutes": "min",
+    "excludeWeekends": "Exclude weekends",
+    "preview": "Preview count",
+    "generate": "Generate slots",
+    "previewCount": "{{count}} slot(s) will be created.",
+    "generateSuccess": "{{count}} slot(s) created successfully.",
+    "existingTitle": "Existing time slots",
+    "fromDate": "From",
+    "toDate": "To",
+    "startTime": "Start",
+    "endTime": "End",
+    "allStatuses": "All statuses",
+    "noSlots": "No time slots found.",
+    "cannotDeleteBooked": "Booked slots cannot be deleted.",
+    "status": {
+      "AVAILABLE": "Available",
+      "BOOKED": "Booked",
+      "BLOCKED": "Blocked"
+    },
+    "validation": {
+      "doctorRequired": "Please select a doctor.",
+      "dateRangeRequired": "Please select a valid start and end date.",
+      "endBeforeStart": "End date must be on or after the start date.",
+      "timeRangeRequired": "Please set daily start and end times.",
+      "endTimeBeforeStart": "Daily end time must be after the start time.",
+      "durationRequired": "Please select a valid slot duration.",
+      "noSlotsToCreate": "No slots would be created with the current settings."
+    }
+  },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Manage patient billing and invoices",
+    "addBilling": "Add Billing",
+    "newBilling": "New Billing",
+    "editBilling": "Edit Billing",
+    "amount": "Amount",
+    "noBillings": "No billings.",
+    "viewBilling": "View Billing"
+  },
+  "apiFeedback": {
+    "successTitle": "Success",
+    "errorTitle": "Error",
+    "ok": "OK",
+    "successDefault": "Operation completed successfully.",
+    "errorNetwork": "Network error. Check your connection.",
+    "errorGeneric": "Request failed (HTTP {{status}}).",
+    "bookSuccess": "Appointment booked. Waiting: {{count}}, status: {{status}}."
+  },
+  "apiErrors": {
+    "detail": {
+      "phoneAlreadyExists": "This phone number already exists.",
+      "noBillingsFound": "No billings found.",
+      "noAppointmentsFound": "No appointments found.",
+      "noMedicalRecordsFound": "No medical records found."
+    }
+  },
+  "medicalRecords": {
+    "title": "Medical Records",
+    "subtitle": "View and manage medical records",
+    "addRecord": "Add Record",
+    "newRecord": "New Medical Record",
+    "editRecord": "Edit Medical Record",
+    "diagnose": "Diagnose",
+    "treatment": "Treatment",
+    "noRecords": "No medical records.",
+    "viewRecord": "View Medical Record"
+  },
+  "reports": {
+    "title": "Reports & Analytics",
+    "subtitle": "Hospital insights for patients, doctors, and finances",
+    "mockNotice": "Showing sample data — connect the backend API to load live reports.",
+    "sections": {
+      "patients": "Patients",
+      "doctors": "Doctors",
+      "financial": "Financial"
+    },
+    "kpi": {
+      "totalPatients": "Total Patients",
+      "totalDoctors": "Active Doctors",
+      "monthlyRevenue": "Monthly Revenue",
+      "pendingBills": "Pending Bills",
+      "vsLastMonth": "vs last month"
+    },
+    "charts": {
+      "patientRegistrations": "New Patient Registrations (12 months)",
+      "patientsByGender": "Patients by Gender",
+      "doctorsBySpeciality": "Doctors by Speciality",
+      "appointmentsByDoctor": "Top Doctors by Appointments",
+      "revenueVsExpenses": "Revenue vs Expenses",
+      "revenue": "Revenue",
+      "expenses": "Expenses",
+      "paymentStatus": "Billing by Payment Status",
+      "recentTransactions": "Recent Transactions"
+    },
+    "table": {
+      "date": "Date",
+      "patient": "Patient",
+      "description": "Description",
+      "amount": "Amount",
+      "status": "Status"
+    },
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+    "specialities": {
+      "cardiology": "Cardiology",
+      "pediatrics": "Pediatrics",
+      "orthopedics": "Orthopedics",
+      "neurology": "Neurology",
+      "general": "General Medicine",
+      "dermatology": "Dermatology",
+      "other": "Other"
+    },
+    "doctors": {
+      "ahmed": "Dr. Ahmed Hassan",
+      "sara": "Dr. Sara Mahmoud",
+      "omar": "Dr. Omar Khalil",
+      "lina": "Dr. Lina Ibrahim",
+      "khalid": "Dr. Khalid Nasser"
+    },
+    "paymentStatus": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "overdue": "Overdue",
+      "partial": "Partially Paid"
+    },
+    "transactions": {
+      "consultation": "Consultation",
+      "labTest": "Lab Test",
+      "surgery": "Surgery",
+      "emergency": "Emergency Visit",
+      "radiology": "Radiology",
+      "pharmacy": "Pharmacy"
+    }
+  }
+}

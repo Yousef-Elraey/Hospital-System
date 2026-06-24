@@ -1,0 +1,1 @@
+export type CreateSpecialityResponse = string;

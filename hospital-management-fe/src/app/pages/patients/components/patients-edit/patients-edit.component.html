@@ -1,0 +1,74 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="patients.editPatient" subtitleKey="patients.subtitle" iconName="patients"></app-page-header>
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card form-card">
+      <form #formRef="ngForm" (ngSubmit)="save(formRef)">
+        <div class="form-fields-grid">
+        <div class="mb-3">
+          <label class="form-label" for="editPatientName">{{ 'patients.name' | translate }}</label>
+          <input id="editPatientName" type="text" class="form-control" [(ngModel)]="model.name" name="name" required
+                 [placeholder]="'common.namePlaceholder' | translate"
+                 #nameRef="ngModel"
+                 [class.is-invalid]="nameRef.invalid && (nameRef.touched || formRef.submitted)" />
+          @if (nameRef.invalid && (nameRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label class="form-label d-block">{{ 'patients.dateOfBirth' | translate }}</label>
+          <app-hospital-datepicker
+            [(ngModel)]="dobDateStr"
+            name="dateOfBirth"
+            required
+            [inputClass]="{ 'is-invalid': dobRef.invalid && (dobRef.touched || formRef.submitted) }"
+            [errorMessage]="(dobRef.invalid && (dobRef.touched || formRef.submitted)) ? ('validation.required' | translate) : ''"
+            #dobRef="ngModel"
+          />
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="editPatientGender">{{ 'patients.gender' | translate }}</label>
+          <ng-select
+            id="editPatientGender"
+            class="w-100"
+            [items]="genderSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="model.gender"
+            name="gender"
+            [clearable]="false"
+            [searchable]="true"
+            [placeholder]="'patients.selectGender' | translate"
+            #genderRef="ngModel"
+            required
+            [ngClass]="{ 'is-invalid': genderRef.invalid && (genderRef.touched || formRef.submitted) }"
+          />
+          @if (genderRef.invalid && (genderRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="editPatientPhone">{{ 'patients.phone' | translate }}</label>
+          <input id="editPatientPhone" type="text" class="form-control" [(ngModel)]="model.phone" name="phone" required
+                 placeholder="01090047203"
+                 pattern="^01[0-9]{9}$"
+                 minlength="11"
+                 maxlength="11"
+                 #phoneRef="ngModel"
+                 [class.is-invalid]="phoneRef.invalid && (phoneRef.touched || formRef.submitted)" />
+          @if (phoneRef.errors?.['required'] && (phoneRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          } @else if (phoneRef.errors?.['pattern'] && (phoneRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.phoneFormat' | translate }}</div>
+          }
+        </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>
+          <a [routerLink]="['/patients', id]" class="btn btn-outline-secondary"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</a>
+        </div>
+      </form>
+    </div>
+  }
+</div>

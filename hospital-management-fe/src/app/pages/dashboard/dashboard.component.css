@@ -1,0 +1,185 @@
+.dashboard {
+  max-width: 1200px;
+}
+
+/* Hero banner */
+.dashboard-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  padding: 1.75rem 2rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 40%, #4f46e5 100%);
+  color: #fff;
+  box-shadow: 0 12px 32px rgba(13, 148, 136, 0.25);
+}
+
+.dashboard-hero-glow {
+  position: absolute;
+  top: -40%;
+  inset-inline-end: -10%;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.dashboard-hero-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.dashboard-hero-icon {
+  width: 64px;
+  height: 64px;
+  flex-shrink: 0;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.dashboard-hero-title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-hero-subtitle {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+/* Module cards */
+.dash-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.35rem;
+  height: 100%;
+  min-height: 96px;
+  background: #fff;
+  border: 1px solid var(--hm-border, #e2e8f0);
+  border-radius: 1rem;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-card::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--card-accent, #0d9488);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.dash-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.1);
+  border-color: color-mix(in srgb, var(--card-accent) 35%, #e2e8f0);
+  color: inherit;
+}
+
+.dash-card:hover::before {
+  opacity: 1;
+}
+
+.dash-card-icon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+  border-radius: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.dash-card-icon app-icon {
+  color: #fff;
+}
+
+.dash-card-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.dash-card-label {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--hm-text, #0f172a);
+  letter-spacing: -0.01em;
+}
+
+.dash-card-desc {
+  font-size: 0.8rem;
+  color: var(--hm-text-secondary, #64748b);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.dash-card-arrow {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--hm-surface-muted, #f1f5f9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hm-text-muted, #94a3b8);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+html[dir='rtl'] .dash-card-arrow app-icon {
+  transform: scaleX(-1);
+}
+
+.dash-card:hover .dash-card-arrow {
+  background: color-mix(in srgb, var(--card-accent) 12%, #fff);
+  color: var(--card-accent);
+}
+
+html[dir='ltr'] .dash-card:hover .dash-card-arrow {
+  transform: translateX(2px);
+}
+
+html[dir='rtl'] .dash-card:hover .dash-card-arrow {
+  transform: translateX(-2px) scaleX(-1);
+}
+
+@media (max-width: 575.98px) {
+  .dashboard-hero {
+    padding: 1.25rem 1.35rem;
+  }
+
+  .dashboard-hero-title {
+    font-size: 1.4rem;
+  }
+
+  .dashboard-hero-icon {
+    width: 52px;
+    height: 52px;
+  }
+}
