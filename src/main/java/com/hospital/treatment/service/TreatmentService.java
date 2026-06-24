@@ -1,6 +1,8 @@
 package com.hospital.treatment.service;
 
+import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.exception.HospitalBusinessException;
+import com.hospital.dto.PageResponse;
 import com.hospital.entity.Diagnose;
 import com.hospital.entity.Treatment;
 import com.hospital.treatment.dto.request.CreateTreatmentRequest;
@@ -10,6 +12,10 @@ import com.hospital.treatment.dto.response.GetTreatmentResponse;
 import com.hospital.treatment.dto.response.UpdateTreatmentResponse;
 import com.hospital.treatment.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,9 +27,16 @@ import java.util.Optional;
 public class TreatmentService {
     private final TreatmentRepository treatmentRepository;
 
-    public List<GetTreatmentResponse> getAllTreatments() {
-      List<Treatment> treatments = treatmentRepository.findAll();
-      if (treatments.isEmpty())
+    public PageResponse<GetTreatmentResponse> getAllTreatments(int page,int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+
+        Page<Treatment> treatmentPage = treatmentRepository.findAll(pageable);
+     List<Treatment> treatments = treatmentPage.getContent();
+        if (treatments.isEmpty())
           throw new HospitalBusinessException("no treatments found");
     List<GetTreatmentResponse> treatmentResponses = new ArrayList<>();
         treatments.forEach(treatment -> {
@@ -34,7 +47,15 @@ public class TreatmentService {
                 .setActiveIngredient(treatment.getActiveIngredient());
             treatmentResponses.add(getTreatmentResponse);
     });
-    return treatmentResponses;
+    return PageResponse.<GetTreatmentResponse>builder()
+            .data(treatmentResponses)
+            .page(treatmentPage.getNumber())
+            .size(treatmentPage.getSize())
+            .totalElements(treatmentPage.getTotalElements())
+            .totalPages(treatmentPage.getTotalPages())
+            .first(treatmentPage.isFirst())
+            .last(treatmentPage.isLast())
+            .build();
     }
 
     public GetTreatmentResponse getTreatmentById(Long id) {

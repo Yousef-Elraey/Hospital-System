@@ -1,5 +1,6 @@
 package com.hospital.treatment.controller;
 
+import com.hospital.dto.PageResponse;
 import com.hospital.treatment.dto.request.CreateTreatmentRequest;
 import com.hospital.treatment.dto.request.UpdateTreatmentRequest;
 import com.hospital.treatment.dto.response.CreateTreatmentResponse;
@@ -20,8 +21,11 @@ public class TreatmentController {
     private final TreatmentService treatmentService;
 
     @GetMapping("/treatments")
-    public ResponseEntity<List<GetTreatmentResponse>> getAllTreatments(){
-        return new ResponseEntity<>(treatmentService.getAllTreatments(), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetTreatmentResponse>> getAllTreatments(@RequestParam(defaultValue = "0")int page,
+                                                                               @RequestParam(defaultValue = "10")int size,
+                                                                               @RequestParam(defaultValue = "id") String sortBy,
+                                                                               @RequestParam(defaultValue = "asc") String direction){
+        return new ResponseEntity<>(treatmentService.getAllTreatments(page,size,sortBy,direction), HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<GetTreatmentResponse> getTreatmentById(@PathVariable Long id){

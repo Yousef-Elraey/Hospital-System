@@ -1,10 +1,16 @@
 package com.hospital.status.service;
 
+import com.hospital.billing.dto.response.GetBillingResponse;
+import com.hospital.dto.PageResponse;
 import com.hospital.status.dto.response.StatusResponseDto;
 import com.hospital.entity.AppointmentStatus;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.status.repository.AppointmentStatusRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,9 +21,15 @@ import java.util.List;
 public class AppointmentStatusService {
   private final AppointmentStatusRepository appointmentStatusRepository;
 
-  public List<StatusResponseDto> getAllStatus() {
+  public PageResponse<StatusResponseDto> getAllStatus(int page,int size, String sortBy, String direction) {
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    Pageable pageable = PageRequest.of(page,size,sort);
     List<StatusResponseDto> statusResponseDtos = new ArrayList<>();
-    List<AppointmentStatus> appointmentStatusDb = appointmentStatusRepository.findAll();
+    Page<AppointmentStatus> appointmentStatusPage = appointmentStatusRepository.findAll(pageable);
+    List<AppointmentStatus> appointmentStatusDb =   appointmentStatusPage.getContent();
     if (appointmentStatusDb.isEmpty()){
       throw new HospitalBusinessException("no status found");
     }
@@ -29,6 +41,14 @@ public class AppointmentStatusService {
               .setId(appointmentStatus.getId());
       statusResponseDtos.add(appointmentStatus1);
     });
-    return statusResponseDtos;
+    return PageResponse.<StatusResponseDto>builder()
+            .data(statusResponseDtos)
+            .page(appointmentStatusPage.getNumber())
+            .size(appointmentStatusPage.getSize())
+            .totalElements(appointmentStatusPage.getTotalElements())
+            .totalPages(appointmentStatusPage.getTotalPages())
+            .first(appointmentStatusPage.isFirst())
+            .last(appointmentStatusPage.isLast())
+            .build();
     }
 }

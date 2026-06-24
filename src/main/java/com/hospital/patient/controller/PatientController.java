@@ -1,5 +1,6 @@
 package com.hospital.patient.controller;
 
+import com.hospital.dto.PageResponse;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.patient.dto.request.CreatePatientRequest;
@@ -27,8 +28,11 @@ public class PatientController {
   private final PatientService patientService;
 
     @GetMapping("/patients")
-    public ResponseEntity<List<GetPatientResponse>> getAllPatients() {
-        return new ResponseEntity<>(patientService.getAllPatients(), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetPatientResponse>> getAllPatients(@RequestParam(defaultValue = "0") int page,
+                                                                           @RequestParam(defaultValue = "10") int size,
+                                                                           @RequestParam(defaultValue = "id") String sortBy,
+                                                                           @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(patientService.getAllPatients(page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

@@ -1,6 +1,8 @@
 package com.hospital.speciality.service;
 
+import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.exception.HospitalBusinessException;
+import com.hospital.dto.PageResponse;
 import com.hospital.entity.Speciality;
 import com.hospital.entity.Treatment;
 import com.hospital.speciality.dto.request.CreateSpecialityRequest;
@@ -16,6 +18,10 @@ import com.hospital.treatment.dto.response.GetTreatmentResponse;
 import com.hospital.treatment.dto.response.UpdateTreatmentResponse;
 import com.hospital.treatment.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,8 +33,15 @@ import java.util.Optional;
 public class SpecialityService {
     private final SpecialityRepository specialityRepository;
 
-    public List<GetSpecialityResponse> getAllSpecialities() {
-        List<Speciality> specialities = specialityRepository.findAll();
+    public PageResponse<GetSpecialityResponse> getAllSpecialities(int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+
+        Page<Speciality> specialityPage = specialityRepository.findAll(pageable);
+        List<Speciality> specialities = specialityPage.getContent();
         if (specialities.isEmpty())
             throw new HospitalBusinessException("no specialities found");
         List<GetSpecialityResponse> specialityResponses = new ArrayList<>();
@@ -39,7 +52,15 @@ public class SpecialityService {
                     .setName_ar(speciality.getName_ar());
             specialityResponses.add(getSpecialityResponse);
         });
-        return specialityResponses;
+        return PageResponse.<GetSpecialityResponse>builder()
+                .data(specialityResponses)
+                .page(specialityPage.getNumber())
+                .size(specialityPage.getSize())
+                .totalElements(specialityPage.getTotalElements())
+                .totalPages(specialityPage.getTotalPages())
+                .first(specialityPage.isFirst())
+                .last(specialityPage.isLast())
+                .build();
     }
 
     public GetSpecialityResponse getSpecialityById(Long id) {

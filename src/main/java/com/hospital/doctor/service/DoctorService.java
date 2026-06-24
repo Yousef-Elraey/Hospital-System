@@ -1,5 +1,6 @@
 package com.hospital.doctor.service;
 
+import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.security.JWTService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.dto.request.CreateDoctorRequest;
@@ -8,6 +9,7 @@ import com.hospital.doctor.dto.request.UpdateDoctorRequest;
 import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.doctor.dto.response.UpdateDoctorResponse;
+import com.hospital.dto.PageResponse;
 import com.hospital.entity.*;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.common.exception.HospitalBusinessException;
@@ -20,6 +22,10 @@ import com.hospital.speciality.repository.SpecialityRepository;
 import com.hospital.treatment.repository.TreatmentRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,8 +45,14 @@ public class DoctorService {
     private final TreatmentRepository treatmentRepository;
     private final JWTService jwtService;
 
-    public List<GetDoctorResponse> getAllDoctors() {
-        List<Doctor> doctors = doctorRepository.findAll();
+    public PageResponse<GetDoctorResponse> getAllDoctors(int page,int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Doctor> doctorPage = doctorRepository.findAll(pageable);
+       List<Doctor> doctors = doctorPage.getContent();
         List<GetDoctorResponse> getDoctorResponses = new ArrayList<>();
         for (Doctor doctor : doctors) {
             GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
@@ -54,7 +66,15 @@ public class DoctorService {
             getDoctorResponse.setUpdatedAt(doctor.getUpdatedAt());
             getDoctorResponses.add(getDoctorResponse);
         }
-        return getDoctorResponses;
+        return PageResponse.<GetDoctorResponse>builder()
+                .data(getDoctorResponses)
+                .page(doctorPage.getNumber())
+                .size(doctorPage.getSize())
+                .totalElements(doctorPage.getTotalElements())
+                .totalPages(doctorPage.getTotalPages())
+                .first(doctorPage.isFirst())
+                .last(doctorPage.isLast())
+                .build();
 
     }
 

@@ -6,6 +6,7 @@ import com.hospital.billing.dto.response.CreateBillingResponse;
 import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.common.security.JWTService;
+import com.hospital.dto.PageResponse;
 import com.hospital.entity.Billing;
 import com.hospital.entity.Patient;
 import com.hospital.common.exception.HospitalBusinessException;
@@ -13,6 +14,10 @@ import com.hospital.billing.repository.BillingRepository;
 import com.hospital.patient.repository.PatientRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,8 +32,13 @@ public class BillingService {
    private final PatientRepository patientRepository;
    private final JWTService jwtService;
 
-    public List<GetBillingResponse> getAllBillings() {
-        List<Billing> billings = billingRepository.findAll();
+    public PageResponse<GetBillingResponse> getAllBillings(int page,int size,String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page,size,sort);
+        Page<Billing> billingPage = billingRepository.findAll(pageable);
+        List<Billing> billings =  billingPage.getContent();
         if(billings.isEmpty()){
             throw new HospitalBusinessException("no billings found");
         }
@@ -44,7 +54,15 @@ public class BillingService {
                     .setUpdatedAt(billing.getUpdatedAt());
             billingsResponse.add(billingResponse);
         }
-     return billingsResponse;
+     return PageResponse.<GetBillingResponse>builder()
+             .data(billingsResponse)
+             .page(billingPage.getNumber())
+             .size(billingPage.getSize())
+             .totalElements(billingPage.getTotalElements())
+             .totalPages(billingPage.getTotalPages())
+             .first(billingPage.isFirst())
+             .last(billingPage.isLast())
+             .build();
     }
 
     public GetBillingResponse getBillingById(Long id) {

@@ -6,6 +6,7 @@ import com.hospital.diagnose.dto.response.CreateDiagnoseResponse;
 import com.hospital.diagnose.dto.response.GetDiagnoseResponse;
 import com.hospital.diagnose.dto.response.UpdateDiagnoseResponse;
 import com.hospital.diagnose.service.DiagnoseService;
+import com.hospital.dto.PageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,11 @@ public class DiagnoseController {
     private final DiagnoseService diagnoseService;
 
     @GetMapping("/diagnoses")
-    public ResponseEntity<List<GetDiagnoseResponse>> getAllDiagnoses(){
-        return new ResponseEntity<>(diagnoseService.getAllDiagnoses(), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetDiagnoseResponse>> getAllDiagnoses(@RequestParam(defaultValue = "0")int page,
+                                                                             @RequestParam(defaultValue = "10")int size,
+                                                                             @RequestParam(defaultValue = "id") String sortBy,
+                                                                             @RequestParam(defaultValue = "asc") String direction ){
+        return new ResponseEntity<>(diagnoseService.getAllDiagnoses(page,size,sortBy,direction), HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<GetDiagnoseResponse> getDiagnoseById(@PathVariable Long id){

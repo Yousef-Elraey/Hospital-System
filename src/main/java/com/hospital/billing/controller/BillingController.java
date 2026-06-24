@@ -6,6 +6,7 @@ import com.hospital.billing.dto.response.CreateBillingResponse;
 import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.billing.service.BillingService;
+import com.hospital.dto.PageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,11 @@ public class BillingController {
     private final BillingService billingService;
 
     @GetMapping("/billings")
-    public ResponseEntity<List<GetBillingResponse>> getAllBillings() {
-        return new ResponseEntity<>(billingService.getAllBillings(), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetBillingResponse>> getAllBillings(@RequestParam(defaultValue = "0")int page,
+                                                                           @RequestParam(defaultValue = "10")int size,
+                                                                           @RequestParam(defaultValue = "id") String sortBy,
+                                                                           @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(billingService.getAllBillings(page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
