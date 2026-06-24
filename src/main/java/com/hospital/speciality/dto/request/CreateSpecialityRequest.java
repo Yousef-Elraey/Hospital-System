@@ -21,9 +21,9 @@ public class CreateSpecialityRequest {
     private Long id;
 
     @NotBlank(message = "name is required")
-    private String name_en;
+    private String nameEn;
 
     @NotBlank(message = "name is required")
-    private String name_ar;
+    private String nameAr;
 
 }

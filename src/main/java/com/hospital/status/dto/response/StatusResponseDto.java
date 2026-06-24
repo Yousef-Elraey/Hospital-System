@@ -13,6 +13,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class StatusResponseDto {
     private Long id;
-    private String name_ar;
-    private String name_en;
+    private String nameEn;
+    private String nameAr;
+
 }
