@@ -62,7 +62,7 @@ public class PatientController {
         return new ResponseEntity<>(patientService.showPatientHistory(id), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<GetPatientResponse> searchPatient(@Valid @RequestBody SearchPatientRequest searchPatientRequest) {
         return new ResponseEntity<>(patientService.searchPatient(searchPatientRequest), HttpStatus.OK);
     }

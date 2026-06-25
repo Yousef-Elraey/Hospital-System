@@ -56,7 +56,7 @@ private final DoctorService doctorService;
         return new ResponseEntity<>(doctorService.startSession(createMedicalRecordRequest), HttpStatus.OK);
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ResponseEntity<GetDoctorResponse> searchDoctor(@Valid @RequestBody SearchDoctorRequest searchDoctorRequest) {
         return new ResponseEntity<>(doctorService.searchDoctor(searchDoctorRequest), HttpStatus.OK);
     }
