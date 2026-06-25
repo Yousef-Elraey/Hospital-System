@@ -1,4 +1,4 @@
-<div class="list-page container-fluid px-3 px-lg-4 py-3">
+<div class="list-page">
   <app-page-header
     titleKey="appointmentSlots.title"
     subtitleKey="appointmentSlots.subtitle"
@@ -13,12 +13,11 @@
     <div class="alert alert-danger py-2">{{ errorMessage | translate }}</div>
   }
 
-  <div class="card shadow-sm">
-    <div class="card-header bg-white py-3">
-      <h2 class="h5 mb-0">{{ 'appointmentSlots.existingTitle' | translate }}</h2>
-    </div>
-    <div class="card-body pb-0">
-      <div class="row g-2 align-items-end mb-3">
+  <app-list-filter-toggle [(expanded)]="showFilters" />
+
+  @if (showFilters) {
+    <div class="card filter-panel">
+      <div class="row g-2 align-items-end">
         <div class="col-md-3">
           <label class="form-label">{{ 'appointments.doctor' | translate }}</label>
           <ng-select
@@ -54,11 +53,11 @@
         </div>
         <div class="col-md-2">
           <label class="form-label">{{ 'appointmentSlots.fromDate' | translate }}</label>
-          <input type="text" class="form-control" [(ngModel)]="listFilters.startDate" name="listStartDate" placeholder="DD-MM-YYYY" />
+          <input type="text" class="form-control" [(ngModel)]="listFilters.startDate" name="listStartDate" placeholder="DD-MM-YYYY" (keyup.enter)="applyListFilters()" />
         </div>
         <div class="col-md-2">
           <label class="form-label">{{ 'appointmentSlots.toDate' | translate }}</label>
-          <input type="text" class="form-control" [(ngModel)]="listFilters.endDate" name="listEndDate" placeholder="DD-MM-YYYY" />
+          <input type="text" class="form-control" [(ngModel)]="listFilters.endDate" name="listEndDate" placeholder="DD-MM-YYYY" (keyup.enter)="applyListFilters()" />
         </div>
         <div class="col-md-2 d-flex gap-2">
           <button type="button" class="btn btn-primary flex-grow-1" (click)="applyListFilters()">
@@ -70,14 +69,17 @@
         </div>
       </div>
     </div>
+  }
 
-    @if (loading) {
-      <p class="text-center text-muted py-5 my-2">
-        <i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}
-      </p>
-    } @else {
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card data-table-card">
+      <div class="card-header bg-white py-3 border-bottom">
+        <h2 class="h5 mb-0">{{ 'appointmentSlots.existingTitle' | translate }}</h2>
+      </div>
       <div class="table-responsive">
-        <table class="table hm-table align-middle mb-0">
+        <table class="table table-striped hm-table align-middle mb-0">
           <thead>
             <tr>
               <th>#</th>
@@ -89,7 +91,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (slot of slots; track slot.id) {
+            @for (slot of pagedSlots; track slot.id) {
               <tr>
                 <td>{{ slot.id }}</td>
                 <td>{{ doctorName(slot.doctorId) }}</td>
@@ -118,7 +120,17 @@
       </div>
       @if (slots.length === 0) {
         <p class="data-table-empty mb-0">{{ 'appointmentSlots.noSlots' | translate }}</p>
+      } @else {
+        <app-list-pagination
+          [totalItems]="slots.length"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          selectName="timeSlotsPageSize"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setPageSize($event)"
+        />
       }
-    }
-  </div>
+    </div>
+  }
 </div>

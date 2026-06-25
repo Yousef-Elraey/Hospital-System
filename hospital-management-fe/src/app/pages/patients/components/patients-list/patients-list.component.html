@@ -1,4 +1,4 @@
-<div class="list-page container-fluid px-3 px-lg-4 py-3">
+<div class="list-page">
   <app-page-header titleKey="patients.title" subtitleKey="patients.subtitle" iconName="patients">
     <a pageActions routerLink="/patients/add" class="btn btn-primary">
       <i class="fa-solid fa-plus"></i>
@@ -6,49 +6,98 @@
     </a>
   </app-page-header>
 
-  <div class="card filter-panel">
-    <div class="row g-2 align-items-end">
-      <div class="col-md-4">
-        <label class="form-label">{{ 'patients.name' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.name" name="plFilterName" />
+  <div class="row row-cols-1 row-cols-sm-2 g-3 mb-4">
+    <div class="col">
+      <div class="card patient-stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <p class="patient-stat-label mb-1">{{ 'patients.stats.total' | translate }}</p>
+              <p class="patient-stat-value mb-0">
+                @if (statsLoading) {
+                  <i class="fa-solid fa-spinner fa-spin text-muted"></i>
+                } @else {
+                  {{ stats.total | number }}
+                }
+              </p>
+            </div>
+            <span class="patient-stat-icon patient-stat-icon--total">
+              <app-icon name="patients"></app-icon>
+            </span>
+          </div>
+        </div>
       </div>
-      <div class="col-md-4">
-        <label class="form-label">{{ 'patients.dateOfBirth' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.dateOfBirth" name="plFilterDob" placeholder="DD-MM-YYYY" />
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">{{ 'patients.phone' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.phone" name="plFilterPhone" />
-      </div>
-      <div class="col-12 d-flex gap-2">
-        <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
-        <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+    </div>
+    <div class="col">
+      <div class="card patient-stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <p class="patient-stat-label mb-1">{{ 'patients.stats.today' | translate }}</p>
+              <p class="patient-stat-value mb-0">
+                @if (statsLoading) {
+                  <i class="fa-solid fa-spinner fa-spin text-muted"></i>
+                } @else {
+                  {{ stats.today | number }}
+                }
+              </p>
+            </div>
+            <span class="patient-stat-icon patient-stat-icon--today">
+              <i class="fa-solid fa-calendar-day"></i>
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
+
+  <app-list-filter-toggle [(expanded)]="showFilters" />
+
+  @if (showFilters) {
+    <div class="card filter-panel">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label">{{ 'patients.name' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.name" name="plFilterName" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">{{ 'patients.dateOfBirth' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.dateOfBirth" name="plFilterDob" placeholder="DD-MM-YYYY" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">{{ 'patients.phone' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.phone" name="plFilterPhone" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  }
 
   @if (loading) {
     <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
   } @else {
     <div class="card data-table-card">
       <div class="table-responsive">
-        <table class="table hm-table align-middle mb-0">
+        <table class="table table-striped hm-table align-middle mb-0">
           <thead>
             <tr>
               <th>#</th>
               <th>{{ 'patients.name' | translate }}</th>
-              <th>{{ 'patients.dateOfBirth' | translate }}</th>
+              <th>{{ 'patients.age' | translate }}</th>
               <th>{{ 'patients.gender' | translate }}</th>
               <th>{{ 'patients.phone' | translate }}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            @for (p of list; track p.id) {
+            @for (p of pagedList; track p.id) {
               <tr>
                 <td>{{ p.id }}</td>
                 <td><a [routerLink]="['/patients', p.id]" class="fw-semibold link-primary text-decoration-none">{{ p.name }}</a></td>
-                <td>{{ formatDob(p.dateOfBirth) }}</td>
+                <td>{{ formatAge(p.dateOfBirth) }}</td>
                 <td>{{ p.gender ? (('patients.gender.' + p.gender.toUpperCase()) | translate) : '-' }}</td>
                 <td>{{ p.phone }}</td>
                 <td>
@@ -65,6 +114,17 @@
       </div>
       @if (list.length === 0) {
         <p class="data-table-empty mb-0">{{ 'patients.noPatients' | translate }}</p>
+      } @else {
+        <app-list-pagination
+          [totalItems]="list.length"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          totalCountKey="patients.totalPatients"
+          selectName="patientsPageSize"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setPageSize($event)"
+        />
       }
     </div>
   }

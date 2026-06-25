@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,14 +13,25 @@ import type { AppointmentResponse } from '../../models/response/appointment-resp
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { ListFilterToggleComponent } from '../../../../core/components/list-filter-toggle/list-filter-toggle.component';
+import { ListPaginationComponent } from '../../../../core/components/list-pagination/list-pagination.component';
 import { IconComponent } from '../../../../core/components/icon/icon.component';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import {
+  computeAppointmentTodayStats,
+  type AppointmentTodayStats,
+} from '../../utils/appointment-today-stats';
+import {
+  clampPage,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+  paginate,
+} from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-appointments-list',
   standalone: true,
-  imports: [RouterLink, FormsModule, TranslateModule, PageHeaderComponent, IconComponent, NgSelectModule],
+  imports: [RouterLink, FormsModule, TranslateModule, DecimalPipe, PageHeaderComponent, ListFilterToggleComponent, ListPaginationComponent, IconComponent, NgSelectModule],
   templateUrl: './appointments-list.component.html',
   styleUrls: ['./appointments-list.component.css'],
 })
@@ -30,6 +42,8 @@ export class AppointmentsListComponent implements OnInit {
   doctorSelectOptions: { value: number; label: string }[] = [];
   patientSelectOptions: { value: number; label: string }[] = [];
   loading = false;
+  statsLoading = false;
+  showFilters = false;
   showVisitTypeDialog = false;
   visitTypeChoice: 'NEW' | 'EXISTING' = 'NEW';
   existingMode = false;
@@ -37,6 +51,10 @@ export class AppointmentsListComponent implements OnInit {
   existingLoading = false;
   existingError = '';
   filters = { doctorId: null as number | null, patientId: null as number | null, status: '', date: '' };
+  stats: AppointmentTodayStats = { booked: 0, paid: 0, unpaid: 0, waiting: 0, completed: 0 };
+  readonly pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
+  pageSize = 10;
+  currentPage = 1;
 
   constructor(
     private appointmentService: AppointmentService, private doctorService: DoctorService, private patientService: PatientService,
@@ -46,6 +64,7 @@ export class AppointmentsListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadStats();
     this.load();
     this.doctorService.getDoctors().subscribe((d) => {
       this.doctors = d ?? [];
@@ -54,6 +73,17 @@ export class AppointmentsListComponent implements OnInit {
     this.patientService.getPatients().subscribe((p) => {
       this.patients = p ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
+    });
+  }
+
+  loadStats(): void {
+    this.statsLoading = true;
+    this.appointmentService.getAppointments().subscribe({
+      next: (data) => {
+        this.stats = computeAppointmentTodayStats(data ?? []);
+        this.statsLoading = false;
+      },
+      error: () => { this.statsLoading = false; },
     });
   }
 
@@ -66,17 +96,36 @@ export class AppointmentsListComponent implements OnInit {
       status: this.filters.status.trim() || undefined,
       date: dateIso,
     }).subscribe({
-      next: (data) => { this.list = data ?? []; this.loading = false; },
+      next: (data) => {
+        this.list = data ?? [];
+        this.loading = false;
+        this.currentPage = clampPage(this.currentPage, this.list.length, this.pageSize);
+      },
       error: () => { this.loading = false; },
     });
   }
 
+  get pagedList(): AppointmentResponse[] {
+    return paginate(this.list, this.currentPage, this.pageSize);
+  }
+
+  setPage(page: number): void {
+    this.currentPage = page;
+  }
+
+  setPageSize(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+  }
+
   applyFilters(): void {
+    this.currentPage = 1;
     this.load();
   }
 
   clearFilters(): void {
     this.filters = { doctorId: null, patientId: null, status: '', date: '' };
+    this.currentPage = 1;
     this.load();
   }
 
@@ -139,7 +188,10 @@ export class AppointmentsListComponent implements OnInit {
       .subscribe((ok) => {
         if (!ok) return;
         this.appointmentService.deleteAppointment(a.id!).subscribe({
-          next: () => this.load(),
+          next: () => {
+            this.loadStats();
+            this.load();
+          },
         });
       });
   }

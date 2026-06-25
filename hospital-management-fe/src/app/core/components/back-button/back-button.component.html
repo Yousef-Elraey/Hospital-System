@@ -1,5 +1,5 @@
 @if (showBack$ | async) {
-  <button type="button" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2 back-btn" (click)="goBack()" [attr.aria-label]="'common.back' | translate">
+  <button type="button" dir="ltr" class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2 back-btn" (click)="goBack()" [attr.aria-label]="'common.back' | translate">
     <span class="back-icon d-inline-flex"><app-icon name="back" size="sm"></app-icon></span>
     <span class="back-label">{{ 'common.back' | translate }}</span>
   </button>

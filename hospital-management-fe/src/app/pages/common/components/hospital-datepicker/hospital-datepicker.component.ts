@@ -29,31 +29,31 @@ import { formatDateDisplay, parseDisplayDateToIso } from '../../../../core/utils
 import { HospitalDateParserFormatter } from './hospital-date-parser-formatter';
 import { HospitalNgbDatepickerI18n } from './hospital-ngb-datepicker-i18n';
 
-/** Popper modifier: set popup width to match the reference (date field row). */
-/** Lower bound for selectable dates when `[minDate]` is omitted (ng-bootstrap uses viewYear−10 otherwise). */
-const DEFAULT_DATEPICKER_MIN = new NgbDate(1900, 1, 1);
-
-function pad2(n: number): string {
-  return String(n).padStart(2, '0');
-}
+/** Popper modifier: fixed compact popup width (do not match full-width form fields). */
+const DATEPICKER_POPUP_WIDTH = '17.5rem';
 
 function mergeDatepickerPopperOptions(options: Partial<Options>): Partial<Options> {
-  const sameWidth = {
-    name: 'sameWidth',
+  const fixedWidth = {
+    name: 'fixedWidth',
     enabled: true,
     phase: 'beforeWrite' as const,
-    requires: ['computeStyles'],
     fn: ({ state }: { state: any }) => {
-      const w = `${state.rects.reference.width}px`;
       if (state.styles.popper) {
-        state.styles.popper['width'] = w;
+        state.styles.popper['width'] = DATEPICKER_POPUP_WIDTH;
       }
     },
   };
   return {
     ...options,
-    modifiers: [...(options.modifiers ?? []), sameWidth as any],
+    modifiers: [...(options.modifiers ?? []), fixedWidth as any],
   };
+}
+
+/** Lower bound for selectable dates when `[minDate]` is omitted (ng-bootstrap uses viewYear−10 otherwise). */
+const DEFAULT_DATEPICKER_MIN = new NgbDate(1900, 1, 1);
+
+function pad2(n: number): string {
+  return String(n).padStart(2, '0');
 }
 
 @Component({

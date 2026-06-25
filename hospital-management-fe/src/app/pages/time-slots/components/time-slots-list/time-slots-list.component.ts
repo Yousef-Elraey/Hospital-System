@@ -5,6 +5,8 @@ import { RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { ListFilterToggleComponent } from '../../../../core/components/list-filter-toggle/list-filter-toggle.component';
+import { ListPaginationComponent } from '../../../../core/components/list-pagination/list-pagination.component';
 import { DoctorService } from '../../../doctors/services/doctor.service';
 import { AppointmentSlotService } from '../../services/time-slot.service';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
@@ -14,6 +16,11 @@ import { formatDateTimeDisplay } from '../../../appointments/utils/date-form';
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { AppointmentSlotResponse } from '../../models/response/appointment-slot-response.dto';
 import type { AppointmentSlotStatus } from '../../models/request/appointment-slot-status.dto';
+import {
+  clampPage,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+  paginate,
+} from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-time-slots-list',
@@ -25,6 +32,8 @@ import type { AppointmentSlotStatus } from '../../models/request/appointment-slo
     TranslateModule,
     NgSelectModule,
     PageHeaderComponent,
+    ListFilterToggleComponent,
+    ListPaginationComponent,
   ],
   templateUrl: './time-slots-list.component.html',
   styleUrls: ['./time-slots-list.component.css'],
@@ -43,7 +52,11 @@ export class TimeSlotsListComponent implements OnInit {
 
   slots: AppointmentSlotResponse[] = [];
   loading = false;
+  showFilters = false;
   errorMessage = '';
+  readonly pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
+  pageSize = 10;
+  currentPage = 1;
 
   private readonly doctorService = inject(DoctorService);
   private readonly slotService = inject(AppointmentSlotService);
@@ -77,6 +90,7 @@ export class TimeSlotsListComponent implements OnInit {
         next: (data) => {
           this.slots = data ?? [];
           this.loading = false;
+          this.currentPage = clampPage(this.currentPage, this.slots.length, this.pageSize);
         },
         error: () => {
           this.loading = false;
@@ -84,12 +98,27 @@ export class TimeSlotsListComponent implements OnInit {
       });
   }
 
+  get pagedSlots(): AppointmentSlotResponse[] {
+    return paginate(this.slots, this.currentPage, this.pageSize);
+  }
+
+  setPage(page: number): void {
+    this.currentPage = page;
+  }
+
+  setPageSize(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+  }
+
   applyListFilters(): void {
+    this.currentPage = 1;
     this.loadSlots();
   }
 
   clearListFilters(): void {
     this.listFilters = { doctorId: null, status: null, startDate: '', endDate: '' };
+    this.currentPage = 1;
     this.loadSlots();
   }
 

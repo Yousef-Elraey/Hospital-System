@@ -1,77 +1,370 @@
-<div class="list-page container-fluid px-3 px-lg-4 py-3">
-  <app-page-header titleKey="medicalRecords.editRecord" subtitleKey="medicalRecords.subtitle" iconName="medicalRecord"></app-page-header>
+<div class="consultation-page list-page">
   @if (loading) {
+    <app-page-header
+      titleKey="medicalRecords.editRecord"
+      subtitleKey="medicalRecords.addDiagnosisTreatment"
+      iconName="medicalRecord"
+    />
     <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
   } @else {
-    <div class="card form-card">
-      <form #formRef="ngForm" (ngSubmit)="save(formRef)">
-        <div class="mb-3">
-          <label class="form-label" for="editMrPatient">{{ 'appointments.patient' | translate }}</label>
-          <ng-select
-            id="editMrPatient"
-            class="w-100"
-            [items]="patientSelectOptions"
-            bindLabel="label"
-            bindValue="value"
-            [(ngModel)]="model.patientId"
-            name="patientId"
-            [clearable]="true"
-            [searchable]="true"
-            [placeholder]="'appointments.selectPatient' | translate"
-            appendTo="body"
-            #patRef="ngModel"
-            required
-            [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
-          />
-          @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
+    <app-page-header
+      titleKey="medicalRecords.editRecord"
+      subtitleKey="medicalRecords.addDiagnosisTreatment"
+      iconName="medicalRecord"
+    >
+      <div pageActions class="d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-primary" (click)="saveAndPrint(formRef)">
+          <i class="fa-solid fa-print"></i>
+          {{ 'medicalRecords.saveAndPrint' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="saveDraft(formRef)">
+          {{ 'medicalRecords.saveDraft' | translate }}
+        </button>
+      </div>
+    </app-page-header>
+
+    <form #formRef="ngForm" class="consultation-form" (ngSubmit)="save(formRef)">
+      <!-- Patient info bar -->
+      <section class="patient-bar card">
+        @if (selectedPatient) {
+          <div class="patient-bar__main">
+            <div class="patient-bar__identity">
+              <span class="patient-bar__avatar" aria-hidden="true">
+                <i class="fa-solid fa-user"></i>
+              </span>
+              <div class="patient-bar__name-block">
+                <span class="patient-bar__name">{{ selectedPatient.name }}</span>
+                <span class="patient-bar__meta-inline">
+                  <span>{{ 'medicalRecords.mrn' | translate }} {{ selectedPatient.id }}</span>
+                  <span class="patient-bar__dot" aria-hidden="true">·</span>
+                  <span>{{ genderLabel(selectedPatient.gender) | translate }}</span>
+                </span>
+              </div>
+            </div>
+            <div class="patient-bar__fields">
+              @if (patientAge(selectedPatient.dateOfBirth); as age) {
+                <div class="patient-bar__field">
+                  <span class="patient-bar__field-label">{{ 'medicalRecords.age' | translate }}</span>
+                  <span class="patient-bar__field-value">{{ 'medicalRecords.ageYears' | translate:{ age } }}</span>
+                </div>
+              }
+              <div class="patient-bar__field">
+                <span class="patient-bar__field-label">{{ 'patients.phone' | translate }}</span>
+                <span class="patient-bar__field-value">{{ selectedPatient.phone || '-' }}</span>
+              </div>
+              <div class="patient-bar__field">
+                <span class="patient-bar__field-label">{{ 'medicalRecords.visitDate' | translate }}</span>
+                <span class="patient-bar__field-value">
+                  <i class="fa-regular fa-calendar patient-bar__calendar-icon" aria-hidden="true"></i>
+                  {{ visitDateDisplay }}
+                </span>
+              </div>
+              <div class="patient-bar__field patient-bar__field--select">
+                <label class="patient-bar__field-label" for="visitType">{{ 'medicalRecords.visitType' | translate }}</label>
+                <select id="visitType" class="form-select form-select-sm" [(ngModel)]="visitType" name="visitType">
+                  @for (vt of visitTypes; track vt.value) {
+                    <option [value]="vt.value">{{ vt.labelKey | translate }}</option>
+                  }
+                </select>
+              </div>
+            </div>
+          </div>
+        } @else {
+          <div class="patient-bar__select">
+            <label class="form-label mb-1" for="mrPatient">{{ 'medicalRecords.selectPatientFirst' | translate }}</label>
+            <ng-select
+              id="mrPatient"
+              class="w-100"
+              [items]="patientSelectOptions"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="model.patientId"
+              name="patientId"
+              [clearable]="true"
+              [searchable]="true"
+              [placeholder]="'appointments.selectPatient' | translate"
+              #patRef="ngModel"
+              required
+              [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || submitted) }"
+            />
+            @if (patRef.invalid && (patRef.touched || submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            }
+          </div>
+        }
+
+        @if (doctorSelectOptions.length > 1) {
+          <div class="patient-bar__doctor">
+            <label class="form-label mb-1" for="mrDoctor">{{ 'appointments.doctor' | translate }}</label>
+            <ng-select
+              id="mrDoctor"
+              class="w-100"
+              [items]="doctorSelectOptions"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="model.doctorId"
+              name="doctorId"
+              [clearable]="true"
+              [searchable]="true"
+              [placeholder]="'appointments.selectDoctor' | translate"
+              #docRef="ngModel"
+              required
+              [ngClass]="{ 'is-invalid': docRef.invalid && (docRef.touched || submitted) }"
+            />
+            @if (docRef.invalid && (docRef.touched || submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            }
+          </div>
+        } @else {
+          <input type="hidden" [(ngModel)]="model.doctorId" name="doctorId" required />
+        }
+      </section>
+
+      <!-- Two-column body -->
+      <div class="row g-3 consultation-columns">
+        <!-- Diagnosis -->
+        <div class="col-lg-6">
+          <section class="consultation-panel card">
+            <header class="consultation-panel__header">
+              <h2 class="consultation-panel__title">
+                <i class="fa-solid fa-circle-info consultation-panel__info-icon" aria-hidden="true"></i>
+                {{ 'medicalRecords.diagnosisSection' | translate }}
+              </h2>
+            </header>
+
+            <div class="consultation-search">
+              <i class="fa-solid fa-magnifying-glass consultation-search__icon" aria-hidden="true"></i>
+              <input
+                type="text"
+                class="form-control consultation-search__input"
+                [(ngModel)]="diagnosisSearch"
+                name="diagnosisSearch"
+                [placeholder]="'medicalRecords.searchDiagnosis' | translate"
+                (keydown.enter)="$event.preventDefault(); addDiagnosisFromSearch()"
+              />
+            </div>
+
+            @if (filteredDiagnosisResults.length) {
+              <ul class="consultation-search-results list-unstyled mb-0">
+                @for (item of filteredDiagnosisResults; track item.code) {
+                  <li>
+                    <button type="button" class="consultation-search-results__item" (click)="addDiagnosis(item)">
+                      {{ diagnosisLabel(item) }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+
+            <div class="consultation-tags-section">
+              <span class="consultation-tags-section__label">{{ 'medicalRecords.commonDiagnoses' | translate }}</span>
+              <div class="consultation-tags">
+                @for (item of visibleCommonDiagnoses; track item.code) {
+                  <button
+                    type="button"
+                    class="consultation-tag"
+                    [class.consultation-tag--active]="isDiagnosisSelected(item.code)"
+                    (click)="addDiagnosis(item)"
+                  >
+                    {{ diagnosisLabel(item) }}
+                  </button>
+                }
+                <button type="button" class="consultation-tag consultation-tag--more" (click)="toggleMoreDiagnoses()">
+                  {{ 'medicalRecords.more' | translate }}
+                  <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="consultation-selected-section">
+              <span class="consultation-selected-section__label">{{ 'medicalRecords.selectedDiagnoses' | translate }}</span>
+              @if (!selectedDiagnoses.length) {
+                <p class="consultation-empty-hint">{{ 'medicalRecords.noDiagnosesSelected' | translate }}</p>
+              } @else {
+                <ul class="consultation-selected-list list-unstyled mb-0">
+                  @for (item of selectedDiagnoses; track item.code) {
+                    <li class="consultation-selected-item consultation-selected-item--diagnosis">
+                      <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                      <span>{{ item.label }}</span>
+                      <button
+                        type="button"
+                        class="consultation-selected-item__remove"
+                        (click)="removeDiagnosis(item.code)"
+                        [attr.aria-label]="'common.delete' | translate"
+                      >
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+              @if (submitted && !selectedDiagnoses.length) {
+                <div class="text-danger small mt-1">{{ 'medicalRecords.atLeastOneDiagnosis' | translate }}</div>
+              }
+            </div>
+
+            <button type="button" class="btn btn-outline-primary w-100 consultation-add-btn" (click)="addDiagnosisFromSearch()">
+              <i class="fa-solid fa-plus"></i>
+              {{ 'medicalRecords.addDiagnosis' | translate }}
+            </button>
+
+            <div class="consultation-tags-section consultation-templates">
+              <span class="consultation-tags-section__label">
+                <i class="fa-solid fa-bolt" aria-hidden="true"></i>
+                {{ 'medicalRecords.quickTemplates' | translate }}
+              </span>
+              <div class="consultation-tags">
+                @for (tpl of quickTemplates; track tpl.id) {
+                  <button type="button" class="consultation-tag consultation-tag--template" (click)="applyTemplate(tpl)">
+                    {{ tpl.labelKey | translate }}
+                  </button>
+                }
+              </div>
+            </div>
+          </section>
         </div>
-        <div class="mb-3">
-          <label class="form-label" for="editMrDoctor">{{ 'appointments.doctor' | translate }}</label>
-          <ng-select
-            id="editMrDoctor"
-            class="w-100"
-            [items]="doctorSelectOptions"
-            bindLabel="label"
-            bindValue="value"
-            [(ngModel)]="model.doctorId"
-            name="doctorId"
-            [clearable]="true"
-            [searchable]="true"
-            [placeholder]="'appointments.selectDoctor' | translate"
-            appendTo="body"
-            #docRef="ngModel"
-            required
-            [ngClass]="{ 'is-invalid': docRef.invalid && (docRef.touched || formRef.submitted) }"
-          />
-          @if (docRef.invalid && (docRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
+
+        <!-- Treatment / Medications -->
+        <div class="col-lg-6">
+          <section class="consultation-panel card">
+            <header class="consultation-panel__header consultation-panel__header--split">
+              <h2 class="consultation-panel__title">
+                <i class="fa-solid fa-circle-info consultation-panel__info-icon" aria-hidden="true"></i>
+                {{ 'medicalRecords.treatmentSection' | translate }}
+              </h2>
+              <button type="button" class="btn btn-sm btn-outline-primary" (click)="addMedication()">
+                <i class="fa-solid fa-plus"></i>
+                {{ 'medicalRecords.addMedication' | translate }}
+              </button>
+            </header>
+
+            <div class="consultation-search">
+              <i class="fa-solid fa-magnifying-glass consultation-search__icon" aria-hidden="true"></i>
+              <input
+                type="text"
+                class="form-control consultation-search__input"
+                [(ngModel)]="medicationSearch"
+                name="medicationSearch"
+                [placeholder]="'medicalRecords.searchMedication' | translate"
+                (keydown.enter)="$event.preventDefault(); addMedication()"
+              />
+            </div>
+
+            @if (filteredMedicationResults.length) {
+              <ul class="consultation-search-results list-unstyled mb-0">
+                @for (item of filteredMedicationResults; track item.nameEn) {
+                  <li>
+                    <button type="button" class="consultation-search-results__item" (click)="addMedication(item)">
+                      {{ medicationLabel(item) }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+
+            <div class="medication-table-wrap">
+              <table class="medication-table">
+                <thead>
+                  <tr>
+                    <th>{{ 'medicalRecords.medicine' | translate }}</th>
+                    <th>{{ 'medicalRecords.dose' | translate }}</th>
+                    <th>{{ 'medicalRecords.frequency' | translate }}</th>
+                    <th>{{ 'medicalRecords.duration' | translate }}</th>
+                    <th>{{ 'medicalRecords.actions' | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @if (!medications.length) {
+                    <tr>
+                      <td colspan="5" class="medication-table__empty">{{ 'medicalRecords.noMedications' | translate }}</td>
+                    </tr>
+                  }
+                  @for (med of medications; track med.uid) {
+                    <tr>
+                      <td class="medication-table__name">{{ med.name }}</td>
+                      <td>
+                        <select class="form-select form-select-sm" [(ngModel)]="med.dose" [name]="'dose_' + med.uid">
+                          @for (d of doseOptions; track d) {
+                            <option [value]="d">{{ d }}</option>
+                          }
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-select form-select-sm" [(ngModel)]="med.frequency" [name]="'freq_' + med.uid">
+                          @for (f of frequencyOptions; track f.value) {
+                            <option [value]="f.value">{{ f.labelKey | translate }}</option>
+                          }
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-select form-select-sm" [(ngModel)]="med.duration" [name]="'dur_' + med.uid">
+                          @for (d of durationOptions; track d.value) {
+                            <option [value]="d.value">{{ d.labelKey | translate }}</option>
+                          }
+                        </select>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-light medication-table__delete"
+                          (click)="removeMedication(med.uid)"
+                          [attr.aria-label]="'common.delete' | translate"
+                        >
+                          <i class="fa-solid fa-trash-can text-danger" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+
+            <button type="button" class="btn btn-outline-primary w-100 consultation-add-btn" (click)="addMedication()">
+              <i class="fa-solid fa-plus"></i>
+              {{ 'medicalRecords.addMedication' | translate }}
+            </button>
+
+            <div class="consultation-tip">
+              <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+              <span>{{ 'medicalRecords.medicationTip' | translate }}</span>
+            </div>
+          </section>
         </div>
-        <div class="mb-3">
-          <label class="form-label" for="editMrDiagnose">{{ 'medicalRecords.diagnose' | translate }}</label>
-          <input id="editMrDiagnose" type="text" class="form-control" [(ngModel)]="model.diagnose" name="diagnose" required
-                 #diagRef="ngModel"
-                 [class.is-invalid]="diagRef.invalid && (diagRef.touched || formRef.submitted)" />
-          @if (diagRef.invalid && (diagRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="editMrTreatment">{{ 'medicalRecords.treatment' | translate }}</label>
-          <textarea id="editMrTreatment" class="form-control" [(ngModel)]="model.treatment" name="treatment" rows="3" required
-                    #treatRef="ngModel"
-                    [class.is-invalid]="treatRef.invalid && (treatRef.touched || formRef.submitted)"></textarea>
-          @if (treatRef.invalid && (treatRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
-        </div>
-        <div class="d-flex flex-wrap gap-2 mt-3">
-          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>
-          <a [routerLink]="['/medical-records', id]" class="btn btn-outline-secondary"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</a>
-        </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- Clinical notes -->
+      <section class="consultation-panel card clinical-notes-panel">
+        <header class="consultation-panel__header consultation-panel__header--split">
+          <h2 class="consultation-panel__title">{{ 'medicalRecords.clinicalNotes' | translate }}</h2>
+          <button type="button" class="btn btn-sm btn-outline-primary" (click)="onVoiceInput()">
+            <i class="fa-solid fa-microphone"></i>
+            {{ 'medicalRecords.voiceInput' | translate }}
+          </button>
+        </header>
+        <textarea
+          class="form-control clinical-notes-textarea"
+          [(ngModel)]="clinicalNotes"
+          name="clinicalNotes"
+          rows="4"
+          [placeholder]="'medicalRecords.clinicalNotesPlaceholder' | translate"
+        ></textarea>
+      </section>
+
+      <!-- Footer actions -->
+      <footer class="consultation-footer">
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-floppy-disk"></i>
+          {{ 'common.save' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="resetForm(formRef)">
+          <i class="fa-solid fa-rotate-left"></i>
+          {{ 'medicalRecords.clearForm' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-secondary" (click)="cancel()">
+          <i class="fa-solid fa-xmark"></i>
+          {{ 'common.cancel' | translate }}
+        </button>
+      </footer>
+    </form>
   }
 </div>

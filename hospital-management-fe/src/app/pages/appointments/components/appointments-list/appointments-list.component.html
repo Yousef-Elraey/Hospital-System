@@ -1,16 +1,122 @@
-<div class="list-page container-fluid px-3 px-lg-4 py-3">
+<div class="list-page">
   <app-page-header titleKey="appointments.title" subtitleKey="appointments.subtitle" iconName="appointments">
     <div pageActions class="d-flex flex-wrap gap-2">
       <button type="button" class="btn btn-primary" (click)="openBookingFlowDialog()">
         <i class="fa-solid fa-plus"></i>
         {{ 'appointments.addAppointment' | translate }}
       </button>
-      <a routerLink="/appointment-slots" class="btn btn-outline-primary">
-        <i class="fa-solid fa-calendar-days"></i>
-        {{ 'appointmentSlots.manageSlots' | translate }}
-      </a>
+
     </div>
   </app-page-header>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-5 g-3 mb-4">
+    <div class="col">
+      <div class="card hm-stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <p class="hm-stat-label mb-1">{{ 'appointments.stats.bookedToday' | translate }}</p>
+              <p class="hm-stat-value mb-0">
+                @if (statsLoading) {
+                  <i class="fa-solid fa-spinner fa-spin text-muted"></i>
+                } @else {
+                  {{ stats.booked | number }}
+                }
+              </p>
+            </div>
+            <span class="hm-stat-icon hm-stat-icon--booked">
+              <i class="fa-solid fa-calendar-check"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card hm-stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <p class="hm-stat-label mb-1">{{ 'appointments.stats.paidToday' | translate }}</p>
+              <p class="hm-stat-value mb-0">
+                @if (statsLoading) {
+                  <i class="fa-solid fa-spinner fa-spin text-muted"></i>
+                } @else {
+                  {{ stats.paid | number }}
+                }
+              </p>
+            </div>
+            <span class="hm-stat-icon hm-stat-icon--paid">
+              <i class="fa-solid fa-money-bill-wave"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card hm-stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <p class="hm-stat-label mb-1">{{ 'appointments.stats.unpaidToday' | translate }}</p>
+              <p class="hm-stat-value mb-0">
+                @if (statsLoading) {
+                  <i class="fa-solid fa-spinner fa-spin text-muted"></i>
+                } @else {
+                  {{ stats.unpaid | number }}
+                }
+              </p>
+            </div>
+            <span class="hm-stat-icon hm-stat-icon--unpaid">
+              <i class="fa-solid fa-circle-xmark"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card hm-stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <p class="hm-stat-label mb-1">{{ 'appointments.stats.waitingToday' | translate }}</p>
+              <p class="hm-stat-value mb-0">
+                @if (statsLoading) {
+                  <i class="fa-solid fa-spinner fa-spin text-muted"></i>
+                } @else {
+                  {{ stats.waiting | number }}
+                }
+              </p>
+            </div>
+            <span class="hm-stat-icon hm-stat-icon--waiting">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card hm-stat-card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-start justify-content-between">
+            <div>
+              <p class="hm-stat-label mb-1">{{ 'appointments.stats.completedToday' | translate }}</p>
+              <p class="hm-stat-value mb-0">
+                @if (statsLoading) {
+                  <i class="fa-solid fa-spinner fa-spin text-muted"></i>
+                } @else {
+                  {{ stats.completed | number }}
+                }
+              </p>
+            </div>
+            <span class="hm-stat-icon hm-stat-icon--completed">
+              <i class="fa-solid fa-circle-check"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   @if (showVisitTypeDialog) {
     <div
       class="modal-root"
@@ -98,57 +204,61 @@
       </div>
     </div>
   }
-  <div class="card shadow-sm p-3 mb-3">
-    <div class="row g-2 align-items-end">
-      <div class="col-md-3">
-        <label class="form-label">{{ 'appointments.doctor' | translate }}</label>
-        <ng-select
-          class="w-100"
-          [items]="doctorSelectOptions"
-          bindLabel="label"
-          bindValue="value"
-          [(ngModel)]="filters.doctorId"
-          name="alFilterDoctor"
-          [clearable]="true"
-          [searchable]="true"
-          [placeholder]="'appointments.selectDoctor' | translate"
-        />
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">{{ 'appointments.patient' | translate }}</label>
-        <ng-select
-          class="w-100"
-          [items]="patientSelectOptions"
-          bindLabel="label"
-          bindValue="value"
-          [(ngModel)]="filters.patientId"
-          name="alFilterPatient"
-          [clearable]="true"
-          [searchable]="true"
-          [placeholder]="'appointments.selectPatient' | translate"
-        />
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">{{ 'appointments.status' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.status" name="alFilterStatus" />
-      </div>
-      <div class="col-md-3">
-        <label class="form-label">{{ 'appointments.date' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.date" name="alFilterDate" placeholder="DD-MM-YYYY" />
-      </div>
-      <div class="col-12 d-flex gap-2">
-        <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
-        <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+  <app-list-filter-toggle [(expanded)]="showFilters" />
+
+  @if (showFilters) {
+    <div class="card filter-panel">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">{{ 'appointments.doctor' | translate }}</label>
+          <ng-select
+            class="w-100"
+            [items]="doctorSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="filters.doctorId"
+            name="alFilterDoctor"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectDoctor' | translate"
+          />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">{{ 'appointments.patient' | translate }}</label>
+          <ng-select
+            class="w-100"
+            [items]="patientSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="filters.patientId"
+            name="alFilterPatient"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectPatient' | translate"
+          />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">{{ 'appointments.status' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.status" name="alFilterStatus" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">{{ 'appointments.date' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.date" name="alFilterDate" placeholder="DD-MM-YYYY" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   @if (loading) {
     <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
   } @else {
     <div class="card data-table-card">
       <div class="table-responsive">
-        <table class="table hm-table align-middle mb-0">
+        <table class="table table-striped hm-table align-middle mb-0">
         <thead>
           <tr>
             <th>#</th>
@@ -160,7 +270,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (a of list; track a.id) {
+          @for (a of pagedList; track a.id) {
             <tr>
               <td>{{ a.id }}</td>
               <td><a [routerLink]="['/appointments', a.id]" class="fw-semibold link-primary text-decoration-none">{{ formatTiming(a.timing) }}</a></td>
@@ -181,6 +291,16 @@
       </div>
         @if (list.length === 0) {
             <p class="data-table-empty mb-0">{{ 'appointments.noAppointments' | translate }}</p>
+      } @else {
+        <app-list-pagination
+          [totalItems]="list.length"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          selectName="appointmentsPageSize"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setPageSize($event)"
+        />
       }
     </div>
   }

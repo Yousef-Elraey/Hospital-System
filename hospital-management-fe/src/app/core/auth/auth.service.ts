@@ -20,6 +20,10 @@ export class AuthService {
     return sessionStorage.getItem(this.tokenKey);
   }
 
+  get username(): string | null {
+    return sessionStorage.getItem(this.userKey);
+  }
+
   login(username: string, password: string): Observable<void> {
     const normalized = username.trim();
     const body: LoginRequest = { userName: normalized, password };

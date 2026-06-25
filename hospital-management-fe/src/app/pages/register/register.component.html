@@ -1,6 +1,6 @@
 <div class="auth-page min-vh-100 position-relative d-flex flex-column align-items-center justify-content-center p-4">
   <div class="position-absolute top-0 p-3" [ngClass]="locale.isRtl ? 'start-0' : 'end-0'">
-    <div class="btn-group btn-group-sm" role="group">
+    <div class="btn-group btn-group-sm lang-toggle" dir="ltr" role="group">
       <button type="button" class="btn"
               [class.btn-primary]="locale.currentLang === 'en'"
               [class.btn-outline-secondary]="locale.currentLang !== 'en'"

@@ -1,73 +1,83 @@
-<div class="list-page container-fluid px-3 px-lg-4 py-3">
+<div class="list-page">
   <app-page-header titleKey="doctors.title" subtitleKey="doctors.subtitle" iconName="doctors">
     <a pageActions routerLink="/doctors/add" class="btn btn-primary">
       <i class="fa-solid fa-plus"></i>
       {{ 'doctors.addDoctor' | translate }}
     </a>
   </app-page-header>
-  <div class="card filter-panel">
-    <div class="row g-2 align-items-end">
-      <div class="col-md-4">
-        <label class="form-label">{{ 'doctors.name' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.name" name="dlFilterName" />
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">{{ 'doctors.speciality' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.speciality" name="dlFilterSpeciality" />
-      </div>
-      <div class="col-md-4">
-        <label class="form-label">{{ 'doctors.contact' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.contactNumber" name="dlFilterContact" />
-      </div>
-      <div class="col-12 d-flex gap-2">
-        <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
-        <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+
+  <app-list-filter-toggle [(expanded)]="showFilters" />
+
+  @if (showFilters) {
+    <div class="card filter-panel">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label">{{ 'doctors.name' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.name" name="dlFilterName" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">{{ 'doctors.speciality' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.speciality" name="dlFilterSpeciality" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">{{ 'doctors.contact' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.contactNumber" name="dlFilterContact" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   @if (loading) {
     <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
   } @else {
     <div class="card data-table-card">
       <div class="table-responsive">
-        <table class="table hm-table align-middle mb-0">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>{{ 'doctors.name' | translate }}</th>
-            <th>{{ 'doctors.speciality' | translate }}</th>
-            <th>{{ 'doctors.contact' | translate }}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (d of list; track d.id) {
+        <table class="table table-striped hm-table align-middle mb-0">
+          <thead>
             <tr>
-              <td>{{ d.id }}</td>
-              <td><a [routerLink]="['/doctors', d.id]" class="fw-semibold link-primary text-decoration-none">{{ d.name }}</a></td>
-              <td>{{ d.speciality }}</td>
-              <td>{{ d.contactNumber }}</td>
-              <td>
-                <div class="table-actions" role="group" [attr.aria-label]="'common.view' | translate">
-                  <a [routerLink]="['/doctors', d.id]" class="btn btn-light btn-sm" [attr.title]="'common.view' | translate" [attr.aria-label]="'common.view' | translate"><i class="fa-solid fa-eye text-info"></i></a>
-                  <a [routerLink]="['/doctors', d.id, 'edit']" class="btn btn-light btn-sm" [attr.title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"><i class="fa-solid fa-pen-to-square text-primary"></i></a>
-                  <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate" (click)="delete(d)"><i class="fa-solid fa-trash-can text-danger"></i></button>
-                </div>
-              </td>
+              <th>#</th>
+              <th>{{ 'doctors.name' | translate }}</th>
+              <th>{{ 'doctors.speciality' | translate }}</th>
+              <th>{{ 'doctors.contact' | translate }}</th>
+              <th></th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            @for (d of pagedList; track d.id) {
+              <tr>
+                <td>{{ d.id }}</td>
+                <td><a [routerLink]="['/doctors', d.id]" class="fw-semibold link-primary text-decoration-none">{{ d.name }}</a></td>
+                <td>{{ d.speciality }}</td>
+                <td>{{ d.contactNumber }}</td>
+                <td>
+                  <div class="table-actions" role="group" [attr.aria-label]="'common.view' | translate">
+                    <a [routerLink]="['/doctors', d.id]" class="btn btn-light btn-sm" [attr.title]="'common.view' | translate" [attr.aria-label]="'common.view' | translate"><i class="fa-solid fa-eye text-info"></i></a>
+                    <a [routerLink]="['/doctors', d.id, 'edit']" class="btn btn-light btn-sm" [attr.title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"><i class="fa-solid fa-pen-to-square text-primary"></i></a>
+                    <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate" (click)="delete(d)"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
       </div>
-        @if (list.length === 0) {
+      @if (list.length === 0) {
         <p class="data-table-empty mb-0">{{ 'doctors.noDoctors' | translate }}</p>
+      } @else {
+        <app-list-pagination
+          [totalItems]="list.length"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          selectName="doctorsPageSize"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setPageSize($event)"
+        />
       }
     </div>
   }
 </div>
-
-
-
-
-

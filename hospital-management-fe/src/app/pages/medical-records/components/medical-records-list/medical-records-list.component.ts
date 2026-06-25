@@ -9,14 +9,20 @@ import type { MedicalRecordResponse } from '../../models/response/medical-record
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
-import { IconComponent } from '../../../../core/components/icon/icon.component';
+import { ListFilterToggleComponent } from '../../../../core/components/list-filter-toggle/list-filter-toggle.component';
+import { ListPaginationComponent } from '../../../../core/components/list-pagination/list-pagination.component';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import {
+  clampPage,
+  DEFAULT_PAGE_SIZE_OPTIONS,
+  paginate,
+} from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-medical-records-list',
   standalone: true,
-  imports: [RouterLink, FormsModule, TranslateModule, PageHeaderComponent, IconComponent, NgSelectModule],
+  imports: [RouterLink, FormsModule, TranslateModule, PageHeaderComponent, ListFilterToggleComponent, ListPaginationComponent, NgSelectModule],
   templateUrl: './medical-records-list.component.html',
   styleUrls: ['./medical-records-list.component.css'],
 })
@@ -27,10 +33,16 @@ export class MedicalRecordsListComponent implements OnInit {
   patientSelectOptions: { value: number; label: string }[] = [];
   doctorSelectOptions: { value: number; label: string }[] = [];
   loading = false;
+  showFilters = false;
   filters = { patientId: null as number | null, doctorId: null as number | null, diagnose: '' };
+  readonly pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
+  pageSize = 10;
+  currentPage = 1;
 
   constructor(
-    private medicalRecordService: MedicalRecordService, private doctorService: DoctorService, private patientService: PatientService,
+    private medicalRecordService: MedicalRecordService,
+    private doctorService: DoctorService,
+    private patientService: PatientService,
     private confirmDialog: ConfirmDialogService,
   ) {}
 
@@ -53,17 +65,36 @@ export class MedicalRecordsListComponent implements OnInit {
       doctorId: this.filters.doctorId ?? undefined,
       diagnose: this.filters.diagnose.trim() || undefined,
     }).subscribe({
-      next: (data) => { this.list = data ?? []; this.loading = false; },
+      next: (data) => {
+        this.list = data ?? [];
+        this.loading = false;
+        this.currentPage = clampPage(this.currentPage, this.list.length, this.pageSize);
+      },
       error: () => { this.loading = false; },
     });
   }
 
+  get pagedList(): MedicalRecordResponse[] {
+    return paginate(this.list, this.currentPage, this.pageSize);
+  }
+
+  setPage(page: number): void {
+    this.currentPage = page;
+  }
+
+  setPageSize(size: number): void {
+    this.pageSize = size;
+    this.currentPage = 1;
+  }
+
   applyFilters(): void {
+    this.currentPage = 1;
     this.load();
   }
 
   clearFilters(): void {
     this.filters = { patientId: null, doctorId: null, diagnose: '' };
+    this.currentPage = 1;
     this.load();
   }
 

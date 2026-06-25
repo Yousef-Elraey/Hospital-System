@@ -8,13 +8,21 @@
   margin-bottom: 0;
   background: var(--hm-surface, #fff);
   border: 1px solid var(--hm-border, #e2e8f0);
-  border-radius: 2rem;
+  border-radius: var(--hm-radius-sm, 0.5rem);
   font-size: 0.8125rem;
   font-weight: 500;
   box-shadow: var(--hm-shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.06));
 }
 
+.breadcrumb-item + .breadcrumb-item {
+  padding-left: 0;
+  padding-inline-start: var(--bs-breadcrumb-item-padding-x, 0.5rem);
+}
+
 .breadcrumb-item + .breadcrumb-item::before {
+  float: inline-start;
+  padding-right: 0;
+  padding-inline-end: var(--bs-breadcrumb-item-padding-x, 0.5rem);
   color: var(--hm-text-muted, #94a3b8);
 }
 

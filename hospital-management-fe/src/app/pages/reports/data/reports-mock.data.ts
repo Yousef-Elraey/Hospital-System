@@ -27,9 +27,8 @@ export const REPORTS_MOCK_DATA: ReportsDashboard = {
     { monthKey: 'reports.months.dec', count: 135 },
   ],
   patientsByGender: [
-    { labelKey: 'patients.gender.MALE', count: 542 },
+    { labelKey: 'patients.gender.MALE', count: 570 },
     { labelKey: 'patients.gender.FEMALE', count: 678 },
-    { labelKey: 'patients.gender.OTHER', count: 28 },
   ],
   doctorsBySpeciality: [
     { labelKey: 'reports.specialities.cardiology', count: 12 },

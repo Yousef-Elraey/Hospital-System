@@ -1,23 +1,305 @@
-<div class="list-page container-fluid px-3 px-lg-4 py-3">
-  <app-page-header titleKey="medicalRecords.viewRecord" subtitleKey="medicalRecords.subtitle" iconName="medicalRecords"></app-page-header>
+<div class="patient-visits-view list-page">
+  <app-page-header
+    titleKey="medicalRecords.previousVisits"
+    subtitleKey="medicalRecords.previousVisitsSubtitle"
+    iconName="medicalRecords"
+  >
+    <div pageActions class="patient-visits-header-actions">
+      <button type="button" class="btn btn-primary" (click)="printPage()">
+        <i class="fa-solid fa-print"></i>
+        {{ 'medicalRecords.print' | translate }}
+      </button>
+      <button type="button" class="btn btn-outline-secondary" (click)="exportVisits()">
+        <i class="fa-solid fa-file-export"></i>
+        {{ 'medicalRecords.export' | translate }}
+      </button>
+    </div>
+  </app-page-header>
+
   @if (loading) {
     <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
-  } @else if (record) {
-    <div class="card form-card">
-      <dl class="view-dl">
-        <dt>{{ 'appointments.patient' | translate }}</dt>
-        <dd>{{ patientName(record.patientId) }}</dd>
-        <dt>{{ 'appointments.doctor' | translate }}</dt>
-        <dd>{{ doctorName(record.doctorId) }}</dd>
-        <dt>{{ 'medicalRecords.diagnose' | translate }}</dt>
-        <dd>{{ record.diagnose || '-' }}</dd>
-        <dt>{{ 'medicalRecords.treatment' | translate }}</dt>
-        <dd>{{ record.treatment || '-' }}</dd>
-      </dl>
-      <div class="d-flex flex-wrap gap-2 mt-3">
-        <a [routerLink]="['/medical-records', id, 'edit']" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> {{ 'common.edit' | translate }}</a>
-        <a routerLink="/medical-records" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> {{ 'common.back' | translate }}</a>
+  } @else if (patient && selectedRecord) {
+    <!-- Patient summary -->
+    <section class="patient-visits-summary">
+      <div class="patient-visits-summary__row">
+        <div class="patient-visits-summary__identity">
+          <span class="patient-visits-summary__avatar" aria-hidden="true">
+            <i class="fa-solid fa-user"></i>
+          </span>
+          <div class="patient-visits-summary__identity-meta">
+            <h2 class="patient-visits-summary__name">{{ patient.name }}</h2>
+            <p class="patient-visits-summary__mrn">{{ 'medicalRecords.mrn' | translate }}: {{ patient.id }}</p>
+            @if (genderKey()) {
+              <span class="patient-visits-summary__badge">{{ genderKey() | translate }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="patient-visits-summary__fields">
+          @if (patientAge(); as age) {
+            <div class="patient-visits-summary__field">
+              <span class="patient-visits-summary__field-label">{{ 'medicalRecords.age' | translate }}</span>
+              <span class="patient-visits-summary__field-value">{{ 'medicalRecords.ageYears' | translate:{ age } }}</span>
+            </div>
+          }
+          <div class="patient-visits-summary__field">
+            <span class="patient-visits-summary__field-label">{{ 'patients.phone' | translate }}</span>
+            <span class="patient-visits-summary__field-value patient-visits-summary__field-value--ltr">{{ patient.phone || '—' }}</span>
+          </div>
+          <div class="patient-visits-summary__field">
+            <span class="patient-visits-summary__field-label">{{ 'patients.dateOfBirth' | translate }}</span>
+            <span class="patient-visits-summary__field-value">{{ formatDob() }}</span>
+          </div>
+          <div class="patient-visits-summary__field">
+            <span class="patient-visits-summary__field-label">{{ 'medicalRecords.bloodType' | translate }}</span>
+            <span class="patient-visits-summary__field-value">—</span>
+          </div>
+        </div>
+
+        <a [routerLink]="['/patients', patient.id]" class="patient-visits-summary__file-btn">
+          <i class="fa-solid fa-folder-open" aria-hidden="true"></i>
+          {{ 'medicalRecords.viewMedicalFile' | translate }}
+        </a>
       </div>
-    </div>
+    </section>
+
+    <!-- Visits table -->
+    <section class="patient-visits-table">
+      <header class="patient-visits-table__header">
+        <h3 class="patient-visits-table__title">{{ 'medicalRecords.visitsList' | translate }}</h3>
+        <div class="patient-visits-table__toolbar">
+          <div class="patient-visits-search">
+            <i class="fa-solid fa-magnifying-glass patient-visits-search__icon" aria-hidden="true"></i>
+            <input
+              type="search"
+              class="form-control patient-visits-search__input"
+              [(ngModel)]="searchQuery"
+              (ngModelChange)="onSearchChange()"
+              name="visitSearch"
+              [placeholder]="'medicalRecords.searchVisits' | translate"
+            />
+          </div>
+          <button type="button" class="btn btn-outline-secondary patient-visits-filter-btn" (click)="toggleFilters()">
+            <i class="fa-solid fa-filter"></i>
+            {{ 'medicalRecords.filter' | translate }}
+          </button>
+        </div>
+      </header>
+
+      @if (showFilters) {
+        <div class="patient-visits-filters">
+          <div class="patient-visits-filters__grid">
+            <div class="patient-visits-filters__field">
+              <label class="form-label">{{ 'appointments.doctor' | translate }}</label>
+              <select class="form-select form-select-sm" [(ngModel)]="filterDoctorId" name="filterDoctor" (ngModelChange)="onSearchChange()">
+                <option [ngValue]="null">{{ 'common.clear' | translate }}</option>
+                @for (d of doctors; track d.id) {
+                  <option [ngValue]="d.id">{{ d.name }}</option>
+                }
+              </select>
+            </div>
+            <div class="patient-visits-filters__field">
+              <label class="form-label">{{ 'medicalRecords.visitType' | translate }}</label>
+              <select class="form-select form-select-sm" [(ngModel)]="filterVisitType" name="filterVisitType" (ngModelChange)="onSearchChange()">
+                <option value="">{{ 'common.clear' | translate }}</option>
+                <option value="outpatient">{{ 'medicalRecords.visitTypeOutpatient' | translate }}</option>
+                <option value="inpatient">{{ 'medicalRecords.visitTypeInpatient' | translate }}</option>
+                <option value="emergency">{{ 'medicalRecords.visitTypeEmergency' | translate }}</option>
+              </select>
+            </div>
+            <div class="patient-visits-filters__field patient-visits-filters__field--action">
+              <button type="button" class="btn btn-sm btn-outline-secondary" (click)="clearFilters()">
+                {{ 'common.clear' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      <div class="patient-visits-table__wrap">
+        <table class="patient-visits-table__grid">
+          <thead>
+            <tr>
+              <th>{{ 'medicalRecords.visitNumber' | translate }}</th>
+              <th>{{ 'medicalRecords.visitDate' | translate }}</th>
+              <th>{{ 'appointments.doctor' | translate }}</th>
+              <th>{{ 'medicalRecords.visitType' | translate }}</th>
+              <th>{{ 'medicalRecords.mainDiagnosis' | translate }}</th>
+              <th class="patient-visits-table__actions-col">{{ 'medicalRecords.actions' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (visit of pagedVisits; track visit.id; let odd = $odd) {
+              <tr
+                [class.patient-visits-table__row--active]="isSelected(visit)"
+                [class.patient-visits-table__row--striped]="odd"
+              >
+                <td>
+                  <button type="button" class="patient-visits-table__visit-link" (click)="selectVisit(visit)">
+                    {{ visitNo(visit) }}
+                  </button>
+                </td>
+                <td class="patient-visits-table__date">{{ formatVisitDate(visit) }}</td>
+                <td>{{ doctorName(visit.doctorId) }}</td>
+                <td>
+                  <span class="patient-visits-badge patient-visits-badge--visit-type">
+                    {{ visitTypeLabelKey(visit) | translate }}
+                  </span>
+                </td>
+                <td class="patient-visits-table__diagnosis">{{ mainDx(visit) }}</td>
+                <td class="patient-visits-table__actions-col">
+                  <button type="button" class="patient-visits-table__details-link" (click)="selectVisit(visit)">
+                    {{ 'medicalRecords.viewDetails' | translate }}
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="patient-visits-table__empty">{{ 'medicalRecords.noVisits' | translate }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <footer class="patient-visits-pagination">
+        <nav class="patient-visits-pagination__nav" [attr.aria-label]="'common.previous' | translate">
+          <button type="button" class="patient-visits-pagination__btn" [disabled]="currentPage <= 1" (click)="setPage(currentPage - 1)">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+          @for (page of pageNumbers; track page) {
+            <button
+              type="button"
+              class="patient-visits-pagination__btn"
+              [class.patient-visits-pagination__btn--active]="page === currentPage"
+              (click)="setPage(page)"
+            >
+              {{ page }}
+            </button>
+          }
+          <button type="button" class="patient-visits-pagination__btn" [disabled]="currentPage >= totalPages" (click)="setPage(currentPage + 1)">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+        </nav>
+        <div class="patient-visits-pagination__info">
+          <label class="patient-visits-pagination__size">
+            {{ 'medicalRecords.show' | translate }}
+            <select class="form-select form-select-sm" [ngModel]="pageSize" (ngModelChange)="setPageSize($event)" name="pageSize">
+              @for (size of pageSizeOptions; track size) {
+                <option [ngValue]="size">{{ size }}</option>
+              }
+            </select>
+          </label>
+          <span class="patient-visits-pagination__count">
+            {{ 'medicalRecords.totalRecords' | translate:{ count: filteredVisits.length } }}
+          </span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- Visit details -->
+    <section class="patient-visit-details">
+      <header class="patient-visit-details__header">
+        <h3 class="patient-visit-details__title">{{ 'medicalRecords.visitDetails' | translate }}</h3>
+        <div class="patient-visit-details__meta">
+          <span class="patient-visit-details__meta-item">
+            {{ 'medicalRecords.visitDate' | translate }}: {{ formatVisitDateShort(selectedRecord) }}
+          </span>
+          <span class="patient-visit-details__meta-item patient-visit-details__meta-item--doctor">
+            <i class="fa-solid fa-user-doctor" aria-hidden="true"></i>
+            {{ 'appointments.doctor' | translate }}: {{ doctorName(selectedRecord.doctorId) }}
+          </span>
+        </div>
+      </header>
+
+      <div class="patient-visit-details__cards">
+        <article class="patient-visit-card">
+          <header class="patient-visit-card__header">
+            <i class="fa-solid fa-heart-pulse patient-visit-card__icon" aria-hidden="true"></i>
+            <h4 class="patient-visit-card__title">{{ 'medicalRecords.vitalSigns' | translate }}</h4>
+          </header>
+          <div class="patient-visit-card__body">
+            <dl class="patient-visit-card__vitals">
+              <div class="patient-visit-card__vital-row">
+                <dt>{{ 'medicalRecords.bloodPressure' | translate }}</dt>
+                <dd>—</dd>
+              </div>
+              <div class="patient-visit-card__vital-row">
+                <dt>{{ 'medicalRecords.pulse' | translate }}</dt>
+                <dd>—</dd>
+              </div>
+              <div class="patient-visit-card__vital-row">
+                <dt>{{ 'medicalRecords.weight' | translate }}</dt>
+                <dd>—</dd>
+              </div>
+              <div class="patient-visit-card__vital-row">
+                <dt>{{ 'medicalRecords.height' | translate }}</dt>
+                <dd>—</dd>
+              </div>
+              <div class="patient-visit-card__vital-row">
+                <dt>{{ 'medicalRecords.bmi' | translate }}</dt>
+                <dd>—</dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="patient-visit-card">
+          <header class="patient-visit-card__header">
+            <i class="fa-solid fa-file-lines patient-visit-card__icon" aria-hidden="true"></i>
+            <h4 class="patient-visit-card__title">{{ 'medicalRecords.notes' | translate }}</h4>
+          </header>
+          <div class="patient-visit-card__body">
+            <p class="patient-visit-card__text" [class.patient-visit-card__text--muted]="!selectedTreatment().clinicalNotes">
+              {{ selectedTreatment().clinicalNotes || ('medicalRecords.noNotes' | translate) }}
+            </p>
+          </div>
+        </article>
+
+        <article class="patient-visit-card">
+          <header class="patient-visit-card__header">
+            <i class="fa-solid fa-clipboard-list patient-visit-card__icon" aria-hidden="true"></i>
+            <h4 class="patient-visit-card__title">{{ 'medicalRecords.diagnosisSection' | translate }}</h4>
+          </header>
+          <div class="patient-visit-card__body">
+            @if (selectedDiagnoses().length) {
+              <ul class="patient-visit-card__list list-unstyled mb-0">
+                @for (dx of selectedDiagnoses(); track dx) {
+                  <li>
+                    <i class="fa-solid fa-circle patient-visit-card__bullet" aria-hidden="true"></i>
+                    <span>{{ dx }}</span>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="patient-visit-card__text patient-visit-card__text--muted mb-0">—</p>
+            }
+          </div>
+        </article>
+
+        <article class="patient-visit-card">
+          <header class="patient-visit-card__header">
+            <i class="fa-solid fa-pills patient-visit-card__icon" aria-hidden="true"></i>
+            <h4 class="patient-visit-card__title">{{ 'medicalRecords.medicationsTreatment' | translate }}</h4>
+          </header>
+          <div class="patient-visit-card__body">
+            @if (selectedTreatment().medications.length) {
+              <ol class="patient-visit-card__med-list mb-0">
+                @for (med of selectedTreatment().medications; track $index) {
+                  <li class="patient-visit-card__med-item">
+                    <span class="patient-visit-card__med-name">{{ medicationDisplayName(med) }}</span>
+                    @if (medicationInstruction(med)) {
+                      <span class="patient-visit-card__med-detail">{{ medicationInstruction(med) }}</span>
+                    }
+                  </li>
+                }
+              </ol>
+            } @else {
+              <p class="patient-visit-card__text patient-visit-card__text--muted mb-0">—</p>
+            }
+          </div>
+        </article>
+      </div>
+    </section>
   }
 </div>

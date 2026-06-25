@@ -26,7 +26,9 @@ export type IconName =
   | 'cancel'
   | 'search'
   | 'globe'
-  | 'check';
+  | 'check'
+  | 'menu'
+  | 'close';
 
 export const FA_ICONS: Record<IconName, string> = {
   patients:              'fa-solid fa-hospital-user',
@@ -53,4 +55,6 @@ export const FA_ICONS: Record<IconName, string> = {
   search:                'fa-solid fa-magnifying-glass',
   globe:                 'fa-solid fa-globe',
   check:                 'fa-solid fa-circle-check',
+  menu:                  'fa-solid fa-bars',
+  close:                 'fa-solid fa-xmark',
 };

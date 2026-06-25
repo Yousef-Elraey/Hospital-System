@@ -1,33 +1,38 @@
-<div class="list-page container-fluid px-3 px-lg-4 py-3">
+<div class="list-page">
   <app-page-header titleKey="specialities.title" subtitleKey="specialities.subtitle" iconName="specialities">
     <a pageActions routerLink="/specialities/add" class="btn btn-primary">
       <i class="fa-solid fa-plus"></i>
       {{ 'specialities.addSpeciality' | translate }}
     </a>
   </app-page-header>
-  <div class="card filter-panel">
-    <div class="row g-2 align-items-end">
-      <div class="col-md-6">
-        <label class="form-label">{{ 'specialities.nameEn' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.nameEn" name="slFilterNameEn" />
-      </div>
-      <div class="col-md-6">
-        <label class="form-label">{{ 'specialities.nameAr' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.nameAr" name="slFilterNameAr" />
-      </div>
-      <div class="col-12 d-flex gap-2">
-        <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
-        <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+
+  <app-list-filter-toggle [(expanded)]="showFilters" />
+
+  @if (showFilters) {
+    <div class="card filter-panel">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-6">
+          <label class="form-label">{{ 'specialities.nameEn' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.nameEn" name="slFilterNameEn" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">{{ 'specialities.nameAr' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="filters.nameAr" name="slFilterNameAr" (keyup.enter)="applyFilters()" />
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+        </div>
       </div>
     </div>
-  </div>
+  }
 
   @if (loading) {
     <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
   } @else {
     <div class="card data-table-card">
       <div class="table-responsive">
-        <table class="table hm-table align-middle mb-0">
+        <table class="table table-striped hm-table align-middle mb-0">
           <thead>
             <tr>
               <th>#</th>
@@ -56,6 +61,16 @@
       </div>
       @if (list.length === 0) {
         <p class="data-table-empty mb-0">{{ 'specialities.noSpecialities' | translate }}</p>
+      } @else {
+        <app-list-pagination
+          [totalItems]="totalElements"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          selectName="specialitiesPageSize"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setPageSize($event)"
+        />
       }
     </div>
   }
