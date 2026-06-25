@@ -1,0 +1,12 @@
+<div class="list-filter-toggle-wrap">
+  <button
+    type="button"
+    class="btn btn-outline-primary list-filter-toggle"
+    (click)="toggle()"
+    [attr.aria-expanded]="expanded"
+  >
+    <i class="fa-solid fa-sliders" aria-hidden="true"></i>
+    {{ 'common.advancedSearch' | translate }}
+    <i class="fa-solid fa-chevron-down list-filter-chevron" [class.is-open]="expanded" aria-hidden="true"></i>
+  </button>
+</div>

@@ -1,0 +1,38 @@
+<footer class="hm-list-pagination">
+  <label class="hm-list-pagination__size">
+    {{ 'common.show' | translate }}
+    <select
+      class="form-select form-select-sm"
+      [ngModel]="pageSize"
+      (ngModelChange)="onPageSizeChange($event)"
+      [name]="selectName"
+    >
+      @for (size of pageSizeOptions; track size) {
+        <option [ngValue]="size">{{ size }}</option>
+      }
+    </select>
+  </label>
+
+  <nav class="hm-list-pagination__nav" [attr.aria-label]="paginationLabelKey | translate">
+    <button type="button" class="hm-list-pagination__btn" [disabled]="currentPage <= 1" (click)="onPageChange(currentPage - 1)">
+      <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+    </button>
+    @for (page of pages; track page) {
+      <button
+        type="button"
+        class="hm-list-pagination__btn"
+        [class.hm-list-pagination__btn--active]="page === currentPage"
+        (click)="onPageChange(page)"
+      >
+        {{ page }}
+      </button>
+    }
+    <button type="button" class="hm-list-pagination__btn" [disabled]="currentPage >= pages.length" (click)="onPageChange(currentPage + 1)">
+      <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+    </button>
+  </nav>
+
+  <span class="hm-list-pagination__count">
+    {{ totalCountKey | translate:{ count: totalItems } }}
+  </span>
+</footer>
