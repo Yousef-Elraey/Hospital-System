@@ -1,0 +1,27 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+    <app-page-header titleKey="patients.viewPatient"
+                     subtitleKey="patients.subtitle"
+                     iconName="patients"
+                    >
+    </app-page-header>
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else if (patient) {
+    <div class="card form-card">
+      <dl class="view-dl">
+        <dt>{{ 'patients.name' | translate }}</dt>
+        <dd>{{ patient.name }}</dd>
+        <dt>{{ 'patients.dateOfBirth' | translate }}</dt>
+        <dd>{{ formatDob(patient.dateOfBirth) }}</dd>
+        <dt>{{ 'patients.gender' | translate }}</dt>
+        <dd>{{ patient.gender ? (('patients.gender.' + patient.gender.toUpperCase()) | translate) : '-' }}</dd>
+        <dt>{{ 'patients.phone' | translate }}</dt>
+        <dd>{{ patient.phone || '-' }}</dd>
+      </dl>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <a [routerLink]="['/patients', id, 'edit']" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> {{ 'common.edit' | translate }}</a>
+        <a routerLink="/patients" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> {{ 'common.back' | translate }}</a>
+      </div>
+    </div>
+  }
+</div>

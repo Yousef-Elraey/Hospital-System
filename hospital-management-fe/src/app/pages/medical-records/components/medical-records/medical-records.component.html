@@ -1,0 +1,135 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="medicalRecords.title" subtitleKey="medicalRecords.subtitle" iconName="medicalRecords"></app-page-header>
+  <button type="button" class="btn btn-success" (click)="openAdd()">
+    <i class="fa-solid fa-plus"></i>
+    {{ 'medicalRecords.addRecord' | translate }}
+  </button>
+  <div class="card filter-panel">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label">{{ 'appointments.patient' | translate }}</label>
+        <ng-select
+          class="w-100"
+          [items]="patientSelectOptions"
+          bindLabel="label"
+          bindValue="value"
+          [(ngModel)]="filters.patientId"
+          name="filterMrPatient"
+          [clearable]="true"
+          [searchable]="true"
+          [placeholder]="'appointments.selectPatient' | translate"
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">{{ 'appointments.doctor' | translate }}</label>
+        <ng-select
+          class="w-100"
+          [items]="doctorSelectOptions"
+          bindLabel="label"
+          bindValue="value"
+          [(ngModel)]="filters.doctorId"
+          name="filterMrDoctor"
+          [clearable]="true"
+          [searchable]="true"
+          [placeholder]="'appointments.selectDoctor' | translate"
+        />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">{{ 'medicalRecords.diagnose' | translate }}</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.diagnose" name="filterMrDiagnose" />
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+      </div>
+    </div>
+  </div>
+
+  @if (showForm) {
+    <div class="card form-card">
+      <h2 class="h5 mb-3 d-flex align-items-center gap-2"><span class="icon-wrap text-primary"><i class="fa-solid fa-notes-medical"></i></span>{{ (editId ? 'medicalRecords.editRecord' : 'medicalRecords.newRecord') | translate }}</h2>
+      <form (ngSubmit)="save()">
+        <label class="d-block mb-3">{{ 'appointments.patient' | translate }}
+          <ng-select
+            class="w-100"
+            [items]="patientSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="model.patientId"
+            name="patientId"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectPatient' | translate"
+            required
+          />
+        </label>
+        <label class="d-block mb-3">{{ 'appointments.doctor' | translate }}
+          <ng-select
+            class="w-100"
+            [items]="doctorSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="model.doctorId"
+            name="doctorId"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectDoctor' | translate"
+            required
+          />
+        </label>
+        <label>{{ 'medicalRecords.diagnose' | translate }} <input type="text" class="form-control" [(ngModel)]="model.diagnose" name="diagnose" /></label>
+        <label>{{ 'medicalRecords.treatment' | translate }} <textarea [(ngModel)]="model.treatment" name="treatment" rows="3"></textarea></label>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>
+          <button type="button" class="btn btn-outline-secondary" (click)="cancel()"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card data-table-card">
+      <div class="table-responsive">
+        <table class="table hm-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ 'appointments.patient' | translate }}</th>
+            <th>{{ 'appointments.doctor' | translate }}</th>
+            <th>{{ 'medicalRecords.diagnose' | translate }}</th>
+            <th>{{ 'medicalRecords.treatment' | translate }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (m of list; track m.id) {
+            <tr>
+              <td>{{ m.id }}</td>
+              <td>{{ patientName(m.patientId) }}</td>
+              <td>{{ doctorName(m.doctorId) }}</td>
+              <td>{{ m.diagnose }}</td>
+              <td>{{ m.treatment }}</td>
+              <td>
+                <div class="table-actions" role="group" [attr.aria-label]="'common.edit' | translate">
+                  <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate" (click)="openEdit(m)"><i class="fa-solid fa-pen-to-square text-primary"></i></button>
+                  <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate" (click)="delete(m)"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      </div>
+        @if (list.length === 0) {
+        <p class="data-table-empty mb-0">{{ 'medicalRecords.noRecords' | translate }}</p>
+      }
+    </div>
+  }
+</div>
+
+
+
+
+

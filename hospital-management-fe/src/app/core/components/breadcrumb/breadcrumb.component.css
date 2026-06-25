@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.breadcrumb {
+  padding: 0.4rem 0.85rem;
+  margin-bottom: 0;
+  background: var(--hm-surface, #fff);
+  border: 1px solid var(--hm-border, #e2e8f0);
+  border-radius: 2rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  box-shadow: var(--hm-shadow-sm, 0 1px 3px rgba(15, 23, 42, 0.06));
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: var(--hm-text-muted, #94a3b8);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--hm-primary, #0d9488) !important;
+}
+
+.breadcrumb-item.active {
+  color: var(--hm-text, #0f172a);
+}

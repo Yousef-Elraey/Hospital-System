@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  margin-bottom: 1.25rem;
+}
+
+:host-context(html[dir='rtl']) .page-header-text {
+  text-align: right;
+}
+
+.page-header-actions:empty {
+  display: none;
+}

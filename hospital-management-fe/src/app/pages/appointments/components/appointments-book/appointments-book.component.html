@@ -1,0 +1,80 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="appointments.bookTitle" subtitleKey="appointments.subtitle" iconName="appointmentsBook"></app-page-header>
+  <div class="stepper mb-4">
+    <button
+      type="button"
+      class="step-chip step-btn"
+      [class.active]="currentStep === 1"
+      [class.completed]="currentStep > 1"
+      (click)="goToStep(1)"
+    >
+      <span class="step-index">1</span>
+      <i class="fa-solid fa-user-plus step-icon" aria-hidden="true"></i>
+      <span class="step-label">{{ 'appointments.patientDataStep' | translate }}</span>
+    </button>
+    <div class="progress-link" [class.completed]="currentStep > 1"></div>
+    <button
+      type="button"
+      class="step-chip step-btn"
+      [class.active]="currentStep === 2"
+      (click)="goToStep(2)"
+    >
+      <span class="step-index">2</span>
+      <i class="fa-solid fa-calendar-check step-icon" aria-hidden="true"></i>
+      <span class="step-label">{{ 'appointments.appointmentDetailsStep' | translate }}</span>
+    </button>
+  </div>
+  <div class="card form-card">
+    <form #formRef="ngForm" (ngSubmit)="bookWithoutPaid(formRef)">
+      <div [class.d-none]="currentStep !== 1">
+        <app-patient-form-fields
+          [model]="newPatientModel"
+          [(dobDateStr)]="newPatientDobDateStr"
+          [submitted]="formRef.submitted"
+        />
+      </div>
+      <div [class.d-none]="currentStep !== 2">
+        <app-appointment-details-form
+          [doctorSelectOptions]="doctorSelectOptions"
+          [minDate]="apptMinNgb"
+          [maxDate]="apptMaxNgb"
+          [(doctorId)]="bookModel.doctorId"
+          [(appointmentType)]="bookModel.appointmentType"
+          [(dateStr)]="bookApptDateStr"
+          [(time)]="bookApptTime"
+          doctorName="doctorId"
+          appointmentTypeName="appointmentType"
+          dateName="bookApptDate"
+          timeName="bookApptTime"
+          doctorInputId="standaloneBookDoctor"
+          appointmentTypeInputId="standaloneBookType"
+          timeInputId="standaloneBookTime"
+          [submitted]="formRef.submitted"
+        />
+      </div>
+      <div
+        class="d-flex flex-wrap gap-2 mt-3"
+        [ngClass]="locale.currentLang === 'ar' ? 'justify-content-start' : 'justify-content-end'"
+      >
+        @if (currentStep === 1) {
+          <button type="button" class="btn btn-primary" [disabled]="!isPatientStepValid()" (click)="goToStep(2)">
+            {{ 'common.next' | translate }}
+          </button>
+        } @else {
+          <button type="button" class="btn btn-outline-secondary" (click)="goToStep(1)">
+            {{ 'common.previous' | translate }}
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-calendar-check"></i>
+            {{ 'appointments.bookWithoutPaid' | translate }}
+          </button>
+          <button type="button" class="btn btn-success" (click)="bookWithPaid(formRef)">
+            <i class="fa-solid fa-credit-card"></i>
+            {{ 'appointments.bookWithPaid' | translate }}
+          </button>
+        }
+        <button type="button" class="btn btn-outline-secondary" (click)="cancel()"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</button>
+      </div>
+    </form>
+  </div>
+</div>

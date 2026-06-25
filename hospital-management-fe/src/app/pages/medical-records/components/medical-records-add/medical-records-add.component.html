@@ -1,0 +1,71 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="medicalRecords.newRecord" subtitleKey="medicalRecords.subtitle" iconName="medicalRecord"></app-page-header>
+  <div class="card form-card">
+    <form #formRef="ngForm" (ngSubmit)="save(formRef)">
+      <div class="mb-3">
+        <label class="form-label" for="mrPatient">{{ 'appointments.patient' | translate }}</label>
+        <ng-select
+          id="mrPatient"
+          class="w-100"
+          [items]="patientSelectOptions"
+          bindLabel="label"
+          bindValue="value"
+          [(ngModel)]="model.patientId"
+          name="patientId"
+          [clearable]="true"
+          [searchable]="true"
+          [placeholder]="'appointments.selectPatient' | translate"
+          #patRef="ngModel"
+          required
+          [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
+        />
+        @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
+          <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+        }
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="mrDoctor">{{ 'appointments.doctor' | translate }}</label>
+        <ng-select
+          id="mrDoctor"
+          class="w-100"
+          [items]="doctorSelectOptions"
+          bindLabel="label"
+          bindValue="value"
+          [(ngModel)]="model.doctorId"
+          name="doctorId"
+          [clearable]="true"
+          [searchable]="true"
+          [placeholder]="'appointments.selectDoctor' | translate"
+          #docRef="ngModel"
+          required
+          [ngClass]="{ 'is-invalid': docRef.invalid && (docRef.touched || formRef.submitted) }"
+        />
+        @if (docRef.invalid && (docRef.touched || formRef.submitted)) {
+          <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+        }
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="mrDiagnose">{{ 'medicalRecords.diagnose' | translate }}</label>
+        <input id="mrDiagnose" type="text" class="form-control" [(ngModel)]="model.diagnose" name="diagnose" required
+               #diagRef="ngModel"
+               [class.is-invalid]="diagRef.invalid && (diagRef.touched || formRef.submitted)" />
+        @if (diagRef.invalid && (diagRef.touched || formRef.submitted)) {
+          <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+        }
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="mrTreatment">{{ 'medicalRecords.treatment' | translate }}</label>
+        <textarea id="mrTreatment" class="form-control" [(ngModel)]="model.treatment" name="treatment" rows="3" required
+                  #treatRef="ngModel"
+                  [class.is-invalid]="treatRef.invalid && (treatRef.touched || formRef.submitted)"></textarea>
+        @if (treatRef.invalid && (treatRef.touched || formRef.submitted)) {
+          <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+        }
+      </div>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="cancel()"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</button>
+      </div>
+    </form>
+  </div>
+</div>

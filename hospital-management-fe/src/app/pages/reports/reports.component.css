@@ -1,0 +1,65 @@
+.kpi-card .kpi-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--bs-secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.kpi-card .kpi-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.kpi-card .kpi-trend {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.kpi-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--hm-icon-radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: var(--hm-shadow-sm);
+}
+
+.kpi-icon--patients { background: linear-gradient(145deg, var(--hm-module-patients), #0f766e); }
+.kpi-icon--doctors { background: linear-gradient(145deg, var(--hm-module-doctors), #4338ca); }
+.kpi-icon--billing { background: linear-gradient(145deg, var(--hm-module-billing), #047857); }
+.kpi-icon--warning { background: linear-gradient(145deg, var(--hm-module-records), #b45309); }
+
+.kpi-card .kpi-value {
+  color: var(--hm-text);
+}
+
+.section-title {
+  color: var(--hm-text-secondary);
+}
+
+.chart-card .chart-title {
+  color: var(--hm-text);
+}
+
+.section-title {
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.chart-card .chart-title {
+  font-weight: 600;
+}
+
+.chart-wrap {
+  position: relative;
+  height: 280px;
+}
+
+.chart-wrap--doughnut {
+  height: 260px;
+}

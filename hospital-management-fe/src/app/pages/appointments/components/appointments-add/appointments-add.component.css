@@ -1,0 +1,77 @@
+.patient-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.patient-summary__icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 182, 212, 0.12);
+  color: #0891b2;
+  flex: 0 0 auto;
+}
+
+.patient-summary__content {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.patient-summary__label {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.patient-summary__name {
+  margin-top: 0.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.patient-summary__meta {
+  text-align: end;
+  flex: 0 0 auto;
+}
+
+.patient-summary__meta-label {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.patient-summary__phone {
+  margin-top: 0.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 520px) {
+  .patient-summary {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .patient-summary__meta {
+    width: 100%;
+    text-align: start;
+  }
+}
+

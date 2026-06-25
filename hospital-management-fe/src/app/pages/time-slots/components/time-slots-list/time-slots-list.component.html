@@ -1,0 +1,124 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header
+    titleKey="appointmentSlots.title"
+    subtitleKey="appointmentSlots.subtitle"
+    iconName="appointmentSlots">
+    <a pageActions routerLink="/appointment-slots/add" class="btn btn-primary">
+      <i class="fa-solid fa-calendar-plus"></i>
+      {{ 'appointmentSlots.generate' | translate }}
+    </a>
+  </app-page-header>
+
+  @if (errorMessage) {
+    <div class="alert alert-danger py-2">{{ errorMessage | translate }}</div>
+  }
+
+  <div class="card shadow-sm">
+    <div class="card-header bg-white py-3">
+      <h2 class="h5 mb-0">{{ 'appointmentSlots.existingTitle' | translate }}</h2>
+    </div>
+    <div class="card-body pb-0">
+      <div class="row g-2 align-items-end mb-3">
+        <div class="col-md-3">
+          <label class="form-label">{{ 'appointments.doctor' | translate }}</label>
+          <ng-select
+            class="w-100"
+            [items]="doctorSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="listFilters.doctorId"
+            name="listFilterDoctor"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectDoctor' | translate"
+          />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">{{ 'appointments.status' | translate }}</label>
+          <ng-select
+            class="w-100"
+            [items]="statusOptions"
+            [(ngModel)]="listFilters.status"
+            name="listFilterStatus"
+            [clearable]="true"
+            [searchable]="false"
+            [placeholder]="'appointmentSlots.allStatuses' | translate"
+          >
+            <ng-template ng-label-tmp let-item="item">
+              {{ 'appointmentSlots.status.' + item | translate }}
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item">
+              {{ 'appointmentSlots.status.' + item | translate }}
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">{{ 'appointmentSlots.fromDate' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="listFilters.startDate" name="listStartDate" placeholder="DD-MM-YYYY" />
+        </div>
+        <div class="col-md-2">
+          <label class="form-label">{{ 'appointmentSlots.toDate' | translate }}</label>
+          <input type="text" class="form-control" [(ngModel)]="listFilters.endDate" name="listEndDate" placeholder="DD-MM-YYYY" />
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+          <button type="button" class="btn btn-primary flex-grow-1" (click)="applyListFilters()">
+            {{ 'common.search' | translate }}
+          </button>
+          <button type="button" class="btn btn-outline-secondary" (click)="clearListFilters()" [attr.title]="'common.clear' | translate">
+            <i class="fa-solid fa-eraser"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    @if (loading) {
+      <p class="text-center text-muted py-5 my-2">
+        <i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}
+      </p>
+    } @else {
+      <div class="table-responsive">
+        <table class="table hm-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ 'appointments.doctor' | translate }}</th>
+              <th>{{ 'appointmentSlots.startTime' | translate }}</th>
+              <th>{{ 'appointmentSlots.endTime' | translate }}</th>
+              <th>{{ 'appointments.status' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (slot of slots; track slot.id) {
+              <tr>
+                <td>{{ slot.id }}</td>
+                <td>{{ doctorName(slot.doctorId) }}</td>
+                <td>{{ formatSlotTime(slot.startTime) }}</td>
+                <td>{{ formatSlotTime(slot.endTime) }}</td>
+                <td>
+                  <span class="badge rounded-pill" [ngClass]="statusBadgeClass(slot.status)">
+                    {{ 'appointmentSlots.status.' + slot.status | translate }}
+                  </span>
+                </td>
+                <td>
+                  <button
+                    type="button"
+                    class="btn btn-light btn-sm"
+                    [disabled]="slot.status === 'BOOKED'"
+                    [attr.title]="'common.delete' | translate"
+                    (click)="deleteSlot(slot)"
+                  >
+                    <i class="fa-solid fa-trash-can text-danger"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (slots.length === 0) {
+        <p class="data-table-empty mb-0">{{ 'appointmentSlots.noSlots' | translate }}</p>
+      }
+    }
+  </div>
+</div>

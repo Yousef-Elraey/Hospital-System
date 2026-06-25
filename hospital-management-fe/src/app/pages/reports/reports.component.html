@@ -1,0 +1,210 @@
+<div class="reports container-fluid px-0">
+  <app-page-header
+    titleKey="reports.title"
+    subtitleKey="reports.subtitle"
+    iconName="reports"
+    >
+  </app-page-header>
+
+  @if (loading) {
+    <div class="text-center py-5 text-muted">
+      <div class="spinner-border text-primary mb-3" role="status" aria-hidden="true"></div>
+      <p class="mb-0">{{ 'common.loading' | translate }}</p>
+    </div>
+  } @else if (dashboard) {
+    <div class="alert alert-info d-flex align-items-center gap-2 mb-4" role="status">
+      <app-icon name="reports"></app-icon>
+      <span>{{ 'reports.mockNotice' | translate }}</span>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-4 g-3 mb-4">
+      <div class="col">
+        <div class="card kpi-card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div>
+                <p class="kpi-label mb-1">{{ 'reports.kpi.totalPatients' | translate }}</p>
+                <p class="kpi-value mb-0">{{ dashboard.kpis.totalPatients | number }}</p>
+              </div>
+              <span class="kpi-icon kpi-icon--patients">
+                <app-icon name="patients"></app-icon>
+              </span>
+            </div>
+            <p class="kpi-trend mb-0 mt-2" [class]="trendClass(dashboard.kpis.patientTrend)">
+              {{ dashboard.kpis.patientTrend > 0 ? '+' : '' }}{{ dashboard.kpis.patientTrend | number:'1.1-1' }}%
+              {{ 'reports.kpi.vsLastMonth' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card kpi-card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div>
+                <p class="kpi-label mb-1">{{ 'reports.kpi.totalDoctors' | translate }}</p>
+                <p class="kpi-value mb-0">{{ dashboard.kpis.totalDoctors | number }}</p>
+              </div>
+              <span class="kpi-icon kpi-icon--doctors">
+                <app-icon name="doctors"></app-icon>
+              </span>
+            </div>
+            <p class="kpi-trend mb-0 mt-2" [class]="trendClass(dashboard.kpis.doctorTrend)">
+              {{ dashboard.kpis.doctorTrend > 0 ? '+' : '' }}{{ dashboard.kpis.doctorTrend | number:'1.1-1' }}%
+              {{ 'reports.kpi.vsLastMonth' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card kpi-card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div>
+                <p class="kpi-label mb-1">{{ 'reports.kpi.monthlyRevenue' | translate }}</p>
+                <p class="kpi-value mb-0">{{ dashboard.kpis.monthlyRevenue | currency:'USD':'symbol':'1.0-0' }}</p>
+              </div>
+              <span class="kpi-icon kpi-icon--billing">
+                <app-icon name="billing"></app-icon>
+              </span>
+            </div>
+            <p class="kpi-trend mb-0 mt-2" [class]="trendClass(dashboard.kpis.revenueTrend)">
+              {{ dashboard.kpis.revenueTrend > 0 ? '+' : '' }}{{ dashboard.kpis.revenueTrend | number:'1.1-1' }}%
+              {{ 'reports.kpi.vsLastMonth' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card kpi-card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-start justify-content-between">
+              <div>
+                <p class="kpi-label mb-1">{{ 'reports.kpi.pendingBills' | translate }}</p>
+                <p class="kpi-value mb-0">{{ dashboard.kpis.pendingBills | currency:'USD':'symbol':'1.0-0' }}</p>
+              </div>
+              <span class="kpi-icon kpi-icon--warning">
+                <app-icon name="billing"></app-icon>
+              </span>
+            </div>
+            <p class="kpi-trend mb-0 mt-2" [class]="trendClass(dashboard.kpis.pendingTrend)">
+              {{ dashboard.kpis.pendingTrend > 0 ? '+' : '' }}{{ dashboard.kpis.pendingTrend | number:'1.1-1' }}%
+              {{ 'reports.kpi.vsLastMonth' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Patient charts -->
+    <h2 class="section-title h5 text-uppercase text-muted mb-3">{{ 'reports.sections.patients' | translate }}</h2>
+    <div class="row g-3 mb-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm chart-card h-100">
+          <div class="card-body">
+            <h3 class="chart-title h6 mb-3">{{ 'reports.charts.patientRegistrations' | translate }}</h3>
+            <div class="chart-wrap">
+              <canvas baseChart [data]="patientRegChart" [options]="barOptions" type="bar"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm chart-card h-100">
+          <div class="card-body">
+            <h3 class="chart-title h6 mb-3">{{ 'reports.charts.patientsByGender' | translate }}</h3>
+            <div class="chart-wrap chart-wrap--doughnut">
+              <canvas baseChart [data]="genderChart" [options]="doughnutOptions" type="doughnut"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Doctor charts -->
+    <h2 class="section-title h5 text-uppercase text-muted mb-3">{{ 'reports.sections.doctors' | translate }}</h2>
+    <div class="row g-3 mb-4">
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm chart-card h-100">
+          <div class="card-body">
+            <h3 class="chart-title h6 mb-3">{{ 'reports.charts.doctorsBySpeciality' | translate }}</h3>
+            <div class="chart-wrap">
+              <canvas baseChart [data]="specialityChart" [options]="barOptions" type="bar"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="card border-0 shadow-sm chart-card h-100">
+          <div class="card-body">
+            <h3 class="chart-title h6 mb-3">{{ 'reports.charts.appointmentsByDoctor' | translate }}</h3>
+            <div class="chart-wrap">
+              <canvas baseChart [data]="doctorApptChart" [options]="horizontalBarOptions" type="bar"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Financial charts -->
+    <h2 class="section-title h5 text-uppercase text-muted mb-3">{{ 'reports.sections.financial' | translate }}</h2>
+    <div class="row g-3 mb-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm chart-card h-100">
+          <div class="card-body">
+            <h3 class="chart-title h6 mb-3">{{ 'reports.charts.revenueVsExpenses' | translate }}</h3>
+            <div class="chart-wrap">
+              <canvas baseChart [data]="revenueChart" [options]="lineOptions" type="line"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm chart-card h-100">
+          <div class="card-body">
+            <h3 class="chart-title h6 mb-3">{{ 'reports.charts.paymentStatus' | translate }}</h3>
+            <div class="chart-wrap chart-wrap--doughnut">
+              <canvas baseChart [data]="paymentChart" [options]="doughnutOptions" type="doughnut"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent transactions table -->
+    <div class="card data-table-card">
+      <div class="card-body pb-0">
+        <h3 class="chart-title h6 mb-3">{{ 'reports.charts.recentTransactions' | translate }}</h3>
+      </div>
+      <div class="table-responsive">
+          <table class="table hm-table align-middle mb-0">
+            <thead>
+              <tr>
+                <th>{{ 'reports.table.date' | translate }}</th>
+                <th>{{ 'reports.table.patient' | translate }}</th>
+                <th>{{ 'reports.table.description' | translate }}</th>
+                <th class="text-end">{{ 'reports.table.amount' | translate }}</th>
+                <th>{{ 'reports.table.status' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (tx of dashboard.recentTransactions; track tx.date + tx.patientName) {
+                <tr>
+                  <td>{{ tx.date }}</td>
+                  <td>{{ tx.patientName }}</td>
+                  <td>{{ tx.descriptionKey | translate }}</td>
+                  <td class="text-end fw-semibold">{{ tx.amount | currency:'USD':'symbol':'1.0-0' }}</td>
+                  <td>
+                    <span class="badge" [class]="statusBadgeClass(tx.statusKey)">
+                      {{ tx.statusKey | translate }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+      </div>
+    </div>
+  }
+</div>

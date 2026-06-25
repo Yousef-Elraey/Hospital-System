@@ -1,0 +1,98 @@
+.hospital-date-picker-root {
+  position: relative;
+  width: 100%;
+}
+
+.hospital-date-picker-root .input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.hospital-date-picker-root .form-control {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+  margin-bottom: 0;
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  font-size: 0.875rem;
+  padding: 0.6rem 1rem;
+  padding-right: 48px;
+  background: #fff;
+  color: #344054;
+  font-weight: 400;
+}
+
+.hospital-date-picker-root .form-control:focus {
+  border-color: #0d6efd;
+  outline: 0;
+  box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.12);
+  background: #fff;
+}
+
+.hospital-date-picker-root .form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.hospital-date-picker-root .form-control.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.12);
+}
+
+.hospital-date-picker-root .form-control::placeholder {
+  color: #667085;
+  opacity: 1;
+  font-weight: 400;
+}
+
+.hospital-date-picker-root .hospital-date-picker-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #667085;
+  transition: color 0.2s ease-in-out, background 0.2s ease-in-out;
+  padding: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hospital-date-picker-root .hospital-date-picker-btn:hover {
+  background: #f9fafb;
+  color: #0d6efd;
+}
+
+.hospital-date-picker-root .hospital-date-picker-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hospital-date-picker-root.rtl .form-control {
+  padding-left: 48px !important;
+  padding-right: 1rem !important;
+  text-align: right !important;
+}
+
+.hospital-date-picker-root.rtl .hospital-date-picker-btn {
+  right: auto !important;
+  left: 8px !important;
+}
+
+.hospital-date-picker-root .invalid-feedback {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #dc3545;
+  font-weight: 500;
+}

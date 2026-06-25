@@ -1,0 +1,36 @@
+<div class="row g-2">
+  <div class="col-4">
+    <select
+      class="form-select"
+      [(ngModel)]="hour12"
+      (ngModelChange)="onTimePartChange()"
+    >
+      <option [ngValue]="null">--</option>
+      @for (h of hourOptions; track h) {
+        <option [ngValue]="h">{{ formatLocalizedNumber(h) }}</option>
+      }
+    </select>
+  </div>
+  <div class="col-4">
+    <select
+      class="form-select"
+      [(ngModel)]="minute"
+      (ngModelChange)="onTimePartChange()"
+    >
+      <option [ngValue]="null">--</option>
+      @for (m of minuteOptions; track m) {
+        <option [ngValue]="m">{{ formatLocalizedNumber(m) }}</option>
+      }
+    </select>
+  </div>
+  <div class="col-4">
+    <select
+      class="form-select"
+      [(ngModel)]="meridian"
+      (ngModelChange)="onTimePartChange()"
+    >
+      <option value="AM">{{ locale.currentLang === 'ar' ? 'ص' : 'AM' }}</option>
+      <option value="PM">{{ locale.currentLang === 'ar' ? 'م' : 'PM' }}</option>
+    </select>
+  </div>
+</div>

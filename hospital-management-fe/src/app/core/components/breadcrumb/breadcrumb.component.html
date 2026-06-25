@@ -1,0 +1,19 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb mb-0 small">
+    <li class="breadcrumb-item">
+      <a routerLink="/" class="link-body-emphasis text-decoration-none" routerLinkActive="fw-semibold" [routerLinkActiveOptions]="{ exact: true }">
+        <app-icon name="home" size="sm"></app-icon>
+        <span class="visually-hidden">{{ 'breadcrumb.home' | translate }}</span>
+      </a>
+    </li>
+    @for (item of breadcrumbs$ | async; track item.path; let last = $last) {
+      <li class="breadcrumb-item" [class.active]="last" [attr.aria-current]="last ? 'page' : null">
+        @if (last) {
+          {{ item.labelKey | translate }}
+        } @else {
+          <a [routerLink]="[item.path]" class="text-decoration-none">{{ item.labelKey | translate }}</a>
+        }
+      </li>
+    }
+  </ol>
+</nav>

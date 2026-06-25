@@ -1,0 +1,67 @@
+<div class="form-fields-grid">
+  <div class="mb-3">
+    <label class="form-label" for="patientName">{{ 'patients.name' | translate }}</label>
+    <input id="patientName" type="text" class="form-control" [(ngModel)]="model.name" name="name" required
+           [placeholder]="'common.namePlaceholder' | translate"
+           #nameRef="ngModel"
+           [class.is-invalid]="nameRef.invalid && (nameRef.touched || submitted)" />
+    @if (nameRef.invalid && (nameRef.touched || submitted)) {
+      <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+    }
+  </div>
+  <div class="mb-3">
+    <label class="form-label d-block">{{ 'patients.dateOfBirth' | translate }}</label>
+    <app-hospital-datepicker
+      [ngModel]="dobDateStr"
+      (ngModelChange)="onDobChange($event)"
+      name="dateOfBirth"
+      required
+      [inputClass]="{ 'is-invalid': dobRef.invalid && (dobRef.touched || submitted) }"
+      [errorMessage]="(dobRef.invalid && (dobRef.touched || submitted)) ? ('validation.required' | translate) : ''"
+      #dobRef="ngModel"
+    />
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="patientGender">{{ 'patients.gender' | translate }}</label>
+    <ng-select
+      id="patientGender"
+      class="w-100"
+      [items]="genderSelectOptions"
+      bindLabel="label"
+      bindValue="value"
+      [(ngModel)]="model.gender"
+      name="gender"
+      [clearable]="false"
+      [searchable]="false"
+      [placeholder]="'patients.selectGender' | translate"
+      #genderRef="ngModel"
+      required
+      [ngClass]="{ 'is-invalid': genderRef.invalid && (genderRef.touched || submitted) }"
+    >
+      <ng-template ng-label-tmp let-item="item">
+        {{ item.label | translate }}
+      </ng-template>
+      <ng-template ng-option-tmp let-item="item">
+        {{ item.label | translate }}
+      </ng-template>
+    </ng-select>
+    @if (genderRef.invalid && (genderRef.touched || submitted)) {
+      <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+    }
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="patientPhone">{{ 'patients.phone' | translate }}</label>
+    <input id="patientPhone" type="text" class="form-control" [(ngModel)]="model.phone" name="phone" required
+           placeholder="01090047203"
+           pattern="^01[0-9]{9}$"
+           minlength="11"
+           maxlength="11"
+           #phoneRef="ngModel"
+           [class.is-invalid]="phoneRef.invalid && (phoneRef.touched || submitted)" />
+    @if (phoneRef.errors?.['required'] && (phoneRef.touched || submitted)) {
+      <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+    } @else if (phoneRef.errors?.['pattern'] && (phoneRef.touched || submitted)) {
+      <div class="invalid-feedback d-block">{{ 'validation.phoneFormat' | translate }}</div>
+    }
+  </div>
+</div>

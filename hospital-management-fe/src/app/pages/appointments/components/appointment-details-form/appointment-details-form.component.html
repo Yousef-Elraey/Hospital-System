@@ -1,0 +1,83 @@
+<div class="mb-3">
+  <label class="form-label" [for]="doctorInputId">{{ 'appointments.doctor' | translate }}</label>
+  <ng-select
+    [id]="doctorInputId"
+    class="w-100"
+    [items]="doctorSelectOptions"
+    bindLabel="label"
+    bindValue="value"
+    [ngModel]="doctorId"
+    (ngModelChange)="doctorIdChange.emit($event)"
+    [name]="doctorName"
+    [clearable]="true"
+    [searchable]="true"
+    [placeholder]="'appointments.selectDoctor' | translate"
+    #docRef="ngModel"
+    required
+    [ngClass]="{ 'is-invalid': docRef.invalid && (docRef.touched || submitted) }"
+  />
+  @if (docRef.invalid && (docRef.touched || submitted)) {
+    <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+  }
+</div>
+
+<div class="mb-3">
+  <label class="form-label" [for]="appointmentTypeInputId">{{ 'appointments.type' | translate }}</label>
+  <ng-select
+    [id]="appointmentTypeInputId"
+    class="w-100"
+    [items]="appointmentTypeOptions"
+    bindLabel="labelKey"
+    bindValue="value"
+    [ngModel]="appointmentType"
+    (ngModelChange)="appointmentTypeChange.emit($event)"
+    [name]="appointmentTypeName"
+    [clearable]="false"
+    [searchable]="false"
+    [placeholder]="'appointments.selectType' | translate"
+    #typeRef="ngModel"
+    required
+    [ngClass]="{ 'is-invalid': typeRef.invalid && (typeRef.touched || submitted) }"
+  >
+    <ng-template ng-label-tmp let-item="item">
+      {{ item.labelKey | translate }}
+    </ng-template>
+    <ng-template ng-option-tmp let-item="item">
+      {{ item.labelKey | translate }}
+    </ng-template>
+  </ng-select>
+  @if (typeRef.invalid && (typeRef.touched || submitted)) {
+    <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+  }
+</div>
+
+<div class="mb-3">
+  <label class="form-label d-block">{{ 'appointments.date' | translate }}</label>
+  <app-hospital-datepicker
+    [ngModel]="dateStr"
+    (ngModelChange)="dateStrChange.emit($event)"
+    [name]="dateName"
+    required
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [inputClass]="{ 'is-invalid': apptDateRef.invalid && (apptDateRef.touched || submitted) }"
+    [errorMessage]="(apptDateRef.invalid && (apptDateRef.touched || submitted)) ? ('validation.required' | translate) : ''"
+    #apptDateRef="ngModel"
+  />
+</div>
+
+<div class="mb-3">
+  <label class="form-label" [for]="timeInputId">{{ 'appointments.time' | translate }}</label>
+  <app-appointment-time-picker
+    [id]="timeInputId"
+    [ngModel]="time"
+    (ngModelChange)="timeChange.emit($event)"
+    [name]="timeName"
+    required
+    #apptTimeRef="ngModel"
+  />
+  @if (apptTimeRef.invalid && (apptTimeRef.touched || submitted)) {
+    <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+  }
+</div>
+

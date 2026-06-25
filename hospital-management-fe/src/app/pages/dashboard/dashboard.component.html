@@ -1,0 +1,33 @@
+<div class="dashboard">
+  <section class="dashboard-hero">
+    <div class="dashboard-hero-glow" aria-hidden="true"></div>
+    <div class="dashboard-hero-inner">
+      <div class="dashboard-hero-icon">
+        <app-icon name="logo" size="xl"></app-icon>
+      </div>
+      <div>
+        <h1 class="dashboard-hero-title">{{ 'dashboard.title' | translate }}</h1>
+        <p class="dashboard-hero-subtitle">{{ 'dashboard.subtitle' | translate }}</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 g-3 g-lg-4">
+    @for (link of links; track link.to) {
+      <div class="col">
+        <a [routerLink]="link.to" class="dash-card" [style.--card-accent]="link.color">
+          <span class="dash-card-icon" [ngStyle]="iconStyle(link.color)">
+            <app-icon [name]="link.icon" size="lg"></app-icon>
+          </span>
+          <div class="dash-card-text">
+            <span class="dash-card-label">{{ link.labelKey | translate }}</span>
+            <span class="dash-card-desc">{{ link.descKey | translate }}</span>
+          </div>
+          <span class="dash-card-arrow" aria-hidden="true">
+            <app-icon name="back" size="sm"></app-icon>
+          </span>
+        </a>
+      </div>
+    }
+  </div>
+</div>

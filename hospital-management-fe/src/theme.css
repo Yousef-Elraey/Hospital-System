@@ -1,0 +1,301 @@
+/* Hospital Management — design tokens & Bootstrap overrides */
+
+:root {
+  /* Brand */
+  --hm-primary: #0d9488;
+  --hm-primary-dark: #0f766e;
+  --hm-primary-light: #ccfbf1;
+  --hm-accent: #4f46e5;
+  --hm-accent-dark: #4338ca;
+
+  /* Surfaces */
+  --hm-surface: #ffffff;
+  --hm-surface-subtle: #f8fafc;
+  --hm-surface-muted: #f1f5f9;
+  --hm-border: #e2e8f0;
+  --hm-border-strong: #cbd5e1;
+
+  /* Text */
+  --hm-text: #0f172a;
+  --hm-text-secondary: #64748b;
+  --hm-text-muted: #94a3b8;
+
+  /* Module palette */
+  --hm-module-patients: #0d9488;
+  --hm-module-doctors: #6366f1;
+  --hm-module-appointments: #0284c7;
+  --hm-module-slots: #7c3aed;
+  --hm-module-billing: #059669;
+  --hm-module-records: #d97706;
+  --hm-module-specialities: #db2777;
+  --hm-module-reports: #4f46e5;
+
+  /* Chart palette */
+  --hm-chart-1: #0d9488;
+  --hm-chart-2: #6366f1;
+  --hm-chart-3: #0284c7;
+  --hm-chart-4: #059669;
+  --hm-chart-5: #d97706;
+  --hm-chart-6: #db2777;
+  --hm-chart-danger: #dc2626;
+
+  /* Typography */
+  --hm-font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --hm-font-ar: 'IBM Plex Sans Arabic', 'DM Sans', system-ui, sans-serif;
+
+  /* Shape */
+  --hm-radius-sm: 0.5rem;
+  --hm-radius-md: 0.75rem;
+  --hm-radius-lg: 1rem;
+  --hm-icon-radius: 0.625rem;
+  --hm-shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+  --hm-shadow-md: 0 4px 16px rgba(15, 23, 42, 0.08);
+  --hm-shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.1);
+
+  /* Bootstrap mapping */
+  --bs-primary: var(--hm-primary);
+  --bs-primary-rgb: 13, 148, 136;
+  --bs-secondary: #64748b;
+  --bs-secondary-rgb: 100, 116, 139;
+  --bs-success: #059669;
+  --bs-success-rgb: 5, 150, 105;
+  --bs-info: #0284c7;
+  --bs-info-rgb: 2, 132, 199;
+  --bs-warning: #d97706;
+  --bs-warning-rgb: 217, 119, 6;
+  --bs-danger: #dc2626;
+  --bs-danger-rgb: 220, 38, 38;
+  --bs-body-font-family: var(--hm-font-sans);
+  --bs-body-color: var(--hm-text);
+  --bs-body-bg: var(--hm-surface-subtle);
+  --bs-border-color: var(--hm-border);
+  --bs-link-color: var(--hm-primary-dark);
+  --bs-link-hover-color: var(--hm-primary);
+  --bs-border-radius: var(--hm-radius-sm);
+  --bs-border-radius-lg: var(--hm-radius-lg);
+
+  /* Legacy alias */
+  --hospital-primary: var(--hm-primary);
+  --hospital-icon-radius: var(--hm-icon-radius);
+  --accent: var(--hm-accent);
+}
+
+html[lang='ar'] {
+  --bs-body-font-family: var(--hm-font-ar);
+}
+
+html[dir='rtl'] {
+  --bs-body-font-family: var(--hm-font-ar);
+}
+
+/* ── Base typography ── */
+body {
+  font-family: var(--hm-font-sans);
+  color: var(--hm-text);
+  background-color: var(--hm-surface-subtle);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html[lang='ar'] body,
+html[dir='rtl'] body {
+  font-family: var(--hm-font-ar);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--hm-text);
+}
+
+/* ── Buttons ── */
+.btn {
+  font-weight: 600;
+  border-radius: var(--hm-radius-sm);
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--hm-primary), var(--hm-primary-dark));
+  border-color: var(--hm-primary-dark);
+  box-shadow: var(--hm-shadow-sm);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: linear-gradient(135deg, var(--hm-primary-dark), #115e59);
+  border-color: #115e59;
+}
+
+.btn-outline-secondary {
+  border-color: var(--hm-border-strong);
+  color: var(--hm-text-secondary);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--hm-surface-muted);
+  border-color: var(--hm-border-strong);
+  color: var(--hm-text);
+}
+
+/* ── Forms ── */
+.form-control,
+.form-select {
+  border-color: var(--hm-border);
+  color: var(--hm-text);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--hm-primary);
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.15);
+}
+
+.form-label {
+  color: var(--hm-text-secondary);
+  font-weight: 600;
+}
+
+/* ── Tables ── */
+.table {
+  --bs-table-bg: transparent;
+}
+
+.table thead th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--hm-text-secondary);
+  border-bottom-width: 1px;
+  background-color: var(--hm-surface-muted);
+}
+
+.table-hover > tbody > tr:hover > * {
+  background-color: rgba(13, 148, 136, 0.04);
+}
+
+/* ── Breadcrumb ── */
+.breadcrumb {
+  font-weight: 500;
+}
+
+.breadcrumb-item a {
+  color: var(--hm-text-secondary);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--hm-primary);
+}
+
+.breadcrumb-item.active {
+  color: var(--hm-text);
+  font-weight: 600;
+}
+
+/* ── Badges ── */
+.badge {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── Angular Material (dialogs / spinner) ── */
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: var(--hm-radius-lg);
+  font-family: var(--hm-font-sans) !important;
+}
+
+html[dir='rtl'] .mat-mdc-dialog-container {
+  font-family: var(--hm-font-ar) !important;
+}
+
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--hm-primary);
+}
+
+.mat-mdc-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-outlined-button {
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  border-radius: var(--hm-radius-sm) !important;
+}
+
+.mat-mdc-unelevated-button.mat-primary {
+  --mdc-filled-button-container-color: var(--hm-primary);
+}
+
+/* ── ng-select ── */
+.ng-select.ng-select-focused .ng-select-container {
+  border-color: var(--hm-primary);
+  box-shadow: 0 0 0 0.2rem rgba(13, 148, 136, 0.15);
+}
+
+/* ── Auth pages ── */
+.auth-page {
+  background: linear-gradient(160deg, #f0fdfa 0%, var(--hm-surface-subtle) 45%, #eef2ff 100%);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--hm-radius-lg) !important;
+  box-shadow: var(--hm-shadow-lg) !important;
+}
+
+.auth-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--hm-radius-md);
+  background: linear-gradient(135deg, var(--hm-accent), var(--hm-accent-dark));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: var(--hm-shadow-md);
+}
+
+.auth-logo--register {
+  background: linear-gradient(135deg, var(--hm-primary), var(--hm-primary-dark));
+}
+
+/* ── App shell ── */
+.app-navbar {
+  background: var(--hm-surface) !important;
+  border-bottom: 1px solid var(--hm-border) !important;
+  box-shadow: var(--hm-shadow-sm);
+}
+
+.app-logo-icon {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--hm-accent), var(--hm-accent-dark));
+  border-radius: var(--hm-radius-sm);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+}
+
+.app-brand {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--hm-text) !important;
+}
+
+.app-sidebar {
+  width: 260px;
+  background: var(--hm-surface) !important;
+  border-color: var(--hm-border) !important;
+}
+
+.main-wrap {
+  background: linear-gradient(180deg, #f0fdfa 0%, var(--hm-surface-subtle) 120px, var(--hm-surface-subtle) 100%) !important;
+}
+
+.app-sidebar {
+  background: var(--hm-surface) !important;
+  box-shadow: 1px 0 0 var(--hm-border);
+}
+
+html[dir='rtl'] .app-sidebar {
+  box-shadow: -1px 0 0 var(--hm-border);
+}

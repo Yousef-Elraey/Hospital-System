@@ -1,0 +1,192 @@
+<div class="list-page container-fluid px-3 px-lg-4 py-3">
+  <app-page-header titleKey="appointments.title" subtitleKey="appointments.subtitle" iconName="appointments">
+    <div pageActions class="d-flex flex-wrap gap-2">
+      <button type="button" class="btn btn-primary" (click)="openBookingFlowDialog()">
+        <i class="fa-solid fa-plus"></i>
+        {{ 'appointments.addAppointment' | translate }}
+      </button>
+      <a routerLink="/appointment-slots" class="btn btn-outline-primary">
+        <i class="fa-solid fa-calendar-days"></i>
+        {{ 'appointmentSlots.manageSlots' | translate }}
+      </a>
+    </div>
+  </app-page-header>
+  @if (showVisitTypeDialog) {
+    <div
+      class="modal-root"
+      (click)="closeBookingFlowDialog()"
+      style="position: fixed; inset: 0; z-index: 2000; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center;"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="visitTypeTitle"
+    >
+      <div (click)="$event.stopPropagation()" style="background: var(--color-background-primary, #ffffff); border-radius: var(--border-radius-lg, 16px); border: 0.5px solid var(--color-border-tertiary, #e5e7eb); padding: 2rem 2rem 1.5rem; width: 420px; direction: rtl; font-family: var(--font-sans, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+          <p id="visitTypeTitle" style="font-size: 18px; font-weight: 500; color: var(--color-text-primary, #0f172a); margin: 0;">نوع المريض</p>
+          <button (click)="closeBookingFlowDialog()" style="background: none; border: none; cursor: pointer; color: var(--color-text-secondary, #64748b); font-size: 20px; padding: 0; line-height: 1;">&#x2715;</button>
+        </div>
+        <p style="font-size: 14px; color: var(--color-text-secondary, #64748b); margin: 0 0 1.75rem;">يرجى تحديد نوع المريض للمتابعة</p>
+
+        @if (!existingMode) {
+        <div style="display: flex; gap: 16px; margin-bottom: 1.5rem;">
+          <button
+            type="button"
+            (click)="visitTypeChoice='NEW'; confirmBookingFlowSelection()"
+            class="patient-type-card patient-type-card--new"
+            style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 1.5rem 1rem; border-radius: var(--border-radius-lg, 16px); border: 1.5px solid var(--color-border-tertiary, #e5e7eb); background: var(--color-background-secondary, #f8fafc); cursor: pointer; transition: border-color 0.15s, background 0.15s;"
+          >
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: #E1F5EE; display: flex; align-items: center; justify-content: center;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="7" r="4" stroke="#0F6E56" stroke-width="1.8" fill="none"/>
+                <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="#0F6E56" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                <circle cx="19" cy="5" r="3.5" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5"/>
+                <path d="M19 3.5v3M17.5 5h3" stroke="#1D9E75" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span style="font-size: 15px; font-weight: 500; color: var(--color-text-primary, #0f172a); text-align: center;">مريض جديد</span>
+            <span style="font-size: 12px; color: var(--color-text-secondary, #64748b); text-align: center;">تسجيل لأول مرة</span>
+          </button>
+
+          <button
+            type="button"
+            (click)="selectExistingPatient()"
+            class="patient-type-card patient-type-card--existing"
+            style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 1.5rem 1rem; border-radius: var(--border-radius-lg, 16px); border: 1.5px solid var(--color-border-tertiary, #e5e7eb); background: var(--color-background-secondary, #f8fafc); cursor: pointer; transition: border-color 0.15s, background 0.15s;"
+          >
+            <div style="width: 56px; height: 56px; border-radius: 50%; background: #E6F1FB; display: flex; align-items: center; justify-content: center;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="7" r="4" stroke="#185FA5" stroke-width="1.8" fill="none"/>
+                <path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke="#185FA5" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                <path d="M17 10l1.5 1.5L21 9" stroke="#185FA5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span style="font-size: 14px; font-weight: 500; color: var(--color-text-primary, #0f172a); text-align: center;">مريض سبق له الحضور</span>
+            <span style="font-size: 12px; color: var(--color-text-secondary, #64748b); text-align: center;">مريض موجود مسبقاً</span>
+          </button>
+        </div>
+        } @else {
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display:block; font-size: 14px; color: var(--color-text-secondary, #64748b); margin-bottom: 0.5rem;">رقم الهاتف</label>
+            <div style="display:flex; gap: 10px; align-items: center;">
+              <input
+                type="text"
+                [(ngModel)]="existingPhone"
+                name="existingPhone"
+                placeholder="01090047203"
+                style="flex: 1; padding: 10px 12px; border-radius: 12px; border: 1px solid #cbd5e1; outline: none;"
+              />
+              <button
+                type="button"
+                (click)="searchExistingPatient()"
+                [disabled]="existingLoading"
+                style="padding: 10px 16px; border-radius: 12px; border: 0; background: #185FA5; color: #fff; cursor: pointer;"
+              >
+                @if (existingLoading) { ... } @else { بحث }
+              </button>
+            </div>
+            @if (existingError) {
+              <div style="margin-top: 8px; color: #dc2626; font-size: 13px;">
+                {{ existingError | translate }}
+              </div>
+            }
+          </div>
+        }
+
+        <div style="display: flex; justify-content: flex-start; gap: 10px; border-top: 0.5px solid var(--color-border-tertiary, #e5e7eb); padding-top: 1rem;">
+          <button type="button" (click)="closeBookingFlowDialog()" style="padding: 8px 20px; border-radius: var(--border-radius-md, 12px); border: 0.5px solid var(--color-border-secondary, #cbd5e1); background: transparent; color: var(--color-text-secondary, #64748b); font-size: 14px; cursor: pointer;">إلغاء</button>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="card shadow-sm p-3 mb-3">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label">{{ 'appointments.doctor' | translate }}</label>
+        <ng-select
+          class="w-100"
+          [items]="doctorSelectOptions"
+          bindLabel="label"
+          bindValue="value"
+          [(ngModel)]="filters.doctorId"
+          name="alFilterDoctor"
+          [clearable]="true"
+          [searchable]="true"
+          [placeholder]="'appointments.selectDoctor' | translate"
+        />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">{{ 'appointments.patient' | translate }}</label>
+        <ng-select
+          class="w-100"
+          [items]="patientSelectOptions"
+          bindLabel="label"
+          bindValue="value"
+          [(ngModel)]="filters.patientId"
+          name="alFilterPatient"
+          [clearable]="true"
+          [searchable]="true"
+          [placeholder]="'appointments.selectPatient' | translate"
+        />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">{{ 'appointments.status' | translate }}</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.status" name="alFilterStatus" />
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">{{ 'appointments.date' | translate }}</label>
+        <input type="text" class="form-control" [(ngModel)]="filters.date" name="alFilterDate" placeholder="DD-MM-YYYY" />
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="clearFilters()">{{ 'common.clear' | translate }}</button>
+      </div>
+    </div>
+  </div>
+
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card data-table-card">
+      <div class="table-responsive">
+        <table class="table hm-table align-middle mb-0">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>{{ 'appointments.dateTime' | translate }}</th>
+            <th>{{ 'appointments.doctor' | translate }} #</th>
+            <th>{{ 'appointments.patient' | translate }} #</th>
+            <th>{{ 'appointments.status' | translate }}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of list; track a.id) {
+            <tr>
+              <td>{{ a.id }}</td>
+              <td><a [routerLink]="['/appointments', a.id]" class="fw-semibold link-primary text-decoration-none">{{ formatTiming(a.timing) }}</a></td>
+              <td>{{ a.doctorId }}</td>
+              <td>{{ a.patientId }}</td>
+              <td>{{ a.status ?? '-' }}</td>
+              <td>
+                <div class="table-actions" role="group" [attr.aria-label]="'common.view' | translate">
+                  <a [routerLink]="['/appointments', a.id]" class="btn btn-light btn-sm" [attr.title]="'common.view' | translate" [attr.aria-label]="'common.view' | translate"><i class="fa-solid fa-eye text-info"></i></a>
+                  <a [routerLink]="['/appointments', a.id, 'edit']" class="btn btn-light btn-sm" [attr.title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"><i class="fa-solid fa-pen-to-square text-primary"></i></a>
+                  <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate" (click)="delete(a)"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      </div>
+        @if (list.length === 0) {
+            <p class="data-table-empty mb-0">{{ 'appointments.noAppointments' | translate }}</p>
+      }
+    </div>
+  }
+</div>
+
+
+
+
+
