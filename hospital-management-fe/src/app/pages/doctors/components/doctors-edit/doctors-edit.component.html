@@ -17,9 +17,22 @@
         </div>
         <div class="mb-3">
           <label class="form-label" for="editDoctorSpeciality">{{ 'doctors.speciality' | translate }}</label>
-          <input id="editDoctorSpeciality" type="text" class="form-control" [(ngModel)]="model.speciality" name="speciality" required
-                 #specRef="ngModel"
-                 [class.is-invalid]="specRef.invalid && (specRef.touched || formRef.submitted)" />
+          <ng-select
+            id="editDoctorSpeciality"
+            class="w-100"
+            [items]="specialitySelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="model.specialityId"
+            name="specialityId"
+            [clearable]="true"
+            [searchable]="true"
+            [loading]="loadingSpecialities"
+            [placeholder]="'doctors.selectSpeciality' | translate"
+            #specRef="ngModel"
+            required
+            [class.is-invalid]="specRef.invalid && (specRef.touched || formRef.submitted)"
+          />
           @if (specRef.invalid && (specRef.touched || formRef.submitted)) {
             <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
           }

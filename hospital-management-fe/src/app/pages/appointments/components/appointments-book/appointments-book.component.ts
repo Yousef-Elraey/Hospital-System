@@ -21,6 +21,7 @@ import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { PatientFormFieldsComponent } from '../../../patients/components/patient-form-fields/patient-form-fields.component';
 import { switchMap } from 'rxjs';
 import { AppointmentDetailsFormComponent } from '../appointment-details-form/appointment-details-form.component';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-appointments-book',
@@ -71,8 +72,8 @@ export class AppointmentsBookComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.doctorService.getDoctors().subscribe((d) => {
-      this.doctors = d ?? [];
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
       this.doctorSelectOptions = this.doctors.map((x) => ({ value: x.id!, label: x.name }));
     });
   }

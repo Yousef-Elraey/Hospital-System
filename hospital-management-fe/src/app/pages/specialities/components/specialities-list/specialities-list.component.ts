@@ -8,7 +8,7 @@ import { PageHeaderComponent } from '../../../../core/components/page-header/pag
 import { ListFilterToggleComponent } from '../../../../core/components/list-filter-toggle/list-filter-toggle.component';
 import { ListPaginationComponent } from '../../../../core/components/list-pagination/list-pagination.component';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
-import { DEFAULT_PAGE_SIZE_OPTIONS } from '../../../../core/utils/list-pagination';
+import { DEFAULT_PAGE_SIZE_OPTIONS, applyPageResponse, toPageRequest } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-specialities-list',
@@ -41,14 +41,14 @@ export class SpecialitiesListComponent implements OnInit {
     this.specialityService.getSpecialities({
       nameEn: this.filters.nameEn.trim() || undefined,
       nameAr: this.filters.nameAr.trim() || undefined,
-      page: this.currentPage - 1,
-      size: this.pageSize,
+      ...toPageRequest(this.currentPage, this.pageSize),
     }).subscribe({
       next: (response) => {
-        this.list = response.data ?? [];
-        this.totalElements = response.totalElements ?? 0;
-        this.currentPage = (response.page ?? 0) + 1;
-        this.pageSize = response.size ?? this.pageSize;
+        const page = applyPageResponse(response, { pageSize: this.pageSize });
+        this.list = page.list;
+        this.totalElements = page.totalElements;
+        this.currentPage = page.currentPage;
+        this.pageSize = page.pageSize;
         this.loading = false;
       },
       error: () => { this.loading = false; },

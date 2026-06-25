@@ -15,6 +15,7 @@ import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
 import { estimateSlotCount } from '../../utils/generate-time-slots';
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { GenerateSlotsRequest } from '../../models/request/generate-slots-request.dto';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-time-slots-generate',
@@ -60,11 +61,11 @@ export class TimeSlotsGenerateComponent implements OnInit {
   readonly locale = inject(LocaleService);
 
   ngOnInit(): void {
-    this.doctorService.getDoctors().subscribe((d) => {
-      const doctors = (d ?? []) as DoctorResponse[];
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      const doctors = response.data ?? [];
       this.doctorSelectOptions = doctors.map((x) => ({
         value: x.id!,
-        label: `${x.name} (${x.speciality})`,
+        label: `${x.name}`,
       }));
     });
   }

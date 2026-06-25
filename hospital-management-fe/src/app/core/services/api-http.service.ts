@@ -12,7 +12,7 @@ export class ApiHttpService {
     method: string,
     path: string,
     body?: unknown,
-    query?: Record<string, string | number | boolean | null | undefined>
+    query?: object
   ): Observable<T> {
     const url = `${BASE}${path}`;
     const options = body != null ? { body } : {};

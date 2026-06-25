@@ -1,10 +1,9 @@
 package com.hospital.status.service;
 
-import com.hospital.billing.dto.response.GetBillingResponse;
-import com.hospital.dto.PageResponse;
-import com.hospital.status.dto.response.StatusResponseDto;
-import com.hospital.entity.AppointmentStatus;
 import com.hospital.common.exception.HospitalBusinessException;
+import com.hospital.dto.PageResponse;
+import com.hospital.entity.AppointmentStatus;
+import com.hospital.status.dto.response.StatusResponseDto;
 import com.hospital.status.repository.AppointmentStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -36,8 +35,8 @@ public class AppointmentStatusService {
     appointmentStatusDb.forEach(appointmentStatus -> {
       StatusResponseDto appointmentStatus1 = new StatusResponseDto();
       appointmentStatus1
-              .setName_ar(appointmentStatus.getNameAr())
-              .setName_en(appointmentStatus.getNameEn())
+              .setNameAr(appointmentStatus.getNameAr())
+              .setNameEn(appointmentStatus.getNameEn())
               .setId(appointmentStatus.getId());
       statusResponseDtos.add(appointmentStatus1);
     });

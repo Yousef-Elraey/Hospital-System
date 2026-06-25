@@ -7,14 +7,11 @@ import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.billing.service.BillingService;
 import com.hospital.dto.PageResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/billing")

@@ -1,6 +1,5 @@
 package com.hospital.users.service;
 
-import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JWTService;
 import com.hospital.dto.PageResponse;
@@ -14,12 +13,10 @@ import com.hospital.users.dto.response.UpdateUserResponse;
 import com.hospital.users.repository.UsersRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

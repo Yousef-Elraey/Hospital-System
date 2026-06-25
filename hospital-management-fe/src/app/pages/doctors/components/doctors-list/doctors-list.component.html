@@ -47,11 +47,11 @@
             </tr>
           </thead>
           <tbody>
-            @for (d of pagedList; track d.id) {
+            @for (d of list; track d.id) {
               <tr>
                 <td>{{ d.id }}</td>
                 <td><a [routerLink]="['/doctors', d.id]" class="fw-semibold link-primary text-decoration-none">{{ d.name }}</a></td>
-                <td>{{ d.speciality }}</td>
+                <td>{{ specialityName(d) }}</td>
                 <td>{{ d.contactNumber }}</td>
                 <td>
                   <div class="table-actions" role="group" [attr.aria-label]="'common.view' | translate">
@@ -69,7 +69,7 @@
         <p class="data-table-empty mb-0">{{ 'doctors.noDoctors' | translate }}</p>
       } @else {
         <app-list-pagination
-          [totalItems]="list.length"
+          [totalItems]="totalElements"
           [pageSize]="pageSize"
           [currentPage]="currentPage"
           [pageSizeOptions]="pageSizeOptions"

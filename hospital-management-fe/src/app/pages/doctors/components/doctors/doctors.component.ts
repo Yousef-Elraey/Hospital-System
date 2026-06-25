@@ -8,6 +8,9 @@ import type { UpdateDoctorRequest } from '../../models/request/update-doctor-req
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
 import { IconComponent } from '../../../../core/components/icon/icon.component';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
+import { LocaleService } from '../../../../core/services/locale.service';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
+import { specialityDisplayName } from '../../utils/speciality-display-name';
 
 @Component({
   selector: 'app-doctors',
@@ -21,12 +24,13 @@ export class DoctorsComponent implements OnInit {
   loading = false;
   showForm = false;
   editId: number | null = null;
-  model: CreateDoctorRequest = { name: '', speciality: '', contactNumber: '' };
+  model: CreateDoctorRequest = { name: '', specialityId: null, contactNumber: '' };
   filters = { name: '', speciality: '', contactNumber: '' };
 
   constructor(
     private doctorService: DoctorService,
     private confirmDialog: ConfirmDialogService,
+    public locale: LocaleService,
   ) {}
 
   ngOnInit(): void {
@@ -40,9 +44,11 @@ export class DoctorsComponent implements OnInit {
         name: this.filters.name.trim() || undefined,
         speciality: this.filters.speciality.trim() || undefined,
         contactNumber: this.filters.contactNumber.trim() || undefined,
+        page: 0,
+        size: DROPDOWN_FETCH_SIZE,
       })
       .subscribe({
-      next: (data) => { this.list = data ?? []; this.loading = false; },
+      next: (response) => { this.list = response.data ?? []; this.loading = false; },
       error: () => { this.loading = false; },
     });
   }
@@ -58,14 +64,18 @@ export class DoctorsComponent implements OnInit {
 
   openAdd(): void {
     this.editId = null;
-    this.model = { name: '', speciality: '', contactNumber: '' };
+    this.model = { name: '', specialityId: null, contactNumber: '' };
     this.showForm = true;
   }
 
   openEdit(d: DoctorResponse): void {
     this.editId = d.id ?? null;
-    this.model = { name: d.name, speciality: d.speciality, contactNumber: d.contactNumber };
+    this.model = { name: d.name, specialityId: d.speciality?.id ?? null, contactNumber: d.contactNumber };
     this.showForm = true;
+  }
+
+  specialityName(doctor: DoctorResponse): string {
+    return specialityDisplayName(doctor.speciality, this.locale.currentLang);
   }
 
   cancel(): void {

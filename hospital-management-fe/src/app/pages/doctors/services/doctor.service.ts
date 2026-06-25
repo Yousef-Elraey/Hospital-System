@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiHttpService } from '../../../core/services/api-http.service';
+import type { PageResponse } from '../../../core/models/pagination.dto';
 import type { DoctorResponse } from '../models/response/doctor-response.dto';
 import type { CreateDoctorRequest } from '../models/request/create-doctor-request.dto';
 import type { UpdateDoctorRequest } from '../models/request/update-doctor-request.dto';
@@ -12,8 +13,8 @@ import type { DoctorFilters } from '../models/request/doctor-filters.dto';
 export class DoctorService {
   constructor(private api: ApiHttpService) {}
 
-  getDoctors(filters?: DoctorFilters): Observable<DoctorResponse[]> {
-    return this.api.request<DoctorResponse[]>('GET', '/doctor/doctors', undefined, filters);
+  getDoctors(filters?: DoctorFilters): Observable<PageResponse<DoctorResponse>> {
+    return this.api.request<PageResponse<DoctorResponse>>('GET', '/doctor/doctors', undefined, filters);
   }
 
   getDoctor(id: number): Observable<DoctorResponse> {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import type { PageResponse } from '../../../core/models/pagination.dto';
 import type { AppointmentSlotResponse } from '../models/response/appointment-slot-response.dto';
 import type { GenerateSlotsRequest } from '../models/request/generate-slots-request.dto';
 import type { GenerateSlotsResponse } from '../models/response/generate-slots-response.dto';
@@ -45,8 +46,8 @@ export class AppointmentSlotService {
     },
   ];
 
-  getSlots(filters?: AppointmentSlotFilters): Observable<AppointmentSlotResponse[]> {
-    // return this.api.request<AppointmentSlotResponse[]>('GET', '/appointment/slots', undefined, filters);
+  getSlots(filters?: AppointmentSlotFilters): Observable<PageResponse<AppointmentSlotResponse>> {
+    // return this.api.request<PageResponse<AppointmentSlotResponse>>('GET', '/appointment/slots', undefined, filters);
     let result = [...this.dummySlots];
     if (filters?.doctorId != null) {
       result = result.filter((s) => s.doctorId === filters.doctorId);
@@ -61,7 +62,22 @@ export class AppointmentSlotService {
       result = result.filter((s) => s.startTime.slice(0, 10) <= filters.endDate!);
     }
     result.sort((a, b) => a.startTime.localeCompare(b.startTime));
-    return of(result).pipe(delay(200));
+
+    const page = filters?.page ?? 0;
+    const size = filters?.size ?? 10;
+    const totalElements = result.length;
+    const totalPages = Math.max(1, Math.ceil(totalElements / size));
+    const data = result.slice(page * size, (page + 1) * size);
+
+    return of({
+      data,
+      page,
+      size,
+      totalElements,
+      totalPages,
+      first: page === 0,
+      last: page >= totalPages - 1,
+    }).pipe(delay(200));
   }
 
   generateSlots(body: GenerateSlotsRequest): Observable<GenerateSlotsResponse> {

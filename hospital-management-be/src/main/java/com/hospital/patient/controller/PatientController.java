@@ -1,7 +1,6 @@
 package com.hospital.patient.controller;
 
 import com.hospital.dto.PageResponse;
-import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.patient.dto.request.SearchPatientRequest;
@@ -10,12 +9,10 @@ import com.hospital.patient.dto.response.CreatePatientResponse;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.dto.response.UpdatePatientResponse;
 import com.hospital.patient.service.PatientService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

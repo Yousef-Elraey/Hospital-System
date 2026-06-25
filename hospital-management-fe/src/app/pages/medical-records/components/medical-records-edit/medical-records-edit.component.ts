@@ -19,6 +19,7 @@ import {
   parseTreatment,
   type SelectedDiagnosis,
 } from '../../utils/medical-record-display';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 interface DiagnosisOption {
   code: string;
@@ -148,13 +149,13 @@ export class MedicalRecordsEditComponent implements OnInit {
     const idStr = this.route.snapshot.paramMap.get('id');
     this.id = idStr ? +idStr : null;
 
-    this.doctorService.getDoctors().subscribe((d) => {
-      this.doctors = d ?? [];
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
       this.doctorSelectOptions = this.doctors.map((x) => ({ value: x.id!, label: x.name }));
     });
 
-    this.patientService.getPatients().subscribe((p) => {
-      this.patients = p ?? [];
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
     });
 

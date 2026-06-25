@@ -12,6 +12,7 @@ import type { PatientResponse } from '../../../patients/models/response/patient-
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
 import { IconComponent } from '../../../../core/components/icon/icon.component';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-billing',
@@ -37,8 +38,8 @@ export class BillingComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
-    this.patientService.getPatients().subscribe((p) => {
-      this.patients = p ?? [];
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
     });
   }
@@ -51,7 +52,7 @@ export class BillingComponent implements OnInit {
         amount: this.filters.amount ?? undefined,
       })
       .subscribe({
-      next: (data) => { this.list = data ?? []; this.loading = false; },
+      next: (response) => { this.list = response.data ?? []; this.loading = false; },
       error: () => { this.loading = false; },
     });
   }

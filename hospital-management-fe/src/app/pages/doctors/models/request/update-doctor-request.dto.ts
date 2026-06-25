@@ -1,5 +1,5 @@
 export interface UpdateDoctorRequest {
   name: string;
-  speciality: string;
+  specialityId: number | null;
   contactNumber: string;
 }

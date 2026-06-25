@@ -153,6 +153,7 @@
     "editDoctor": "تعديل الطبيب",
     "name": "الاسم",
     "speciality": "التخصص",
+    "selectSpeciality": "اختر التخصص",
     "contact": "رقم الهاتف",
     "noDoctors": "لا يوجد أطباء.",
     "viewDoctor": "عرض الطبيب"

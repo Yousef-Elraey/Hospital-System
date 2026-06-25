@@ -1,22 +1,14 @@
 package com.hospital.speciality.service;
 
-import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.Speciality;
-import com.hospital.entity.Treatment;
 import com.hospital.speciality.dto.request.CreateSpecialityRequest;
 import com.hospital.speciality.dto.request.UpdateSpecialityRequest;
 import com.hospital.speciality.dto.response.CreateSpecialityResponse;
 import com.hospital.speciality.dto.response.GetSpecialityResponse;
 import com.hospital.speciality.dto.response.UpdateSpecialityResponse;
 import com.hospital.speciality.repository.SpecialityRepository;
-import com.hospital.treatment.dto.request.CreateTreatmentRequest;
-import com.hospital.treatment.dto.request.UpdateTreatmentRequest;
-import com.hospital.treatment.dto.response.CreateTreatmentResponse;
-import com.hospital.treatment.dto.response.GetTreatmentResponse;
-import com.hospital.treatment.dto.response.UpdateTreatmentResponse;
-import com.hospital.treatment.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,8 +40,8 @@ public class SpecialityService {
         specialities.forEach(speciality -> {
             GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
             getSpecialityResponse.setId(speciality.getId())
-                    .setName_en(speciality.getName_en())
-                    .setName_ar(speciality.getName_ar());
+                    .setNameEn(speciality.getName_en())
+                    .setNameAr(speciality.getName_ar());
             specialityResponses.add(getSpecialityResponse);
         });
         return PageResponse.<GetSpecialityResponse>builder()
@@ -70,16 +62,16 @@ public class SpecialityService {
         Speciality specialityDb = speciality.get();
         GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
         getSpecialityResponse.setId(specialityDb.getId())
-                .setName_en(specialityDb.getName_en())
-                .setName_ar(specialityDb.getName_ar());
+                .setNameEn(specialityDb.getName_en())
+                .setNameAr(specialityDb.getName_ar());
         return getSpecialityResponse;
     }
 
     public CreateSpecialityResponse createSpeciality(CreateSpecialityRequest createSpecialityRequest) {
         Speciality speciality = new Speciality();
         speciality.setId(createSpecialityRequest.getId())
-                .setName_en(createSpecialityRequest.getName_en())
-                .setName_ar(createSpecialityRequest.getName_ar());
+                .setName_en(createSpecialityRequest.getNameEn())
+                .setName_ar(createSpecialityRequest.getNameAr());
         specialityRepository.save(speciality);
         CreateSpecialityResponse specialityResponse = new CreateSpecialityResponse();
         specialityResponse.setId(speciality.getId());

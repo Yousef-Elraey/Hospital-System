@@ -1,7 +1,6 @@
 package com.hospital.speciality.controller;
 
 import com.hospital.dto.PageResponse;
-import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.speciality.dto.request.CreateSpecialityRequest;
 import com.hospital.speciality.dto.request.UpdateSpecialityRequest;
 import com.hospital.speciality.dto.response.CreateSpecialityResponse;
@@ -13,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/speciality")

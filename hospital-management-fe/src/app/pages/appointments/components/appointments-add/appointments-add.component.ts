@@ -19,6 +19,7 @@ import { HospitalDatepickerComponent } from '../../../common/components/hospital
 import { APPOINTMENT_MAX_NGB } from '../../utils/appointment-ngb-date';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { AppointmentDetailsFormComponent } from '../appointment-details-form/appointment-details-form.component';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-appointments-add',
@@ -74,15 +75,15 @@ export class AppointmentsAddComponent implements OnInit {
       };
       this.model.patientId = id;
     }
-    this.doctorService.getDoctors().subscribe((d) => {
-      this.doctors = d ?? [];
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
       this.doctorSelectOptions = this.doctors.map((x) => ({
         value: x.id!,
-        label: `${x.name} (${x.speciality})`,
+        label: `${x.name}`,
       }));
     });
-    this.patientService.getPatients().subscribe((p) => {
-      this.patients = p ?? [];
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
     });
   }

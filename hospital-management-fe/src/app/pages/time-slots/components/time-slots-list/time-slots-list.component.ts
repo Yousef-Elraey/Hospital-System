@@ -16,11 +16,7 @@ import { formatDateTimeDisplay } from '../../../appointments/utils/date-form';
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { AppointmentSlotResponse } from '../../models/response/appointment-slot-response.dto';
 import type { AppointmentSlotStatus } from '../../models/request/appointment-slot-status.dto';
-import {
-  clampPage,
-  DEFAULT_PAGE_SIZE_OPTIONS,
-  paginate,
-} from '../../../../core/utils/list-pagination';
+import { DEFAULT_PAGE_SIZE_OPTIONS, DROPDOWN_FETCH_SIZE, applyPageResponse, toPageRequest } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-time-slots-list',
@@ -51,6 +47,7 @@ export class TimeSlotsListComponent implements OnInit {
   };
 
   slots: AppointmentSlotResponse[] = [];
+  totalElements = 0;
   loading = false;
   showFilters = false;
   errorMessage = '';
@@ -64,11 +61,11 @@ export class TimeSlotsListComponent implements OnInit {
   readonly locale = inject(LocaleService);
 
   ngOnInit(): void {
-    this.doctorService.getDoctors().subscribe((d) => {
-      this.doctors = d ?? [];
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
       this.doctorSelectOptions = this.doctors.map((x) => ({
         value: x.id!,
-        label: `${x.name} (${x.speciality})`,
+        label: `${x.name}`,
       }));
     });
     this.loadSlots();
@@ -85,12 +82,16 @@ export class TimeSlotsListComponent implements OnInit {
         status: this.listFilters.status ?? undefined,
         startDate: startIso,
         endDate: endIso,
+        ...toPageRequest(this.currentPage, this.pageSize),
       })
       .subscribe({
-        next: (data) => {
-          this.slots = data ?? [];
+        next: (response) => {
+          const page = applyPageResponse(response, { pageSize: this.pageSize });
+          this.slots = page.list;
+          this.totalElements = page.totalElements;
+          this.currentPage = page.currentPage;
+          this.pageSize = page.pageSize;
           this.loading = false;
-          this.currentPage = clampPage(this.currentPage, this.slots.length, this.pageSize);
         },
         error: () => {
           this.loading = false;
@@ -98,17 +99,15 @@ export class TimeSlotsListComponent implements OnInit {
       });
   }
 
-  get pagedSlots(): AppointmentSlotResponse[] {
-    return paginate(this.slots, this.currentPage, this.pageSize);
-  }
-
   setPage(page: number): void {
     this.currentPage = page;
+    this.loadSlots();
   }
 
   setPageSize(size: number): void {
     this.pageSize = size;
     this.currentPage = 1;
+    this.loadSlots();
   }
 
   applyListFilters(): void {

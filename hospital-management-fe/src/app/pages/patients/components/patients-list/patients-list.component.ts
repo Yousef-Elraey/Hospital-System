@@ -14,11 +14,7 @@ import { LocaleService } from '../../../../core/services/locale.service';
 import { isTodayFromIso } from '../../../../core/utils/is-today';
 import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
 import { computePatientAge } from '../../utils/compute-patient-age';
-import {
-  clampPage,
-  DEFAULT_PAGE_SIZE_OPTIONS,
-  paginate,
-} from '../../../../core/utils/list-pagination';
+import { DEFAULT_PAGE_SIZE_OPTIONS, applyPageResponse, STATS_FETCH_SIZE, toPageRequest } from '../../../../core/utils/list-pagination';
 
 interface PatientStats {
   total: number;
@@ -43,6 +39,7 @@ interface PatientStats {
 })
 export class PatientsListComponent implements OnInit {
   list: PatientResponse[] = [];
+  totalElements = 0;
   loading = false;
   statsLoading = false;
   showFilters = false;
@@ -65,9 +62,11 @@ export class PatientsListComponent implements OnInit {
 
   loadStats(): void {
     this.statsLoading = true;
-    this.patientService.getPatients().subscribe({
-      next: (data) => {
-        this.stats = this.computeStats(data ?? []);
+    this.patientService.getPatients({ page: 0, size: STATS_FETCH_SIZE }).subscribe({
+      next: (response) => {
+        const data = response.data ?? [];
+        this.stats = this.computeStats(data);
+        this.stats.total = response.totalElements ?? data.length;
         this.statsLoading = false;
       },
       error: () => { this.statsLoading = false; },
@@ -90,27 +89,29 @@ export class PatientsListComponent implements OnInit {
       dateOfBirth: dateOfBirthIso,
       phone: this.filters.phone.trim() || undefined,
       mobile: this.filters.phone.trim() || undefined,
+      ...toPageRequest(this.currentPage, this.pageSize),
     }).subscribe({
-      next: (data) => {
-        this.list = data ?? [];
+      next: (response) => {
+        const page = applyPageResponse(response, { pageSize: this.pageSize });
+        this.list = page.list;
+        this.totalElements = page.totalElements;
+        this.currentPage = page.currentPage;
+        this.pageSize = page.pageSize;
         this.loading = false;
-        this.currentPage = clampPage(this.currentPage, this.list.length, this.pageSize);
       },
       error: () => { this.loading = false; },
     });
   }
 
-  get pagedList(): PatientResponse[] {
-    return paginate(this.list, this.currentPage, this.pageSize);
-  }
-
   setPage(page: number): void {
     this.currentPage = page;
+    this.load();
   }
 
   setPageSize(size: number): void {
     this.pageSize = size;
     this.currentPage = 1;
+    this.load();
   }
 
   applyFilters(): void {

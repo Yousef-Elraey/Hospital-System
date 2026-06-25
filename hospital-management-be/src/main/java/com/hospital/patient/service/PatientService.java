@@ -1,22 +1,20 @@
 package com.hospital.patient.service;
 
+import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JWTService;
 import com.hospital.dto.PageResponse;
-import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
-import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
-import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
-import com.hospital.common.exception.HospitalBusinessException;
+import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
+import com.hospital.medicalRecord.repository.MedicalRecordRepository;
+import com.hospital.medicalRecord.service.MedicalRecordService;
+import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.request.UpdatePatientRequest;
 import com.hospital.patient.dto.response.CreatePatientResponse;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.dto.response.UpdatePatientResponse;
-import com.hospital.medicalRecord.repository.MedicalRecordRepository;
 import com.hospital.patient.repository.PatientRepository;
-import com.hospital.medicalRecord.service.MedicalRecordService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,10 +22,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDateTime;
 
 
 @Service

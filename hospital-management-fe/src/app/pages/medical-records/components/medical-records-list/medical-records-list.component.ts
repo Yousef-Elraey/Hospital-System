@@ -13,11 +13,7 @@ import { ListFilterToggleComponent } from '../../../../core/components/list-filt
 import { ListPaginationComponent } from '../../../../core/components/list-pagination/list-pagination.component';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-import {
-  clampPage,
-  DEFAULT_PAGE_SIZE_OPTIONS,
-  paginate,
-} from '../../../../core/utils/list-pagination';
+import { DEFAULT_PAGE_SIZE_OPTIONS, DROPDOWN_FETCH_SIZE, applyPageResponse, toPageRequest } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-medical-records-list',
@@ -28,6 +24,7 @@ import {
 })
 export class MedicalRecordsListComponent implements OnInit {
   list: MedicalRecordResponse[] = [];
+  totalElements = 0;
   doctors: DoctorResponse[] = [];
   patients: PatientResponse[] = [];
   patientSelectOptions: { value: number; label: string }[] = [];
@@ -48,12 +45,12 @@ export class MedicalRecordsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
-    this.doctorService.getDoctors().subscribe((d) => {
-      this.doctors = d ?? [];
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
       this.doctorSelectOptions = this.doctors.map((x) => ({ value: x.id!, label: x.name }));
     });
-    this.patientService.getPatients().subscribe((p) => {
-      this.patients = p ?? [];
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
     });
   }
@@ -64,27 +61,29 @@ export class MedicalRecordsListComponent implements OnInit {
       patientId: this.filters.patientId ?? undefined,
       doctorId: this.filters.doctorId ?? undefined,
       diagnose: this.filters.diagnose.trim() || undefined,
+      ...toPageRequest(this.currentPage, this.pageSize),
     }).subscribe({
-      next: (data) => {
-        this.list = data ?? [];
+      next: (response) => {
+        const page = applyPageResponse(response, { pageSize: this.pageSize });
+        this.list = page.list;
+        this.totalElements = page.totalElements;
+        this.currentPage = page.currentPage;
+        this.pageSize = page.pageSize;
         this.loading = false;
-        this.currentPage = clampPage(this.currentPage, this.list.length, this.pageSize);
       },
       error: () => { this.loading = false; },
     });
   }
 
-  get pagedList(): MedicalRecordResponse[] {
-    return paginate(this.list, this.currentPage, this.pageSize);
-  }
-
   setPage(page: number): void {
     this.currentPage = page;
+    this.load();
   }
 
   setPageSize(size: number): void {
     this.pageSize = size;
     this.currentPage = 1;
+    this.load();
   }
 
   applyFilters(): void {

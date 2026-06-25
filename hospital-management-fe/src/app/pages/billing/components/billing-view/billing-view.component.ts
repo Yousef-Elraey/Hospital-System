@@ -6,6 +6,7 @@ import { PatientService } from '../../../patients/services/patient.service';
 import type { BillingResponse } from '../../models/response/billing-response.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-billing-view',
@@ -25,7 +26,9 @@ export class BillingViewComponent implements OnInit {
   ngOnInit(): void {
     const idStr = this.route.snapshot.paramMap.get('id');
     this.id = idStr ? +idStr : null;
-    this.patientService.getPatients().subscribe((p) => (this.patients = p ?? []));
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
+    });
     if (this.id) this.load();
   }
 

@@ -8,7 +8,7 @@
         <dt>{{ 'doctors.name' | translate }}</dt>
         <dd>{{ doctor.name }}</dd>
         <dt>{{ 'doctors.speciality' | translate }}</dt>
-        <dd>{{ doctor.speciality || '-' }}</dd>
+        <dd>{{ specialityName() }}</dd>
         <dt>{{ 'doctors.contact' | translate }}</dt>
         <dd>{{ doctor.contactNumber || '-' }}</dd>
       </dl>

@@ -1,6 +1,7 @@
 package com.hospital.doctor.service;
 
-import com.hospital.billing.dto.response.GetBillingResponse;
+import com.hospital.appointment.service.AppointmentService;
+import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JWTService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.dto.request.CreateDoctorRequest;
@@ -9,18 +10,15 @@ import com.hospital.doctor.dto.request.UpdateDoctorRequest;
 import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.doctor.dto.response.UpdateDoctorResponse;
+import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.*;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
-import com.hospital.common.exception.HospitalBusinessException;
-import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.medicalRecord.repository.MedicalRecordRepository;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;
-import com.hospital.appointment.service.AppointmentService;
 import com.hospital.speciality.repository.SpecialityRepository;
 import com.hospital.treatment.repository.TreatmentRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

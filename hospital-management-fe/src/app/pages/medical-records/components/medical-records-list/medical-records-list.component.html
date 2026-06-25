@@ -68,7 +68,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (m of pagedList; track m.id) {
+            @for (m of list; track m.id) {
               <tr>
                 <td>{{ m.id }}</td>
                 <td><a [routerLink]="['/medical-records', m.id]" class="fw-semibold link-primary text-decoration-none">{{ patientName(m.patientId) }}</a></td>
@@ -91,7 +91,7 @@
         <p class="data-table-empty mb-0">{{ 'medicalRecords.noRecords' | translate }}</p>
       } @else {
         <app-list-pagination
-          [totalItems]="list.length"
+          [totalItems]="totalElements"
           [pageSize]="pageSize"
           [currentPage]="currentPage"
           [pageSizeOptions]="pageSizeOptions"

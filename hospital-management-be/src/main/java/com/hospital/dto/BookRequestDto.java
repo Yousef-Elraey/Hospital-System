@@ -30,12 +30,6 @@ public class BookRequestDto {
     @NotNull(message = "patient_id is required")
     private Long patientId;
 
-    @NotNull(message = "status_id is required")
-    @Min(value = 1, message = "status_id must be at least 1")
-    @Max(value = 5, message = "status_id must not exceed 5")
-    private Long statusId;
-    private LocalDateTime appointmentCreatedAt;
-    private LocalDateTime appointmentUpdatedAt;
 
 
 }

@@ -4,6 +4,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DoctorService } from '../../services/doctor.service';
 import type { DoctorResponse } from '../../models/response/doctor-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { LocaleService } from '../../../../core/services/locale.service';
+import { specialityDisplayName } from '../../utils/speciality-display-name';
 
 @Component({
   selector: 'app-doctors-view',
@@ -17,7 +19,11 @@ export class DoctorsViewComponent implements OnInit {
   doctor: DoctorResponse | null = null;
   loading = false;
 
-  constructor(private doctorService: DoctorService, private route: ActivatedRoute) {}
+  constructor(
+    private doctorService: DoctorService,
+    private route: ActivatedRoute,
+    public locale: LocaleService,
+  ) {}
 
   ngOnInit(): void {
     const idStr = this.route.snapshot.paramMap.get('id');
@@ -32,5 +38,9 @@ export class DoctorsViewComponent implements OnInit {
       next: (data) => { this.doctor = data; this.loading = false; },
       error: () => { this.loading = false; },
     });
+  }
+
+  specialityName(): string {
+    return specialityDisplayName(this.doctor?.speciality, this.locale.currentLang);
   }
 }

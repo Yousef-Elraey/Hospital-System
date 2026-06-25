@@ -18,14 +18,17 @@ import { ListPaginationComponent } from '../../../../core/components/list-pagina
 import { IconComponent } from '../../../../core/components/icon/icon.component';
 import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.service';
 import { NgSelectModule } from '@ng-select/ng-select';
+import type { SearchPatientRequest } from '../../../patients/models/request/search-patient-request.dto';
 import {
   computeAppointmentTodayStats,
   type AppointmentTodayStats,
 } from '../../utils/appointment-today-stats';
 import {
-  clampPage,
   DEFAULT_PAGE_SIZE_OPTIONS,
-  paginate,
+  DROPDOWN_FETCH_SIZE,
+  STATS_FETCH_SIZE,
+  applyPageResponse,
+  toPageRequest,
 } from '../../../../core/utils/list-pagination';
 
 @Component({
@@ -37,6 +40,7 @@ import {
 })
 export class AppointmentsListComponent implements OnInit {
   list: AppointmentResponse[] = [];
+  totalElements = 0;
   doctors: DoctorResponse[] = [];
   patients: PatientResponse[] = [];
   doctorSelectOptions: { value: number; label: string }[] = [];
@@ -66,21 +70,21 @@ export class AppointmentsListComponent implements OnInit {
   ngOnInit(): void {
     this.loadStats();
     this.load();
-    this.doctorService.getDoctors().subscribe((d) => {
-      this.doctors = d ?? [];
-      this.doctorSelectOptions = this.doctors.map((x) => ({ value: x.id!, label: `${x.name} (${x.speciality})` }));
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
+      this.doctorSelectOptions = this.doctors.map((x) => ({ value: x.id!, label: `${x.name} ` }));
     });
-    this.patientService.getPatients().subscribe((p) => {
-      this.patients = p ?? [];
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
     });
   }
 
   loadStats(): void {
     this.statsLoading = true;
-    this.appointmentService.getAppointments().subscribe({
-      next: (data) => {
-        this.stats = computeAppointmentTodayStats(data ?? []);
+    this.appointmentService.getAppointments({ page: 0, size: STATS_FETCH_SIZE }).subscribe({
+      next: (response) => {
+        this.stats = computeAppointmentTodayStats(response.data ?? []);
         this.statsLoading = false;
       },
       error: () => { this.statsLoading = false; },
@@ -95,27 +99,29 @@ export class AppointmentsListComponent implements OnInit {
       patientId: this.filters.patientId ?? undefined,
       status: this.filters.status.trim() || undefined,
       date: dateIso,
+      ...toPageRequest(this.currentPage, this.pageSize),
     }).subscribe({
-      next: (data) => {
-        this.list = data ?? [];
+      next: (response) => {
+        const page = applyPageResponse(response, { pageSize: this.pageSize });
+        this.list = page.list;
+        this.totalElements = page.totalElements;
+        this.currentPage = page.currentPage;
+        this.pageSize = page.pageSize;
         this.loading = false;
-        this.currentPage = clampPage(this.currentPage, this.list.length, this.pageSize);
       },
       error: () => { this.loading = false; },
     });
   }
 
-  get pagedList(): AppointmentResponse[] {
-    return paginate(this.list, this.currentPage, this.pageSize);
-  }
-
   setPage(page: number): void {
     this.currentPage = page;
+    this.load();
   }
 
   setPageSize(size: number): void {
     this.pageSize = size;
     this.currentPage = 1;
+    this.load();
   }
 
   applyFilters(): void {
@@ -156,13 +162,14 @@ export class AppointmentsListComponent implements OnInit {
 
   searchExistingPatient(): void {
     const phone = this.existingPhone.trim();
-    if (!/^01[0-9]{9}$/.test(phone)) {
+    if (!/^(\+20|0)1[0-9]{9}$/.test(phone)) {
       this.existingError = 'validation.phoneFormat';
       return;
     }
+    const request: SearchPatientRequest = { phone };
     this.existingLoading = true;
     this.existingError = '';
-    this.patientService.getPatientByPhone(phone).subscribe({
+    this.patientService.searchPatient(request).subscribe({
       next: (p) => {
         this.existingLoading = false;
         if (!p?.id) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiHttpService } from '../../../core/services/api-http.service';
-import type { PageResponse } from '../../../core/models/page-response.dto';
+import type { PageResponse } from '../../../core/models/pagination.dto';
 import type { SpecialityResponse } from '../models/response/speciality-response.dto';
 import type { CreateSpecialityRequest } from '../models/request/create-speciality-request.dto';
 import type { UpdateSpecialityRequest } from '../models/request/update-speciality-request.dto';

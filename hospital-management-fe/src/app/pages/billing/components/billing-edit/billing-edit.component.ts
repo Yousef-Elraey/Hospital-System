@@ -9,6 +9,7 @@ import { PatientService } from '../../../patients/services/patient.service';
 import type { UpdateBillingRequest } from '../../models/request/update-billing-request.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-billing-edit',
@@ -33,8 +34,8 @@ export class BillingEditComponent implements OnInit {
   ngOnInit(): void {
     const idStr = this.route.snapshot.paramMap.get('id');
     this.id = idStr ? +idStr : null;
-    this.patientService.getPatients().subscribe((p) => {
-      this.patients = p ?? [];
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
     });
     if (this.id) this.load();

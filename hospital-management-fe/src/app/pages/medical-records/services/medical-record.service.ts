@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiHttpService } from '../../../core/services/api-http.service';
+import type { PageResponse } from '../../../core/models/pagination.dto';
 import type { MedicalRecordResponse } from '../models/response/medical-record-response.dto';
 import type { CreateMedicalRecordRequest } from '../models/request/create-medical-record-request.dto';
 import type { UpdateMedicalRecordRequest } from '../models/request/update-medical-record-request.dto';
@@ -12,8 +13,8 @@ import type { MedicalRecordFilters } from '../models/request/medical-record-filt
 export class MedicalRecordService {
   constructor(private api: ApiHttpService) {}
 
-  getMedicalRecords(filters?: MedicalRecordFilters): Observable<MedicalRecordResponse[]> {
-    return this.api.request<MedicalRecordResponse[]>('GET', '/medical-record/medical-records', undefined, filters);
+  getMedicalRecords(filters?: MedicalRecordFilters): Observable<PageResponse<MedicalRecordResponse>> {
+    return this.api.request<PageResponse<MedicalRecordResponse>>('GET', '/medical-record/medical-records', undefined, filters);
   }
 
   getMedicalRecord(id: number): Observable<MedicalRecordResponse> {

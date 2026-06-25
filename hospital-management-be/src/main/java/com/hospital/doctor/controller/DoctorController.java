@@ -6,19 +6,15 @@ import com.hospital.doctor.dto.request.UpdateDoctorRequest;
 import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.doctor.dto.response.UpdateDoctorResponse;
+import com.hospital.doctor.service.DoctorService;
 import com.hospital.dto.PageResponse;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
-import com.hospital.patient.dto.request.CreatePatientRequest;
-import com.hospital.doctor.service.DoctorService;
 import com.hospital.patient.dto.response.GetPatientResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/doctor")

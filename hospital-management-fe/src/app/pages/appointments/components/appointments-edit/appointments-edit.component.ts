@@ -17,6 +17,7 @@ import { LocaleService } from '../../../../core/services/locale.service';
 import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
 import { APPOINTMENT_MAX_NGB } from '../../utils/appointment-ngb-date';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-appointments-edit',
@@ -65,15 +66,15 @@ export class AppointmentsEditComponent implements OnInit {
   ngOnInit(): void {
     const idStr = this.route.snapshot.paramMap.get('id');
     this.id = idStr ? +idStr : null;
-    this.doctorService.getDoctors().subscribe((d) => {
-      this.doctors = d ?? [];
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
       this.doctorSelectOptions = this.doctors.map((x) => ({
         value: x.id!,
-        label: `${x.name} (${x.speciality})`,
+        label: `${x.name} `,
       }));
     });
-    this.patientService.getPatients().subscribe((p) => {
-      this.patients = p ?? [];
+    this.patientService.getPatients({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.patients = response.data ?? [];
       this.patientSelectOptions = this.patients.map((x) => ({ value: x.id!, label: x.name }));
     });
     if (this.id) this.load();

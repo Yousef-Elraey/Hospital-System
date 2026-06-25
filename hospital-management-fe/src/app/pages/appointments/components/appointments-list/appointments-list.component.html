@@ -270,7 +270,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (a of pagedList; track a.id) {
+          @for (a of list; track a.id) {
             <tr>
               <td>{{ a.id }}</td>
               <td><a [routerLink]="['/appointments', a.id]" class="fw-semibold link-primary text-decoration-none">{{ formatTiming(a.timing) }}</a></td>
@@ -293,7 +293,7 @@
             <p class="data-table-empty mb-0">{{ 'appointments.noAppointments' | translate }}</p>
       } @else {
         <app-list-pagination
-          [totalItems]="list.length"
+          [totalItems]="totalElements"
           [pageSize]="pageSize"
           [currentPage]="currentPage"
           [pageSizeOptions]="pageSizeOptions"

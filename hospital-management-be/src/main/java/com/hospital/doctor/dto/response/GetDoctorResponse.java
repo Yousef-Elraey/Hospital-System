@@ -1,8 +1,6 @@
 package com.hospital.doctor.dto.response;
 
 import com.hospital.entity.Speciality;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiHttpService } from '../../../core/services/api-http.service';
+import type { PageResponse } from '../../../core/models/pagination.dto';
 import type { AppointmentResponse } from '../models/response/appointment-response.dto';
 import type { CreateAppointmentRequest } from '../models/request/create-appointment-request.dto';
 import type { UpdateAppointmentRequest } from '../models/request/update-appointment-request.dto';
@@ -15,8 +16,8 @@ import type { PatientResponse } from '../../patients/models/response/patient-res
 export class AppointmentService {
   constructor(private api: ApiHttpService) {}
 
-  getAppointments(filters?: AppointmentFilters): Observable<AppointmentResponse[]> {
-    return this.api.request<AppointmentResponse[]>('GET', '/appointment/appointments', undefined, filters);
+  getAppointments(filters?: AppointmentFilters): Observable<PageResponse<AppointmentResponse>> {
+    return this.api.request<PageResponse<AppointmentResponse>>('GET', '/appointment/appointments', undefined, filters);
   }
 
   getAppointment(id: number): Observable<AppointmentResponse> {

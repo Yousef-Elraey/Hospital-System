@@ -1,9 +1,7 @@
 package com.hospital.treatment.service;
 
-import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.dto.PageResponse;
-import com.hospital.entity.Diagnose;
 import com.hospital.entity.Treatment;
 import com.hospital.treatment.dto.request.CreateTreatmentRequest;
 import com.hospital.treatment.dto.request.UpdateTreatmentRequest;

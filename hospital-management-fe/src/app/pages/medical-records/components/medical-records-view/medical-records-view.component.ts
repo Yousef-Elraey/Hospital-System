@@ -21,6 +21,7 @@ import {
   type ParsedMedication,
   type ParsedTreatment,
 } from '../../utils/medical-record-display';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-medical-records-view',
@@ -58,7 +59,9 @@ export class MedicalRecordsViewComponent implements OnInit {
   ngOnInit(): void {
     const idStr = this.route.snapshot.paramMap.get('id');
     this.id = idStr ? +idStr : null;
-    this.doctorService.getDoctors().subscribe((d) => (this.doctors = d ?? []));
+    this.doctorService.getDoctors({ page: 0, size: DROPDOWN_FETCH_SIZE }).subscribe((response) => {
+      this.doctors = response.data ?? [];
+    });
     if (this.id) this.load();
   }
 

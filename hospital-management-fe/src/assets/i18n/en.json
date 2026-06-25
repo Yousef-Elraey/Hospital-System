@@ -153,6 +153,7 @@
     "editDoctor": "Edit Doctor",
     "name": "Name",
     "speciality": "Speciality",
+    "selectSpeciality": "Select speciality",
     "contact": "Contact",
     "noDoctors": "No doctors.",
     "viewDoctor": "View Doctor"

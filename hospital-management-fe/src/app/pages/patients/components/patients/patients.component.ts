@@ -11,6 +11,7 @@ import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.s
 import { LocaleService } from '../../../../core/services/locale.service';
 import { formatDateOfBirth } from '../../utils/format-date-of-birth';
 import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
+import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-patients',
@@ -46,9 +47,11 @@ export class PatientsComponent implements OnInit {
         dateOfBirth: dateOfBirthIso,
         phone: this.filters.phone.trim() || undefined,
         mobile: this.filters.phone.trim() || undefined,
+        page: 0,
+        size: DROPDOWN_FETCH_SIZE,
       })
       .subscribe({
-      next: (data) => { this.list = data ?? []; this.loading = false; },
+      next: (response) => { this.list = response.data ?? []; this.loading = false; },
       error: () => { this.loading = false; },
     });
   }

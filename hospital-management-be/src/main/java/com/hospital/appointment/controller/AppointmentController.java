@@ -1,24 +1,21 @@
 package com.hospital.appointment.controller;
-import com.hospital.appointment.dto.request.UpdateAppointmentRequest;
+
 import com.hospital.appointment.dto.request.CreateAppointmentRequest;
+import com.hospital.appointment.dto.request.UpdateAppointmentRequest;
 import com.hospital.appointment.dto.response.CreateAppointmentResponse;
 import com.hospital.appointment.dto.response.GetAppointmentResponse;
 import com.hospital.appointment.dto.response.UpdateAppointmentResponse;
+import com.hospital.appointment.service.AppointmentService;
 import com.hospital.dto.BookRequestDto;
 import com.hospital.dto.BookResponseDto;
 import com.hospital.dto.PageResponse;
-import com.hospital.patient.dto.request.CreatePatientRequest;
-import com.hospital.appointment.service.AppointmentService;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/appointment")

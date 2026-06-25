@@ -1,6 +1,5 @@
 package com.hospital.diagnose.service;
 
-import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.diagnose.dto.request.CreateDiagnoseRequest;
 import com.hospital.diagnose.dto.request.UpdateDiagnoseRequest;

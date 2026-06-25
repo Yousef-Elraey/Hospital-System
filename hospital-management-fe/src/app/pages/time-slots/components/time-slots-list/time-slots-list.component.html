@@ -91,7 +91,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (slot of pagedSlots; track slot.id) {
+            @for (slot of slots; track slot.id) {
               <tr>
                 <td>{{ slot.id }}</td>
                 <td>{{ doctorName(slot.doctorId) }}</td>
@@ -122,7 +122,7 @@
         <p class="data-table-empty mb-0">{{ 'appointmentSlots.noSlots' | translate }}</p>
       } @else {
         <app-list-pagination
-          [totalItems]="slots.length"
+          [totalItems]="totalElements"
           [pageSize]="pageSize"
           [currentPage]="currentPage"
           [pageSizeOptions]="pageSizeOptions"

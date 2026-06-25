@@ -1,24 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiHttpService } from '../../../core/services/api-http.service';
+import type { PageResponse } from '../../../core/models/pagination.dto';
 import type { PatientResponse } from '../models/response/patient-response.dto';
 import type { CreatePatientRequest } from '../models/request/create-patient-request.dto';
 import type { UpdatePatientRequest } from '../models/request/update-patient-request.dto';
 import type { CreatePatientResponse } from '../models/response/create-patient-response.dto';
 import type { UpdatePatientResponse } from '../models/response/update-patient-response.dto';
 import type { PatientFilters } from '../models/request/patient-filters.dto';
+import type { SearchPatientRequest } from '../models/request/search-patient-request.dto';
 import type { MedicalRecordResponse } from '../../medical-records/models/response/medical-record-response.dto';
 
 @Injectable({ providedIn: 'root' })
 export class PatientService {
   constructor(private api: ApiHttpService) {}
 
-  getPatients(filters?: PatientFilters): Observable<PatientResponse[]> {
-    return this.api.request<PatientResponse[]>('GET', '/patient/patients', undefined, filters);
+  getPatients(filters?: PatientFilters): Observable<PageResponse<PatientResponse>> {
+    return this.api.request<PageResponse<PatientResponse>>('GET', '/patient/patients', undefined, filters);
   }
 
-  getPatientByPhone(phone: string): Observable<PatientResponse> {
-    return this.api.request<PatientResponse>('GET', '/patient', undefined, { phone });
+  searchPatient(body: SearchPatientRequest): Observable<PatientResponse> {
+    return this.api.request<PatientResponse>('GET', '/patient/search', body);
   }
 
   getPatient(id: number): Observable<PatientResponse> {

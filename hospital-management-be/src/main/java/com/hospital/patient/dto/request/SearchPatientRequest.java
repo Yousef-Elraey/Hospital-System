@@ -15,15 +15,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class SearchPatientRequest {
-    @NotBlank(message = "name is required")
     private String name;
 
     @Past(message = "Date of birth must be in the past")
-    @NotNull(message = "dateOfBirth is required")
     private LocalDate dateOfBirth;
 
-    @NotBlank(message = "phone is required")
     @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number")
-    // valid for Egyptian numbers only
     private String phone;
 }

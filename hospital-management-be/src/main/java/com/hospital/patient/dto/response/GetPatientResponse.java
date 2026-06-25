@@ -1,6 +1,5 @@
 package com.hospital.patient.dto.response;
 
-import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
 import com.hospital.entity.Gender;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import lombok.Getter;
