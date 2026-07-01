@@ -14,7 +14,7 @@ export class DoctorService {
   constructor(private api: ApiHttpService) {}
 
   getDoctors(filters?: DoctorFilters): Observable<PageResponse<DoctorResponse>> {
-    return this.api.request<PageResponse<DoctorResponse>>('GET', '/doctor/doctors', undefined, filters);
+    return this.api.request<PageResponse<DoctorResponse>>('POST', '/doctor/search', filters ?? {});
   }
 
   getDoctor(id: number): Observable<DoctorResponse> {

@@ -14,7 +14,7 @@ export class BillingService {
   constructor(private api: ApiHttpService) {}
 
   getBillings(filters?: BillingFilters): Observable<PageResponse<BillingResponse>> {
-    return this.api.request<PageResponse<BillingResponse>>('GET', '/billing/billings', undefined, filters);
+    return this.api.request<PageResponse<BillingResponse>>('POST', '/billing/search', filters ?? {});
   }
 
   getBilling(id: number): Observable<BillingResponse> {
