@@ -1,6 +1,7 @@
 package com.hospital.appointment.dto.request;
 
 import com.hospital.entity.AppointmentType;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;

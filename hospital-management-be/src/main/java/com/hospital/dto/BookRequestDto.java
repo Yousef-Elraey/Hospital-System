@@ -30,6 +30,8 @@ public class BookRequestDto {
     @NotNull(message = "patient_id is required")
     private Long patientId;
 
+    @NotNull(message = "timeSlots_id is required")
+    private Long timeSlotsId;
 
 
 }

@@ -13,13 +13,13 @@ public class RedisTestRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        redisTemplate.opsForValue()
-                .set("test", "hello");
-
-        System.out.println(
-                "Redis Value = "
-                        + redisTemplate.opsForValue()
-                        .get("test"));
+//        redisTemplate.opsForValue()
+//                .set("test", "hello");
+//
+//        System.out.println(
+//                "Redis Value = "
+//                        + redisTemplate.opsForValue()
+//                        .get("test"));
 
     }
 }

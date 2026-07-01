@@ -43,7 +43,18 @@ INSERT INTO appointment_status values(1,'new','جديد'),
                                       (4,'cancelled','ملغي'),
                                       (5,'finished','انتهاء');
 
+CREATE TABLE time_slots(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    doctor_id BIGINT,
+    appointment_type VARCHAR(50),
+    day DATE NOT NULL,
+    start TIME NOT NULL,
+    end TIME NOT NULL,
+    status VARCHAR(10) DEFAULT "AVAILABLE",
 
+    CONSTRAINT FK_doctor_time_slots
+     FOREIGN key (doctor_id) REFERENCES doctor(id)
+    );
 CREATE TABLE appointment(
        id BIGINT AUTO_INCREMENT PRIMARY KEY,
        timing TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -55,13 +66,16 @@ CREATE TABLE appointment(
        patient_id BIGINT NOT NULL,
        doctor_id BIGINT NOT NULL,
        status_id BIGINT NOT NULL,
+       time_slots_id BIGINT,
 
        CONSTRAINT FK_patient_appointment
         FOREIGN KEY (patient_id) REFERENCES patient(id),
        CONSTRAINT FK_doctor_appointment
         FOREIGN KEY (doctor_id) REFERENCES doctor(id),
        CONSTRAINT FK_status_appointment
-        FOREIGN KEY (status_id) REFERENCES appointment_status(id)
+        FOREIGN KEY (status_id) REFERENCES appointment_status(id),
+        CONSTRAINT FK_timeSlots_appointment
+        FOREIGN KEY (time_slots_id) REFERENCES time_slots(id)
 );
 
 CREATE TABLE diagnose(
@@ -115,3 +129,4 @@ CREATE TABLE users(
         id BIGINT AUTO_INCREMENT PRIMARY key,
         user_name varchar(50) NOT NULL,
         password varchar(100) NOT NULL);
+

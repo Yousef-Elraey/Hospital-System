@@ -98,11 +98,18 @@ public class DoctorService {
     }
 
     public CreateDoctorResponse addDoctor(CreateDoctorRequest createDoctorRequest) {
-
+        Optional<Speciality> specialityOp = specialityRepository.findById(createDoctorRequest.getSpecialityId());
+       Optional<Doctor> doctorOp =  doctorRepository.findByContactNumber(createDoctorRequest.getContactNumber());
+        if (specialityOp.isEmpty()) {
+            throw new HospitalBusinessException("no speciality found");
+        }
+        if (doctorOp.isPresent()){
+            throw new HospitalBusinessException("this number is already on system");
+        }
         Doctor doctor = new Doctor();
         doctor.setId(createDoctorRequest.getId());
         doctor.setName(createDoctorRequest.getName());
-        doctor.setSpeciality(specialityRepository.findById(createDoctorRequest.getSpecialityId()).get());
+        doctor.setSpeciality(specialityOp.get());
         doctor.setContactNumber(createDoctorRequest.getContactNumber());
         doctor.setCreatedAt(LocalDateTime.now());
         doctor.setUpdatedAt(LocalDateTime.now());

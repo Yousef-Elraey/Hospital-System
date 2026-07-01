@@ -22,7 +22,6 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JWTService jwtService;
-
     private final ApplicationContext context;
     private final TokenBlackListService tokenBlackListService;
 

@@ -33,6 +33,10 @@ public class Appointment extends BaseEntity{
     @JoinColumn(name = "status_id", referencedColumnName = "id")
     private AppointmentStatus status;
 
+    @ManyToOne
+    @JoinColumn(name = "time_slots_id", referencedColumnName = "id")
+    private TimeSlots timeSlots;
+
     @Override
     public String toString() {
         return "Appointment{" +
