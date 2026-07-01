@@ -14,7 +14,7 @@ export class MedicalRecordService {
   constructor(private api: ApiHttpService) {}
 
   getMedicalRecords(filters?: MedicalRecordFilters): Observable<PageResponse<MedicalRecordResponse>> {
-    return this.api.request<PageResponse<MedicalRecordResponse>>('GET', '/medical-record/medical-records', undefined, filters);
+    return this.api.request<PageResponse<MedicalRecordResponse>>('POST', '/medical-record/search', filters ?? {});
   }
 
   getMedicalRecord(id: number): Observable<MedicalRecordResponse> {

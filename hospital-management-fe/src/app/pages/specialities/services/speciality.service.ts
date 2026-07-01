@@ -14,7 +14,7 @@ export class SpecialityService {
   constructor(private api: ApiHttpService) {}
 
   getSpecialities(filters?: SpecialityFilters): Observable<PageResponse<SpecialityResponse>> {
-    return this.api.request<PageResponse<SpecialityResponse>>('GET', '/speciality/specialities', undefined, filters);
+    return this.api.request<PageResponse<SpecialityResponse>>('POST', '/speciality/search', filters ?? {});
   }
 
   getSpeciality(id: number): Observable<SpecialityResponse> {

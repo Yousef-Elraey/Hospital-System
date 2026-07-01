@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { ApiHttpService } from '../../../core/services/api-http.service';
 import type { PageResponse } from '../../../core/models/pagination.dto';
 import type { PatientResponse } from '../models/response/patient-response.dto';
@@ -16,11 +16,19 @@ export class PatientService {
   constructor(private api: ApiHttpService) {}
 
   getPatients(filters?: PatientFilters): Observable<PageResponse<PatientResponse>> {
-    return this.api.request<PageResponse<PatientResponse>>('GET', '/patient/patients', undefined, filters);
+    return this.api.request<PageResponse<PatientResponse>>('POST', '/patient/search', filters ?? {});
   }
 
   searchPatient(body: SearchPatientRequest): Observable<PatientResponse> {
-    return this.api.request<PatientResponse>('GET', '/patient/search', body);
+    return this.api.request<PageResponse<PatientResponse>>('POST', '/patient/search', { ...body, page: 0, size: 1 }).pipe(
+      map((response) => {
+        const patient = response.data?.[0];
+        if (!patient) {
+          throw new Error('no patient found');
+        }
+        return patient;
+      }),
+    );
   }
 
   getPatient(id: number): Observable<PatientResponse> {

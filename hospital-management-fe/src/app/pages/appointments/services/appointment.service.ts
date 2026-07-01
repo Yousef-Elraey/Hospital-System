@@ -17,7 +17,7 @@ export class AppointmentService {
   constructor(private api: ApiHttpService) {}
 
   getAppointments(filters?: AppointmentFilters): Observable<PageResponse<AppointmentResponse>> {
-    return this.api.request<PageResponse<AppointmentResponse>>('GET', '/appointment/appointments', undefined, filters);
+    return this.api.request<PageResponse<AppointmentResponse>>('POST', '/appointment/search', filters ?? {});
   }
 
   getAppointment(id: number): Observable<AppointmentResponse> {
