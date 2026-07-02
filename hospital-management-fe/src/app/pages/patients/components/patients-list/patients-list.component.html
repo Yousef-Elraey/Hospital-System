@@ -62,7 +62,11 @@
         </div>
         <div class="col-md-4">
           <label class="form-label">{{ 'patients.dateOfBirth' | translate }}</label>
-          <input type="text" class="form-control" [(ngModel)]="filters.dateOfBirth" name="plFilterDob" placeholder="DD-MM-YYYY" (keyup.enter)="applyFilters()" />
+          <app-hospital-datepicker
+            [(ngModel)]="filters.dateOfBirth"
+            name="plFilterDob"
+            [maxDate]="filterMaxDate"
+          />
         </div>
         <div class="col-md-4">
           <label class="form-label">{{ 'patients.phone' | translate }}</label>

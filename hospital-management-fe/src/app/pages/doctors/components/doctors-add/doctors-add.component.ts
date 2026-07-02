@@ -8,11 +8,12 @@ import { SpecialityService } from '../../../specialities/services/speciality.ser
 import { LocaleService } from '../../../../core/services/locale.service';
 import type { CreateDoctorRequest } from '../../models/request/create-doctor-request.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 
 @Component({
   selector: 'app-doctors-add',
   standalone: true,
-  imports: [FormsModule, TranslateModule, PageHeaderComponent, NgSelectModule],
+  imports: [FormsModule, TranslateModule, PageHeaderComponent, NgSelectModule, RequiredFormLabelComponent],
   templateUrl: './doctors-add.component.html',
   styleUrls: ['./doctors-add.component.css'],
 })

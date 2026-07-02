@@ -1,9 +1,31 @@
+import type { AppointmentType } from '../../../appointments/models/request/appointment-type.dto';
+
+export type WeekDay =
+  | 'Monday'
+  | 'Tuesday'
+  | 'Wednesday'
+  | 'Thursday'
+  | 'Friday'
+  | 'Saturday'
+  | 'Sunday';
+
+export const WEEK_DAYS: WeekDay[] = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+
 export interface GenerateSlotsRequest {
+  start: string;
+  end: string;
+  dayStart: string;
+  dayEnd: string;
   doctorId: number;
-  startDate: string;
-  endDate: string;
-  dailyStartTime: string;
-  dailyEndTime: string;
-  slotDurationMinutes: number;
-  excludeWeekends: boolean;
+  duration: number;
+  days: WeekDay[];
+  appointmentType: AppointmentType;
 }

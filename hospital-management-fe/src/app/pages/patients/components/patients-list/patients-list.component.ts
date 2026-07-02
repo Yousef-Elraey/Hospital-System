@@ -14,6 +14,8 @@ import { LocaleService } from '../../../../core/services/locale.service';
 import { isTodayFromIso } from '../../../../core/utils/is-today';
 import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
 import { computePatientAge } from '../../utils/compute-patient-age';
+import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { DEFAULT_PAGE_SIZE_OPTIONS, applyPageResponse, STATS_FETCH_SIZE, toPageRequest } from '../../../../core/utils/list-pagination';
 
 interface PatientStats {
@@ -33,6 +35,7 @@ interface PatientStats {
     IconComponent,
     ListFilterToggleComponent,
     ListPaginationComponent,
+    HospitalDatepickerComponent,
   ],
   templateUrl: './patients-list.component.html',
   styleUrls: ['./patients-list.component.css'],
@@ -46,6 +49,10 @@ export class PatientsListComponent implements OnInit {
   filters = { name: '', dateOfBirth: '', phone: '' };
   stats: PatientStats = { total: 0, today: 0 };
   readonly pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
+  readonly filterMaxDate = (() => {
+    const now = new Date();
+    return new NgbDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  })();
   pageSize = 10;
   currentPage = 1;
 

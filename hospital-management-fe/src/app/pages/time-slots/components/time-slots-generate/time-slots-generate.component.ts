@@ -6,16 +6,34 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
 import { AppointmentTimePickerComponent } from '../../../appointments/components/appointment-time-picker/appointment-time-picker.component';
 import { DoctorService } from '../../../doctors/services/doctor.service';
 import { AppointmentSlotService } from '../../services/time-slot.service';
 import { LocaleService } from '../../../../core/services/locale.service';
-import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
+import { parseDisplayDateToIso, formatDateDisplay } from '../../../../core/utils/display-date';
 import { estimateSlotCount } from '../../utils/generate-time-slots';
-import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
-import type { GenerateSlotsRequest } from '../../models/request/generate-slots-request.dto';
+import { APPOINTMENT_MAX_NGB } from '../../../appointments/utils/appointment-ngb-date';
+import { addMonths, format, parseISO } from 'date-fns';
+import type { AppointmentType } from '../../../appointments/models/request/appointment-type.dto';
+import {
+  WEEK_DAYS,
+  type GenerateSlotsRequest,
+  type WeekDay,
+} from '../../models/request/generate-slots-request.dto';
 import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
+
+interface GenerateSlotsForm {
+  doctorId: number;
+  startDateDisplay: string;
+  endDateDisplay: string;
+  start: string;
+  end: string;
+  duration: number;
+  days: WeekDay[];
+  appointmentType: AppointmentType;
+}
 
 @Component({
   selector: 'app-time-slots-generate',
@@ -27,6 +45,7 @@ import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
     TranslateModule,
     NgSelectModule,
     PageHeaderComponent,
+    RequiredFormLabelComponent,
     HospitalDatepickerComponent,
     AppointmentTimePickerComponent,
   ],
@@ -36,17 +55,23 @@ import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 export class TimeSlotsGenerateComponent implements OnInit {
   doctorSelectOptions: { value: number; label: string }[] = [];
   slotDurationOptions = [10, 15, 20, 30, 45, 60];
-
-  generateForm: GenerateSlotsRequest & { startDateDisplay: string; endDateDisplay: string } = {
+  weekDayOptions: { value: WeekDay; labelKey: string }[] = WEEK_DAYS.map((day) => ({
+    value: day,
+    labelKey: `appointmentSlots.weekdays.${day}`,
+  }));
+  appointmentTypeOptions: { value: AppointmentType; labelKey: string }[] = [
+    { value: 'INITIAL_CONSULTATION', labelKey: 'appointments.appointmentType.INITIAL_CONSULTATION' },
+    { value: 'FOLLOW_UP_CONSULTATION', labelKey: 'appointments.appointmentType.FOLLOW_UP_CONSULTATION' },
+  ];
+  generateForm: GenerateSlotsForm = {
     doctorId: 0,
-    startDate: '',
-    endDate: '',
     startDateDisplay: '',
     endDateDisplay: '',
-    dailyStartTime: '09:00',
-    dailyEndTime: '17:00',
-    slotDurationMinutes: 30,
-    excludeWeekends: true,
+    start: '09:00',
+    end: '17:00',
+    duration: 30,
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    appointmentType: 'INITIAL_CONSULTATION',
   };
 
   previewCount = 0;
@@ -54,6 +79,19 @@ export class TimeSlotsGenerateComponent implements OnInit {
   formError = '';
 
   readonly minDate = new NgbDate(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());
+  readonly maxDate = APPOINTMENT_MAX_NGB;
+
+  get endMinDate(): NgbDate {
+    const startIso = parseDisplayDateToIso(this.generateForm.startDateDisplay, this.locale.currentLang);
+    if (!startIso) return this.minDate;
+    return this.isoToNgbDate(startIso);
+  }
+
+  get endMaxDate(): NgbDate {
+    const startIso = parseDisplayDateToIso(this.generateForm.startDateDisplay, this.locale.currentLang);
+    if (!startIso) return this.maxDate;
+    return this.isoToNgbDate(this.maxEndIsoForStart(startIso));
+  }
 
   private readonly doctorService = inject(DoctorService);
   private readonly slotService = inject(AppointmentSlotService);
@@ -70,6 +108,56 @@ export class TimeSlotsGenerateComponent implements OnInit {
     });
   }
 
+  private setDefaultDateRange(): void {
+    const today = new Date();
+    const end = addMonths(today, 1);
+    const lang = this.locale.currentLang;
+    this.generateForm.startDateDisplay = formatDateDisplay(format(today, 'yyyy-MM-dd'), lang);
+    this.generateForm.endDateDisplay = formatDateDisplay(format(end, 'yyyy-MM-dd'), lang);
+    this.onGenerateFormChange();
+  }
+
+  isDaySelected(day: WeekDay): boolean {
+    return this.generateForm.days.includes(day);
+  }
+
+  toggleDay(day: WeekDay, selected: boolean): void {
+    if (selected) {
+      if (!this.generateForm.days.includes(day)) {
+        this.generateForm.days = [...this.generateForm.days, day];
+      }
+    } else {
+      this.generateForm.days = this.generateForm.days.filter((d) => d !== day);
+    }
+    this.onGenerateFormChange();
+  }
+
+  onStartDateChange(): void {
+    this.syncEndDateAfterStartChange();
+    this.onGenerateFormChange();
+  }
+
+  private syncEndDateAfterStartChange(): void {
+    const lang = this.locale.currentLang;
+    const startIso = parseDisplayDateToIso(this.generateForm.startDateDisplay, lang);
+    if (!startIso) return;
+
+    const maxEndIso = this.maxEndIsoForStart(startIso);
+    const endIso = parseDisplayDateToIso(this.generateForm.endDateDisplay, lang);
+    if (!endIso || endIso < startIso || endIso > maxEndIso) {
+      this.generateForm.endDateDisplay = formatDateDisplay(maxEndIso, lang);
+    }
+  }
+
+  private maxEndIsoForStart(startIso: string): string {
+    return format(addMonths(parseISO(startIso), 1), 'yyyy-MM-dd');
+  }
+
+  private isoToNgbDate(iso: string): NgbDate {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new NgbDate(y, m, d);
+  }
+
   onGenerateFormChange(): void {
     this.formError = '';
     const validation = this.validateGenerateForm();
@@ -77,17 +165,18 @@ export class TimeSlotsGenerateComponent implements OnInit {
   }
 
   private buildGenerateRequest(): GenerateSlotsRequest & { createdCountEstimate: number } {
-    const startIso =
+    const dayStart =
       parseDisplayDateToIso(this.generateForm.startDateDisplay, this.locale.currentLang) ?? '';
-    const endIso = parseDisplayDateToIso(this.generateForm.endDateDisplay, this.locale.currentLang) ?? '';
+    const dayEnd = parseDisplayDateToIso(this.generateForm.endDateDisplay, this.locale.currentLang) ?? '';
     const request: GenerateSlotsRequest = {
       doctorId: this.generateForm.doctorId,
-      startDate: startIso,
-      endDate: endIso,
-      dailyStartTime: this.generateForm.dailyStartTime,
-      dailyEndTime: this.generateForm.dailyEndTime,
-      slotDurationMinutes: this.generateForm.slotDurationMinutes,
-      excludeWeekends: this.generateForm.excludeWeekends,
+      dayStart,
+      dayEnd,
+      start: this.generateForm.start,
+      end: this.generateForm.end,
+      duration: this.generateForm.duration,
+      days: this.generateForm.days,
+      appointmentType: this.generateForm.appointmentType,
     };
     return { ...request, createdCountEstimate: estimateSlotCount(request) };
   }
@@ -96,39 +185,34 @@ export class TimeSlotsGenerateComponent implements OnInit {
     if (!this.generateForm.doctorId) {
       return { valid: false, errorKey: 'appointmentSlots.validation.doctorRequired' };
     }
-    const startIso = parseDisplayDateToIso(this.generateForm.startDateDisplay, this.locale.currentLang);
-    const endIso = parseDisplayDateToIso(this.generateForm.endDateDisplay, this.locale.currentLang);
-    if (!startIso || !endIso) {
+    const dayStart = parseDisplayDateToIso(this.generateForm.startDateDisplay, this.locale.currentLang);
+    const dayEnd = parseDisplayDateToIso(this.generateForm.endDateDisplay, this.locale.currentLang);
+    if (!dayStart || !dayEnd) {
       return { valid: false, errorKey: 'appointmentSlots.validation.dateRangeRequired' };
     }
-    if (endIso < startIso) {
+    if (dayEnd < dayStart) {
       return { valid: false, errorKey: 'appointmentSlots.validation.endBeforeStart' };
     }
-    if (!this.generateForm.dailyStartTime || !this.generateForm.dailyEndTime) {
+    if (dayEnd > this.maxEndIsoForStart(dayStart)) {
+      return { valid: false, errorKey: 'appointmentSlots.validation.endAfterMaxPeriod' };
+    }
+    if (!this.generateForm.start || !this.generateForm.end) {
       return { valid: false, errorKey: 'appointmentSlots.validation.timeRangeRequired' };
     }
-    const [sh, sm] = this.generateForm.dailyStartTime.split(':').map(Number);
-    const [eh, em] = this.generateForm.dailyEndTime.split(':').map(Number);
+    const [sh, sm] = this.generateForm.start.split(':').map(Number);
+    const [eh, em] = this.generateForm.end.split(':').map(Number);
     if (eh * 60 + em <= sh * 60 + sm) {
       return { valid: false, errorKey: 'appointmentSlots.validation.endTimeBeforeStart' };
     }
-    if (!this.slotDurationOptions.includes(this.generateForm.slotDurationMinutes)) {
+    if (!this.slotDurationOptions.includes(this.generateForm.duration)) {
       return { valid: false, errorKey: 'appointmentSlots.validation.durationRequired' };
+    }
+    if (!this.generateForm.days.length) {
+      return { valid: false, errorKey: 'appointmentSlots.validation.daysRequired' };
     }
     return { valid: true };
   }
 
-  previewSlots(): void {
-    const validation = this.validateGenerateForm();
-    if (!validation.valid) {
-      this.formError = validation.errorKey ?? '';
-      this.previewCount = 0;
-      return;
-    }
-    const { createdCountEstimate, ...request } = this.buildGenerateRequest();
-    this.previewCount = estimateSlotCount(request);
-    this.formError = '';
-  }
 
   generateSlots(form: NgForm): void {
     const validation = this.validateGenerateForm();

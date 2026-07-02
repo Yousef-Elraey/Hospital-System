@@ -2,35 +2,37 @@
   <app-page-header titleKey="billing.newBilling" subtitleKey="billing.subtitle" iconName="billing"></app-page-header>
   <div class="card form-card">
     <form #formRef="ngForm" (ngSubmit)="save(formRef)">
-      <div class="mb-3">
-        <label class="form-label" for="billPatient">{{ 'appointments.patient' | translate }}</label>
-        <ng-select
-          id="billPatient"
-          class="w-100"
-          [items]="patientSelectOptions"
-          bindLabel="label"
-          bindValue="value"
-          [(ngModel)]="model.patient_id"
-          name="patient_id"
-          [clearable]="true"
-          [searchable]="true"
-          [placeholder]="'appointments.selectPatient' | translate"
-          #patRef="ngModel"
-          required
-          [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
-        />
-        @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
-          <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-        }
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="billAmount">{{ 'billing.amount' | translate }}</label>
-        <input id="billAmount" type="number" class="form-control" [(ngModel)]="model.amount" name="amount" required min="0" step="any"
-               #amtRef="ngModel"
-               [class.is-invalid]="amtRef.invalid && (amtRef.touched || formRef.submitted)" />
-        @if (amtRef.invalid && (amtRef.touched || formRef.submitted)) {
-          <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-        }
+      <div class="form-fields-grid">
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointments.patient" htmlFor="billPatient" />
+          <ng-select
+            id="billPatient"
+            class="w-100"
+            [items]="patientSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="model.patient_id"
+            name="patient_id"
+            [clearable]="true"
+            [searchable]="true"
+            [placeholder]="'appointments.selectPatient' | translate"
+            #patRef="ngModel"
+            required
+            [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
+          />
+          @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+        <div class="mb-3">
+          <app-required-form-label labelKey="billing.amount" htmlFor="billAmount" />
+          <input id="billAmount" type="number" class="form-control" [(ngModel)]="model.amount" name="amount" required min="0" step="any"
+                 #amtRef="ngModel"
+                 [class.is-invalid]="amtRef.invalid && (amtRef.touched || formRef.submitted)" />
+          @if (amtRef.invalid && (amtRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
       </div>
       <div class="d-flex flex-wrap gap-2 mt-3">
         <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>

@@ -9,6 +9,8 @@ import { PatientService } from '../../../patients/services/patient.service';
 import { LocaleService } from '../../../../core/services/locale.service';
 import { formatDateTimeDisplay } from '../../utils/date-form';
 import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
+import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
+import { APPOINTMENT_MAX_NGB } from '../../utils/appointment-ngb-date';
 import type { AppointmentResponse } from '../../models/response/appointment-response.dto';
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
@@ -34,7 +36,7 @@ import {
 @Component({
   selector: 'app-appointments-list',
   standalone: true,
-  imports: [RouterLink, FormsModule, TranslateModule, DecimalPipe, PageHeaderComponent, ListFilterToggleComponent, ListPaginationComponent, IconComponent, NgSelectModule],
+  imports: [RouterLink, FormsModule, TranslateModule, DecimalPipe, PageHeaderComponent, ListFilterToggleComponent, ListPaginationComponent, IconComponent, NgSelectModule, HospitalDatepickerComponent],
   templateUrl: './appointments-list.component.html',
   styleUrls: ['./appointments-list.component.css'],
 })
@@ -57,6 +59,7 @@ export class AppointmentsListComponent implements OnInit {
   filters = { doctorId: null as number | null, patientId: null as number | null, status: '', date: '' };
   stats: AppointmentTodayStats = { booked: 0, paid: 0, unpaid: 0, waiting: 0, completed: 0 };
   readonly pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
+  readonly filterMaxDate = APPOINTMENT_MAX_NGB;
   pageSize = 10;
   currentPage = 1;
 

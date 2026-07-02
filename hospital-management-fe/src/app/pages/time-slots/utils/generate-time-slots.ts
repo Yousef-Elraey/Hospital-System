@@ -1,6 +1,6 @@
-import { addDays, format, isValid, isWeekend, parseISO } from 'date-fns';
+import { addDays, format, isValid, parseISO } from 'date-fns';
 import { combineSlotIsoDateAndTime } from './slot-date-form';
-import type { GenerateSlotsRequest } from '../models/request/generate-slots-request.dto';
+import type { GenerateSlotsRequest, WeekDay } from '../models/request/generate-slots-request.dto';
 import type { AppointmentSlotStatus } from '../models/request/appointment-slot-status.dto';
 
 export interface SlotDraft {
@@ -9,6 +9,16 @@ export interface SlotDraft {
   endTime: string;
   status: AppointmentSlotStatus;
 }
+
+const JS_DAY_TO_WEEKDAY: WeekDay[] = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
 
 function parseTimeToMinutes(time: string): number | null {
   const match = /^(\d{1,2}):(\d{2})$/.exec(time.trim());
@@ -25,17 +35,22 @@ function minutesToTime(totalMinutes: number): string {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
+function weekdayName(date: Date): WeekDay {
+  return JS_DAY_TO_WEEKDAY[date.getDay()];
+}
+
 export function generateTimeSlots(request: GenerateSlotsRequest): SlotDraft[] {
-  const startDate = parseISO(request.startDate);
-  const endDate = parseISO(request.endDate);
-  const dayStart = parseTimeToMinutes(request.dailyStartTime);
-  const dayEnd = parseTimeToMinutes(request.dailyEndTime);
-  const duration = request.slotDurationMinutes;
+  const startDate = parseISO(request.dayStart);
+  const endDate = parseISO(request.dayEnd);
+  const dayStart = parseTimeToMinutes(request.start);
+  const dayEnd = parseTimeToMinutes(request.end);
+  const duration = request.duration;
+  const selectedDays = new Set(request.days);
 
   if (!isValid(startDate) || !isValid(endDate) || dayStart == null || dayEnd == null || duration <= 0) {
     return [];
   }
-  if (endDate < startDate || dayEnd <= dayStart) {
+  if (endDate < startDate || dayEnd <= dayStart || selectedDays.size === 0) {
     return [];
   }
 
@@ -43,14 +58,11 @@ export function generateTimeSlots(request: GenerateSlotsRequest): SlotDraft[] {
   let currentDay = startDate;
 
   while (currentDay <= endDate) {
-    if (!request.excludeWeekends || !isWeekend(currentDay)) {
+    if (selectedDays.has(weekdayName(currentDay))) {
       const dateIso = format(currentDay, 'yyyy-MM-dd');
       for (let minute = dayStart; minute + duration <= dayEnd; minute += duration) {
         const startTime = combineSlotIsoDateAndTime(dateIso, minutesToTime(minute));
-        const endTime = combineSlotIsoDateAndTime(
-          dateIso,
-          minutesToTime(minute + duration),
-        );
+        const endTime = combineSlotIsoDateAndTime(dateIso, minutesToTime(minute + duration));
         if (!startTime || !endTime) continue;
         slots.push({
           doctorId: request.doctorId,

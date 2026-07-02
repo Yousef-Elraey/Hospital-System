@@ -17,6 +17,7 @@ import { LocaleService } from '../../../../core/services/locale.service';
 import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
 import { APPOINTMENT_MAX_NGB } from '../../utils/appointment-ngb-date';
 import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
@@ -30,6 +31,7 @@ import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
     PageHeaderComponent,
     HospitalDatepickerComponent,
     NgSelectModule,
+    RequiredFormLabelComponent,
   ],
   templateUrl: './appointments-edit.component.html',
   styleUrls: ['./appointments-edit.component.css'],

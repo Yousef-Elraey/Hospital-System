@@ -1,7 +1,7 @@
 package com.hospital.patient.dto.request;
 
 import com.hospital.entity.Gender;
-import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
+import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;

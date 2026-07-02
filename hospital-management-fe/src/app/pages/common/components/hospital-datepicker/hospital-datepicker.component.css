@@ -3,26 +3,23 @@
   width: 100%;
 }
 
-.hospital-date-picker-root .input-group {
+.hospital-date-picker-root .hospital-date-picker-field {
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
+  display: block;
   width: 100%;
 }
 
 .hospital-date-picker-root .form-control {
   position: relative;
-  flex: 1 1 auto;
-  width: 1%;
-  min-width: 0;
+  display: block;
+  width: 100%;
   margin-bottom: 0;
   border-radius: 8px;
   border: 1px solid #d0d5dd;
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   font-size: 0.875rem;
   padding: 0.6rem 1rem;
-  padding-right: 48px;
+  padding-inline-end: 48px;
   background: #fff;
   color: #344054;
   font-weight: 400;
@@ -52,7 +49,7 @@
 
 .hospital-date-picker-root .hospital-date-picker-btn {
   position: absolute;
-  right: 8px;
+  inset-inline-end: 8px;
   top: 50%;
   transform: translateY(-50%);
   border: none;
@@ -66,6 +63,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .hospital-date-picker-root .hospital-date-picker-btn:hover {
@@ -79,14 +77,7 @@
 }
 
 .hospital-date-picker-root.rtl .form-control {
-  padding-left: 48px !important;
-  padding-right: 1rem !important;
   text-align: right !important;
-}
-
-.hospital-date-picker-root.rtl .hospital-date-picker-btn {
-  right: auto !important;
-  left: 8px !important;
 }
 
 .hospital-date-picker-root .invalid-feedback {

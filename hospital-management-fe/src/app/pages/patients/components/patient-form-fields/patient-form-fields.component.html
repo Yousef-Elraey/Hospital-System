@@ -1,6 +1,6 @@
 <div class="form-fields-grid">
   <div class="mb-3">
-    <label class="form-label" for="patientName">{{ 'patients.name' | translate }}</label>
+    <app-required-form-label labelKey="patients.name" htmlFor="patientName" />
     <input id="patientName" type="text" class="form-control" [(ngModel)]="model.name" name="name" required
            [placeholder]="'common.namePlaceholder' | translate"
            #nameRef="ngModel"
@@ -10,7 +10,7 @@
     }
   </div>
   <div class="mb-3">
-    <label class="form-label d-block">{{ 'patients.dateOfBirth' | translate }}</label>
+    <app-required-form-label labelKey="patients.dateOfBirth" />
     <app-hospital-datepicker
       [ngModel]="dobDateStr"
       (ngModelChange)="onDobChange($event)"
@@ -22,7 +22,7 @@
     />
   </div>
   <div class="mb-3">
-    <label class="form-label" for="patientGender">{{ 'patients.gender' | translate }}</label>
+    <app-required-form-label labelKey="patients.gender" htmlFor="patientGender" />
     <ng-select
       id="patientGender"
       class="w-100"
@@ -50,7 +50,7 @@
     }
   </div>
   <div class="mb-3">
-    <label class="form-label" for="patientPhone">{{ 'patients.phone' | translate }}</label>
+    <app-required-form-label labelKey="patients.phone" htmlFor="patientPhone" />
     <input id="patientPhone" type="text" class="form-control" [(ngModel)]="model.phone" name="phone" required
            placeholder="01090047203"
            pattern="^01[0-9]{9}$"

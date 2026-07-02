@@ -5,52 +5,54 @@
   } @else {
     <div class="card form-card">
       <form #formRef="ngForm" (ngSubmit)="save(formRef)">
-        <div class="mb-3">
-          <label class="form-label" for="editDoctorName">{{ 'doctors.name' | translate }}</label>
-          <input id="editDoctorName" type="text" class="form-control" [(ngModel)]="model.name" name="name" required
-                 [placeholder]="'common.namePlaceholder' | translate"
-                 #nameRef="ngModel"
-                 [class.is-invalid]="nameRef.invalid && (nameRef.touched || formRef.submitted)" />
-          @if (nameRef.invalid && (nameRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="editDoctorSpeciality">{{ 'doctors.speciality' | translate }}</label>
-          <ng-select
-            id="editDoctorSpeciality"
-            class="w-100"
-            [items]="specialitySelectOptions"
-            bindLabel="label"
-            bindValue="value"
-            [(ngModel)]="model.specialityId"
-            name="specialityId"
-            [clearable]="true"
-            [searchable]="true"
-            [loading]="loadingSpecialities"
-            [placeholder]="'doctors.selectSpeciality' | translate"
-            #specRef="ngModel"
-            required
-            [class.is-invalid]="specRef.invalid && (specRef.touched || formRef.submitted)"
-          />
-          @if (specRef.invalid && (specRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="editDoctorContact">{{ 'doctors.contact' | translate }}</label>
-          <input id="editDoctorContact" type="text" class="form-control" [(ngModel)]="model.contactNumber" name="contactNumber" required
-                 placeholder="01090047203"
-                 pattern="^01[0-9]{9}$"
-                 minlength="11"
-                 maxlength="11"
-                 #contactRef="ngModel"
-                 [class.is-invalid]="contactRef.invalid && (contactRef.touched || formRef.submitted)" />
-          @if (contactRef.errors?.['required'] && (contactRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          } @else if (contactRef.errors?.['pattern'] && (contactRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.phoneFormat' | translate }}</div>
-          }
+        <div class="form-fields-grid">
+          <div class="mb-3">
+            <app-required-form-label labelKey="doctors.name" htmlFor="editDoctorName" />
+            <input id="editDoctorName" type="text" class="form-control" [(ngModel)]="model.name" name="name" required
+                   [placeholder]="'common.namePlaceholder' | translate"
+                   #nameRef="ngModel"
+                   [class.is-invalid]="nameRef.invalid && (nameRef.touched || formRef.submitted)" />
+            @if (nameRef.invalid && (nameRef.touched || formRef.submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            }
+          </div>
+          <div class="mb-3">
+            <app-required-form-label labelKey="doctors.speciality" htmlFor="editDoctorSpeciality" />
+            <ng-select
+              id="editDoctorSpeciality"
+              class="w-100"
+              [items]="specialitySelectOptions"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="model.specialityId"
+              name="specialityId"
+              [clearable]="true"
+              [searchable]="true"
+              [loading]="loadingSpecialities"
+              [placeholder]="'doctors.selectSpeciality' | translate"
+              #specRef="ngModel"
+              required
+              [class.is-invalid]="specRef.invalid && (specRef.touched || formRef.submitted)"
+            />
+            @if (specRef.invalid && (specRef.touched || formRef.submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            }
+          </div>
+          <div class="mb-3">
+            <app-required-form-label labelKey="doctors.contact" htmlFor="editDoctorContact" />
+            <input id="editDoctorContact" type="text" class="form-control" [(ngModel)]="model.contactNumber" name="contactNumber" required
+                   placeholder="01090047203"
+                   pattern="^01[0-9]{9}$"
+                   minlength="11"
+                   maxlength="11"
+                   #contactRef="ngModel"
+                   [class.is-invalid]="contactRef.invalid && (contactRef.touched || formRef.submitted)" />
+            @if (contactRef.errors?.['required'] && (contactRef.touched || formRef.submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            } @else if (contactRef.errors?.['pattern'] && (contactRef.touched || formRef.submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.phoneFormat' | translate }}</div>
+            }
+          </div>
         </div>
         <div class="d-flex flex-wrap gap-2 mt-3">
           <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>

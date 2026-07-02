@@ -11,12 +11,14 @@ import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.s
 import { LocaleService } from '../../../../core/services/locale.service';
 import { formatDateOfBirth } from '../../utils/format-date-of-birth';
 import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
+import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
 import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [FormsModule, TranslateModule, PageHeaderComponent, IconComponent],
+  imports: [FormsModule, TranslateModule, PageHeaderComponent, IconComponent, HospitalDatepickerComponent],
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.css'],
 })
@@ -27,6 +29,10 @@ export class PatientsComponent implements OnInit {
   editId: number | null = null;
   model: CreatePatientRequest = { name: '', gender: '', phone: '' };
   filters = { name: '', dateOfBirth: '', phone: '' };
+  readonly filterMaxDate = (() => {
+    const now = new Date();
+    return new NgbDate(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  })();
 
   constructor(
     private patientService: PatientService,

@@ -8,7 +8,7 @@ import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.doctor.dto.response.UpdateDoctorResponse;
 import com.hospital.doctor.service.DoctorService;
 import com.hospital.dto.PageResponse;
-import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
+import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -8,12 +8,13 @@ import { SpecialityService } from '../../../specialities/services/speciality.ser
 import { LocaleService } from '../../../../core/services/locale.service';
 import type { UpdateDoctorRequest } from '../../models/request/update-doctor-request.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-doctors-edit',
   standalone: true,
-  imports: [FormsModule, TranslateModule, RouterLink, PageHeaderComponent, NgSelectModule],
+  imports: [FormsModule, TranslateModule, RouterLink, PageHeaderComponent, NgSelectModule, RequiredFormLabelComponent],
   templateUrl: './doctors-edit.component.html',
   styleUrls: ['./doctors-edit.component.css'],
 })

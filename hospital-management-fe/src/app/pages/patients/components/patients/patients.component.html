@@ -12,7 +12,11 @@
       </div>
       <div class="col-md-4">
         <label class="form-label">{{ 'patients.dateOfBirth' | translate }}</label>
-        <input type="text" class="form-control" [(ngModel)]="filters.dateOfBirth" name="filterDob" placeholder="DD-MM-YYYY" />
+        <app-hospital-datepicker
+          [(ngModel)]="filters.dateOfBirth"
+          name="filterDob"
+          [maxDate]="filterMaxDate"
+        />
       </div>
       <div class="col-md-4">
         <label class="form-label">{{ 'patients.phone' | translate }}</label>

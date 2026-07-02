@@ -53,11 +53,19 @@
         </div>
         <div class="col-md-2">
           <label class="form-label">{{ 'appointmentSlots.fromDate' | translate }}</label>
-          <input type="text" class="form-control" [(ngModel)]="listFilters.startDate" name="listStartDate" placeholder="DD-MM-YYYY" (keyup.enter)="applyListFilters()" />
+          <app-hospital-datepicker
+            [(ngModel)]="listFilters.startDate"
+            name="listStartDate"
+            [maxDate]="filterMaxDate"
+          />
         </div>
         <div class="col-md-2">
           <label class="form-label">{{ 'appointmentSlots.toDate' | translate }}</label>
-          <input type="text" class="form-control" [(ngModel)]="listFilters.endDate" name="listEndDate" placeholder="DD-MM-YYYY" (keyup.enter)="applyListFilters()" />
+          <app-hospital-datepicker
+            [(ngModel)]="listFilters.endDate"
+            name="listEndDate"
+            [maxDate]="filterMaxDate"
+          />
         </div>
         <div class="col-md-2 d-flex gap-2">
           <button type="button" class="btn btn-primary flex-grow-1" (click)="applyListFilters()">

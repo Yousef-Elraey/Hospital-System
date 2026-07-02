@@ -3,129 +3,151 @@
     titleKey="appointmentSlots.generateTitle"
     subtitleKey="appointmentSlots.generateHint"
     iconName="appointmentSlots"
-   
   ></app-page-header>
 
-  <div class="d-flex flex-wrap gap-2 mb-3">
-    <a routerLink="/appointment-slots" class="btn btn-outline-secondary">
-      <i class="fa-solid fa-arrow-left"></i>
-      {{ 'appointmentSlots.backToSlots' | translate }}
-    </a>
-  </div>
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <form #generateFormRef="ngForm" (ngSubmit)="generateSlots(generateFormRef)" novalidate>
-        <div class="row g-3">
-          <div class="col-md-6">
-            <label class="form-label">{{ 'appointments.doctor' | translate }} <span class="text-danger">*</span></label>
-            <ng-select
-              class="w-100"
-              [items]="doctorSelectOptions"
-              bindLabel="label"
-              bindValue="value"
-              [(ngModel)]="generateForm.doctorId"
-              name="slotDoctor"
-              required
-              [clearable]="false"
-              [searchable]="true"
-              [placeholder]="'appointments.selectDoctor' | translate"
-              (ngModelChange)="onGenerateFormChange()"
-            />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">{{ 'appointmentSlots.startDate' | translate }} <span class="text-danger">*</span></label>
-            <app-hospital-datepicker
-              [(ngModel)]="generateForm.startDateDisplay"
-              name="slotStartDate"
-              required
-              [minDate]="minDate"
-              (dateChange)="onGenerateFormChange()"
-            />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">{{ 'appointmentSlots.endDate' | translate }} <span class="text-danger">*</span></label>
-            <app-hospital-datepicker
-              [(ngModel)]="generateForm.endDateDisplay"
-              name="slotEndDate"
-              required
-              [minDate]="minDate"
-              (dateChange)="onGenerateFormChange()"
-            />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">{{ 'appointmentSlots.dailyStartTime' | translate }} <span class="text-danger">*</span></label>
-            <app-appointment-time-picker
-              [(ngModel)]="generateForm.dailyStartTime"
-              name="slotDailyStart"
-              required
-              (ngModelChange)="onGenerateFormChange()"
-            />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">{{ 'appointmentSlots.dailyEndTime' | translate }} <span class="text-danger">*</span></label>
-            <app-appointment-time-picker
-              [(ngModel)]="generateForm.dailyEndTime"
-              name="slotDailyEnd"
-              required
-              (ngModelChange)="onGenerateFormChange()"
-            />
-          </div>
-          <div class="col-md-3">
-            <label class="form-label">{{ 'appointmentSlots.slotDuration' | translate }} <span class="text-danger">*</span></label>
-            <select
-              class="form-select"
-              [(ngModel)]="generateForm.slotDurationMinutes"
-              name="slotDuration"
-              required
-              (ngModelChange)="onGenerateFormChange()"
-            >
-              @for (d of slotDurationOptions; track d) {
-                <option [ngValue]="d">{{ d }} {{ 'appointmentSlots.minutes' | translate }}</option>
-              }
-            </select>
-          </div>
-          <div class="col-md-3 d-flex align-items-end">
-            <div class="form-check mb-2">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="excludeWeekends"
-                [(ngModel)]="generateForm.excludeWeekends"
-                name="excludeWeekends"
-                (ngModelChange)="onGenerateFormChange()"
-              />
-              <label class="form-check-label" for="excludeWeekends">
-                {{ 'appointmentSlots.excludeWeekends' | translate }}
-              </label>
-            </div>
-          </div>
+  <div class="card form-card">
+    <form #generateFormRef="ngForm" (ngSubmit)="generateSlots(generateFormRef)" novalidate>
+      <div class="form-fields-grid">
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointments.doctor" />
+          <ng-select
+            class="w-100"
+            [items]="doctorSelectOptions"
+            bindLabel="label"
+            bindValue="value"
+            [(ngModel)]="generateForm.doctorId"
+            name="slotDoctor"
+            required
+            [clearable]="false"
+            [searchable]="true"
+            [placeholder]="'appointments.selectDoctor' | translate"
+            (ngModelChange)="onGenerateFormChange()"
+          />
         </div>
-
-        @if (formError) {
-          <div class="alert alert-danger mt-3 mb-0 py-2">{{ formError | translate }}</div>
-        }
-        @if (previewCount > 0) {
-          <div class="alert alert-info mt-3 mb-0 py-2">
-            {{ 'appointmentSlots.previewCount' | translate:{ count: previewCount } }}
-          </div>
-        }
-
-        <div class="d-flex flex-wrap gap-2 mt-3">
-          <button type="button" class="btn btn-outline-primary" (click)="previewSlots()">
-            <i class="fa-solid fa-eye"></i>
-            {{ 'appointmentSlots.preview' | translate }}
-          </button>
-          <button type="submit" class="btn btn-primary" [disabled]="generating">
-            @if (generating) {
-              <i class="fa-solid fa-spinner fa-spin"></i>
-            } @else {
-              <i class="fa-solid fa-calendar-plus"></i>
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointments.type" />
+          <ng-select
+            class="w-100"
+            [items]="appointmentTypeOptions"
+            bindLabel="labelKey"
+            bindValue="value"
+            [(ngModel)]="generateForm.appointmentType"
+            name="slotAppointmentType"
+            required
+            [clearable]="false"
+            [searchable]="false"
+            (ngModelChange)="onGenerateFormChange()"
+          >
+            <ng-template ng-label-tmp let-item="item">
+              {{ item.labelKey | translate }}
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.labelKey | translate }}
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointmentSlots.startDate" />
+          <app-hospital-datepicker
+            [(ngModel)]="generateForm.startDateDisplay"
+            name="slotStartDate"
+            required
+            [minDate]="minDate"
+            [maxDate]="maxDate"
+            (dateChange)="onStartDateChange()"
+          />
+        </div>
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointmentSlots.endDate" />
+          <app-hospital-datepicker
+            [(ngModel)]="generateForm.endDateDisplay"
+            name="slotEndDate"
+            required
+            [minDate]="endMinDate"
+            [maxDate]="endMaxDate"
+            (dateChange)="onGenerateFormChange()"
+          />
+        </div>
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointmentSlots.dailyStartTime" />
+          <app-appointment-time-picker
+            [(ngModel)]="generateForm.start"
+            name="slotDailyStart"
+            required
+            (ngModelChange)="onGenerateFormChange()"
+          />
+        </div>
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointmentSlots.dailyEndTime" />
+          <app-appointment-time-picker
+            [(ngModel)]="generateForm.end"
+            name="slotDailyEnd"
+            required
+            (ngModelChange)="onGenerateFormChange()"
+          />
+        </div>
+        <div class="mb-3">
+          <app-required-form-label labelKey="appointmentSlots.slotDuration" />
+          <select
+            class="form-select"
+            [(ngModel)]="generateForm.duration"
+            name="slotDuration"
+            required
+            (ngModelChange)="onGenerateFormChange()"
+          >
+            @for (d of slotDurationOptions; track d) {
+              <option [ngValue]="d">{{ d }} {{ 'appointmentSlots.minutes' | translate }}</option>
             }
-            {{ 'appointmentSlots.generate' | translate }}
-          </button>
+          </select>
         </div>
-      </form>
-    </div>
+        <div class="mb-3 week-days-field">
+          <app-required-form-label labelKey="appointmentSlots.daysOfWeek" />
+          <div class="week-day-chips" role="group" [attr.aria-label]="'appointmentSlots.daysOfWeek' | translate">
+            @for (day of weekDayOptions; track day.value) {
+              <button
+                type="button"
+                class="week-day-chip"
+                [class.week-day-chip--selected]="isDaySelected(day.value)"
+                [attr.aria-pressed]="isDaySelected(day.value)"
+                (click)="toggleDay(day.value, !isDaySelected(day.value))"
+              >
+                <span class="week-day-chip__label">{{ day.labelKey | translate }}</span>
+                <span class="week-day-chip__indicator" aria-hidden="true">
+                  @if (isDaySelected(day.value)) {
+                    <i class="fa-solid fa-check"></i>
+                  }
+                </span>
+              </button>
+            }
+          </div>
+          <p class="week-days-hint">
+            <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+            {{ 'appointmentSlots.daysOfWeekHint' | translate }}
+          </p>
+        </div>
+      </div>
+
+      @if (formError) {
+        <div class="alert alert-danger mt-3 mb-0 py-2">{{ formError | translate }}</div>
+      }
+      @if (previewCount > 0) {
+        <div class="alert alert-info mt-3 mb-0 py-2">
+          {{ 'appointmentSlots.previewCount' | translate:{ count: previewCount } }}
+        </div>
+      }
+
+      <div class="d-flex flex-wrap gap-2 mt-3">
+
+        <button type="submit" class="btn btn-primary" [disabled]="generating">
+          @if (generating) {
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          } @else {
+            <i class="fa-solid fa-calendar-plus"></i>
+          }
+          {{ 'appointmentSlots.generate' | translate }}
+        </button>
+      </div>
+    </form>
   </div>
 </div>

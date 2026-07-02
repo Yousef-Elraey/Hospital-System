@@ -8,6 +8,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { PatientService } from '../../services/patient.service';
 import type { UpdatePatientRequest } from '../../models/request/update-patient-request.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 import { Gender, GENDER_OPTIONS } from '../../models/enums/gender.enum';
 import { LocaleService } from '../../../../core/services/locale.service';
 import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
@@ -24,6 +25,7 @@ import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
     PageHeaderComponent,
     HospitalDatepickerComponent,
     NgSelectModule,
+    RequiredFormLabelComponent,
   ],
   templateUrl: './patients-edit.component.html',
   styleUrls: ['./patients-edit.component.css'],

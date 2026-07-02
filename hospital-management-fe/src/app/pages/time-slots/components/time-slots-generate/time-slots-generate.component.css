@@ -1,1 +1,102 @@
-/* Uses shared Bootstrap card styles */
+.week-days-field {
+  min-width: 0;
+}
+
+.week-day-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.week-day-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  flex: 1 1 calc(50% - 0.2rem);
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #d0d5dd;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #344054;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.week-day-chip:hover:not(.week-day-chip--selected) {
+  border-color: #98a2b3;
+  background: #f9fafb;
+}
+
+.week-day-chip:focus-visible {
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.week-day-chip--selected {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #fff;
+}
+
+.week-day-chip__label {
+  flex: 1;
+  min-width: 0;
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.week-day-chip__indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid #98a2b3;
+  border-radius: 50%;
+  flex-shrink: 0;
+  font-size: 0.55rem;
+  line-height: 1;
+}
+
+.week-day-chip--selected .week-day-chip__indicator {
+  background: #fff;
+  border-color: #fff;
+  color: #2563eb;
+}
+
+.week-days-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.7rem;
+  color: #667085;
+  line-height: 1.35;
+}
+
+.week-days-hint i {
+  color: #98a2b3;
+  font-size: 0.75rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .week-day-chip {
+    flex: 1 1 calc(33.333% - 0.25rem);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .week-day-chip {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
+  }
+}

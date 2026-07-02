@@ -9,12 +9,13 @@ import { PatientService } from '../../../patients/services/patient.service';
 import type { UpdateBillingRequest } from '../../models/request/update-billing-request.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-billing-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, RouterLink, PageHeaderComponent, NgSelectModule],
+  imports: [CommonModule, FormsModule, TranslateModule, RouterLink, PageHeaderComponent, NgSelectModule, RequiredFormLabelComponent],
   templateUrl: './billing-edit.component.html',
   styleUrls: ['./billing-edit.component.css'],
 })

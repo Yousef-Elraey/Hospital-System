@@ -1,7 +1,7 @@
 package com.hospital.patient.controller;
 
 import com.hospital.dto.PageResponse;
-import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
+import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
 import com.hospital.patient.dto.request.CreatePatientRequest;
 import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.request.UpdatePatientRequest;

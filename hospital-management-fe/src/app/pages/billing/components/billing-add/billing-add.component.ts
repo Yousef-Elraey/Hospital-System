@@ -9,12 +9,13 @@ import { PatientService } from '../../../patients/services/patient.service';
 import type { CreateBillingRequest } from '../../models/request/create-billing-request.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 import { DROPDOWN_FETCH_SIZE } from '../../../../core/utils/list-pagination';
 
 @Component({
   selector: 'app-billing-add',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, PageHeaderComponent, NgSelectModule],
+  imports: [CommonModule, FormsModule, TranslateModule, PageHeaderComponent, NgSelectModule, RequiredFormLabelComponent],
   templateUrl: './billing-add.component.html',
   styleUrls: ['./billing-add.component.css'],
 })

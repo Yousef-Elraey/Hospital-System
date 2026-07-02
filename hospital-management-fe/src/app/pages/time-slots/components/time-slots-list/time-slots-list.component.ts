@@ -13,6 +13,8 @@ import { ConfirmDialogService } from '../../../../core/services/confirm-dialog.s
 import { LocaleService } from '../../../../core/services/locale.service';
 import { parseDisplayDateToIso } from '../../../../core/utils/display-date';
 import { formatDateTimeDisplay } from '../../../appointments/utils/date-form';
+import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
+import { APPOINTMENT_MAX_NGB } from '../../../appointments/utils/appointment-ngb-date';
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { AppointmentSlotResponse } from '../../models/response/appointment-slot-response.dto';
 import type { AppointmentSlotStatus } from '../../models/request/appointment-slot-status.dto';
@@ -30,6 +32,7 @@ import { DEFAULT_PAGE_SIZE_OPTIONS, DROPDOWN_FETCH_SIZE, applyPageResponse, toPa
     PageHeaderComponent,
     ListFilterToggleComponent,
     ListPaginationComponent,
+    HospitalDatepickerComponent,
   ],
   templateUrl: './time-slots-list.component.html',
   styleUrls: ['./time-slots-list.component.css'],
@@ -52,6 +55,7 @@ export class TimeSlotsListComponent implements OnInit {
   showFilters = false;
   errorMessage = '';
   readonly pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS;
+  readonly filterMaxDate = APPOINTMENT_MAX_NGB;
   pageSize = 10;
   currentPage = 1;
 

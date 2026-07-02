@@ -5,11 +5,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import type { CreatePatientRequest } from '../../models/request/create-patient-request.dto';
 import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 
 @Component({
   selector: 'app-patient-form-fields',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, HospitalDatepickerComponent, NgSelectModule],
+  imports: [CommonModule, FormsModule, TranslateModule, HospitalDatepickerComponent, NgSelectModule, RequiredFormLabelComponent],
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   templateUrl: './patient-form-fields.component.html',
 })

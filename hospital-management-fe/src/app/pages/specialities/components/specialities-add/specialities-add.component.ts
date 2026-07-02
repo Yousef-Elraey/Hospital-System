@@ -5,11 +5,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SpecialityService } from '../../services/speciality.service';
 import type { CreateSpecialityRequest } from '../../models/request/create-speciality-request.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 
 @Component({
   selector: 'app-specialities-add',
   standalone: true,
-  imports: [FormsModule, TranslateModule, PageHeaderComponent],
+  imports: [FormsModule, TranslateModule, PageHeaderComponent, RequiredFormLabelComponent],
   templateUrl: './specialities-add.component.html',
   styleUrls: ['./specialities-add.component.css'],
 })

@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { HospitalDatepickerComponent } from '../../../common/components/hospital-datepicker/hospital-datepicker.component';
 import { AppointmentTimePickerComponent } from '../appointment-time-picker/appointment-time-picker.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 
 @Component({
   selector: 'app-appointment-details-form',
@@ -17,6 +18,7 @@ import { AppointmentTimePickerComponent } from '../appointment-time-picker/appoi
     HospitalDatepickerComponent,
     AppointmentTimePickerComponent,
     NgSelectModule,
+    RequiredFormLabelComponent,
   ],
   viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
   templateUrl: './appointment-details-form.component.html',

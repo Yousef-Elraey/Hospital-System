@@ -243,7 +243,11 @@
         </div>
         <div class="col-md-3">
           <label class="form-label">{{ 'appointments.date' | translate }}</label>
-          <input type="text" class="form-control" [(ngModel)]="filters.date" name="alFilterDate" placeholder="DD-MM-YYYY" (keyup.enter)="applyFilters()" />
+          <app-hospital-datepicker
+            [(ngModel)]="filters.date"
+            name="alFilterDate"
+            [maxDate]="filterMaxDate"
+          />
         </div>
         <div class="col-12 d-flex gap-2">
           <button type="button" class="btn btn-primary" (click)="applyFilters()">{{ 'common.search' | translate }}</button>

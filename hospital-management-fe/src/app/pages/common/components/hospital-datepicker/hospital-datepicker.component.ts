@@ -222,6 +222,7 @@ export class HospitalDatepickerComponent implements ControlValueAccessor, OnInit
       this.dateInput?.nativeElement ??
       this.fieldAnchor?.nativeElement ??
       (this.host.nativeElement.querySelector('.form-control') as HTMLElement) ??
+      (this.host.nativeElement.querySelector('.hospital-date-picker-field') as HTMLElement) ??
       (this.host.nativeElement.querySelector('.input-group') as HTMLElement)
     );
   }

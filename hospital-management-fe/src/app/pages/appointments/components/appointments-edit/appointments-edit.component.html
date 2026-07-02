@@ -5,113 +5,115 @@
   } @else {
     <div class="card form-card">
       <form #formRef="ngForm" (ngSubmit)="save(formRef)">
-        <div class="mb-3">
-          <label class="form-label d-block">{{ 'appointments.date' | translate }}</label>
-          <app-hospital-datepicker
-            [(ngModel)]="apptDateStr"
-            name="apptDate"
-            required
-            [minDate]="apptMinNgb"
-            [maxDate]="apptMaxNgb"
-            [inputClass]="{ 'is-invalid': apptDateRef.invalid && (apptDateRef.touched || formRef.submitted) }"
-            [errorMessage]="(apptDateRef.invalid && (apptDateRef.touched || formRef.submitted)) ? ('validation.required' | translate) : ''"
-            #apptDateRef="ngModel"
-          />
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="editApptTime">{{ 'appointments.time' | translate }}</label>
-          <div class="row g-2">
-            <div class="col-4">
-              <select
-                id="editApptTime"
-                class="form-select"
-                [(ngModel)]="apptHour12"
-                name="apptHour12"
-                required
-                (ngModelChange)="onTimePartChange()"
-                #apptHourRef="ngModel"
-                [class.is-invalid]="apptHourRef.invalid && (apptHourRef.touched || formRef.submitted)"
-              >
-                <option [ngValue]="null">--</option>
-                @for (h of hourOptions; track h) {
-                  <option [ngValue]="h">{{ formatLocalizedNumber(h) }}</option>
-                }
-              </select>
-            </div>
-            <div class="col-4">
-              <select
-                class="form-select"
-                [(ngModel)]="apptMinute"
-                name="apptMinute"
-                required
-                (ngModelChange)="onTimePartChange()"
-                #apptMinuteRef="ngModel"
-                [class.is-invalid]="apptMinuteRef.invalid && (apptMinuteRef.touched || formRef.submitted)"
-              >
-                <option [ngValue]="null">--</option>
-                @for (m of minuteOptions; track m) {
-                  <option [ngValue]="m">{{ formatLocalizedNumber(m) }}</option>
-                }
-              </select>
-            </div>
-            <div class="col-4">
-              <select
-                class="form-select"
-                [(ngModel)]="apptMeridian"
-                name="apptMeridian"
-                required
-                (ngModelChange)="onTimePartChange()"
-              >
-                <option value="AM">{{ locale.currentLang === 'ar' ? 'ص' : 'AM' }}</option>
-                <option value="PM">{{ locale.currentLang === 'ar' ? 'م' : 'PM' }}</option>
-              </select>
-            </div>
+        <div class="form-fields-grid">
+          <div class="mb-3">
+            <app-required-form-label labelKey="appointments.date" />
+            <app-hospital-datepicker
+              [(ngModel)]="apptDateStr"
+              name="apptDate"
+              required
+              [minDate]="apptMinNgb"
+              [maxDate]="apptMaxNgb"
+              [inputClass]="{ 'is-invalid': apptDateRef.invalid && (apptDateRef.touched || formRef.submitted) }"
+              [errorMessage]="(apptDateRef.invalid && (apptDateRef.touched || formRef.submitted)) ? ('validation.required' | translate) : ''"
+              #apptDateRef="ngModel"
+            />
           </div>
-          @if ((apptHourRef.invalid || apptMinuteRef.invalid) && ((apptHourRef.touched || apptMinuteRef.touched) || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="editApptDoctor">{{ 'appointments.doctor' | translate }}</label>
-          <ng-select
-            id="editApptDoctor"
-            class="w-100"
-            [items]="doctorSelectOptions"
-            bindLabel="label"
-            bindValue="value"
-            [(ngModel)]="model.doctorId"
-            name="doctorId"
-            [clearable]="true"
-            [searchable]="true"
-            [placeholder]="'appointments.selectDoctor' | translate"
-            #docRef="ngModel"
-            required
-            [ngClass]="{ 'is-invalid': docRef.invalid && (docRef.touched || formRef.submitted) }"
-          />
-          @if (docRef.invalid && (docRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
-        </div>
-        <div class="mb-3">
-          <label class="form-label" for="editApptPatient">{{ 'appointments.patient' | translate }}</label>
-          <ng-select
-            id="editApptPatient"
-            class="w-100"
-            [items]="patientSelectOptions"
-            bindLabel="label"
-            bindValue="value"
-            [(ngModel)]="model.patientId"
-            name="patientId"
-            [clearable]="true"
-            [searchable]="true"
-            [placeholder]="'appointments.selectPatient' | translate"
-            #patRef="ngModel"
-            required
-            [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
-          />
-          @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
-            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
-          }
+          <div class="mb-3">
+            <app-required-form-label labelKey="appointments.time" htmlFor="editApptTime" />
+            <div class="row g-2">
+              <div class="col-4">
+                <select
+                  id="editApptTime"
+                  class="form-select"
+                  [(ngModel)]="apptHour12"
+                  name="apptHour12"
+                  required
+                  (ngModelChange)="onTimePartChange()"
+                  #apptHourRef="ngModel"
+                  [class.is-invalid]="apptHourRef.invalid && (apptHourRef.touched || formRef.submitted)"
+                >
+                  <option [ngValue]="null">--</option>
+                  @for (h of hourOptions; track h) {
+                    <option [ngValue]="h">{{ formatLocalizedNumber(h) }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-4">
+                <select
+                  class="form-select"
+                  [(ngModel)]="apptMinute"
+                  name="apptMinute"
+                  required
+                  (ngModelChange)="onTimePartChange()"
+                  #apptMinuteRef="ngModel"
+                  [class.is-invalid]="apptMinuteRef.invalid && (apptMinuteRef.touched || formRef.submitted)"
+                >
+                  <option [ngValue]="null">--</option>
+                  @for (m of minuteOptions; track m) {
+                    <option [ngValue]="m">{{ formatLocalizedNumber(m) }}</option>
+                  }
+                </select>
+              </div>
+              <div class="col-4">
+                <select
+                  class="form-select"
+                  [(ngModel)]="apptMeridian"
+                  name="apptMeridian"
+                  required
+                  (ngModelChange)="onTimePartChange()"
+                >
+                  <option value="AM">{{ locale.currentLang === 'ar' ? 'ص' : 'AM' }}</option>
+                  <option value="PM">{{ locale.currentLang === 'ar' ? 'م' : 'PM' }}</option>
+                </select>
+              </div>
+            </div>
+            @if ((apptHourRef.invalid || apptMinuteRef.invalid) && ((apptHourRef.touched || apptMinuteRef.touched) || formRef.submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            }
+          </div>
+          <div class="mb-3">
+            <app-required-form-label labelKey="appointments.doctor" htmlFor="editApptDoctor" />
+            <ng-select
+              id="editApptDoctor"
+              class="w-100"
+              [items]="doctorSelectOptions"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="model.doctorId"
+              name="doctorId"
+              [clearable]="true"
+              [searchable]="true"
+              [placeholder]="'appointments.selectDoctor' | translate"
+              #docRef="ngModel"
+              required
+              [ngClass]="{ 'is-invalid': docRef.invalid && (docRef.touched || formRef.submitted) }"
+            />
+            @if (docRef.invalid && (docRef.touched || formRef.submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            }
+          </div>
+          <div class="mb-3">
+            <app-required-form-label labelKey="appointments.patient" htmlFor="editApptPatient" />
+            <ng-select
+              id="editApptPatient"
+              class="w-100"
+              [items]="patientSelectOptions"
+              bindLabel="label"
+              bindValue="value"
+              [(ngModel)]="model.patientId"
+              name="patientId"
+              [clearable]="true"
+              [searchable]="true"
+              [placeholder]="'appointments.selectPatient' | translate"
+              #patRef="ngModel"
+              required
+              [ngClass]="{ 'is-invalid': patRef.invalid && (patRef.touched || formRef.submitted) }"
+            />
+            @if (patRef.invalid && (patRef.touched || formRef.submitted)) {
+              <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+            }
+          </div>
         </div>
         <div class="d-flex flex-wrap gap-2 mt-3">
           <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>

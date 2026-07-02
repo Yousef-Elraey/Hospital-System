@@ -11,6 +11,7 @@ import type { UpdateMedicalRecordRequest } from '../../models/request/update-med
 import type { DoctorResponse } from '../../../doctors/models/response/doctor-response.dto';
 import type { PatientResponse } from '../../../patients/models/response/patient-response.dto';
 import { PageHeaderComponent } from '../../../../core/components/page-header/page-header.component';
+import { RequiredFormLabelComponent } from '../../../../core/components/required-form-label/required-form-label.component';
 import { LocaleService } from '../../../../core/services/locale.service';
 import { formatDateDisplay } from '../../../../core/utils/display-date';
 import {
@@ -72,7 +73,7 @@ const MEDICATION_CATALOG: MedicationOption[] = [
 @Component({
   selector: 'app-medical-records-edit',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslateModule, PageHeaderComponent, NgSelectModule],
+  imports: [CommonModule, FormsModule, TranslateModule, PageHeaderComponent, NgSelectModule, RequiredFormLabelComponent],
   templateUrl: './medical-records-edit.component.html',
   styleUrls: ['./medical-records-edit.component.css'],
 })

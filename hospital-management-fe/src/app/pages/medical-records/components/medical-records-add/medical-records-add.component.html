@@ -62,8 +62,9 @@
           </div>
         </div>
       } @else {
-        <div class="patient-bar__select">
-          <label class="form-label mb-1" for="mrPatient">{{ 'medicalRecords.selectPatientFirst' | translate }}</label>
+        <div class="form-fields-grid patient-bar__select">
+          <div class="mb-3">
+            <app-required-form-label labelKey="medicalRecords.selectPatientFirst" htmlFor="mrPatient" labelClass="mb-1" />
           <ng-select
             id="mrPatient"
             class="w-100"
@@ -82,12 +83,14 @@
           @if (patRef.invalid && (patRef.touched || submitted)) {
             <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
           }
+          </div>
         </div>
       }
 
       @if (doctorSelectOptions.length > 1) {
-        <div class="patient-bar__doctor">
-          <label class="form-label mb-1" for="mrDoctor">{{ 'appointments.doctor' | translate }}</label>
+        <div class="form-fields-grid patient-bar__doctor">
+          <div class="mb-3">
+            <app-required-form-label labelKey="appointments.doctor" htmlFor="mrDoctor" labelClass="mb-1" />
           <ng-select
             id="mrDoctor"
             class="w-100"
@@ -106,6 +109,7 @@
           @if (docRef.invalid && (docRef.touched || submitted)) {
             <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
           }
+          </div>
         </div>
       } @else {
         <input type="hidden" [(ngModel)]="model.doctorId" name="doctorId" required />
