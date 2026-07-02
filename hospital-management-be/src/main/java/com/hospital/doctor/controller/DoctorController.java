@@ -57,8 +57,12 @@ private final DoctorService doctorService;
     }
 
     @PostMapping("/search")
-    public ResponseEntity<GetDoctorResponse> searchDoctor(@Valid @RequestBody SearchDoctorRequest searchDoctorRequest) {
-        return new ResponseEntity<>(doctorService.searchDoctor(searchDoctorRequest), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetDoctorResponse>> searchDoctor(@RequestBody SearchDoctorRequest request,
+                                                                        @RequestParam(defaultValue = "0") int page,
+                                                                        @RequestParam(defaultValue = "10") int size,
+                                                                        @RequestParam(defaultValue = "id") String sortBy,
+                                                                        @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(doctorService.searchDoctor(page, size, sortBy, direction, request), HttpStatus.OK);
     }
 
 }

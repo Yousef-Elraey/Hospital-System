@@ -2,8 +2,12 @@ package com.hospital.speciality.service;
 
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.dto.PageResponse;
+import com.hospital.entity.Patient;
 import com.hospital.entity.Speciality;
+import com.hospital.patient.dto.request.SearchPatientRequest;
+import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.speciality.dto.request.CreateSpecialityRequest;
+import com.hospital.speciality.dto.request.SearchSpecialityRequest;
 import com.hospital.speciality.dto.request.UpdateSpecialityRequest;
 import com.hospital.speciality.dto.response.CreateSpecialityResponse;
 import com.hospital.speciality.dto.response.GetSpecialityResponse;
@@ -16,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,8 +45,8 @@ public class SpecialityService {
         specialities.forEach(speciality -> {
             GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
             getSpecialityResponse.setId(speciality.getId())
-                    .setNameEn(speciality.getName_en())
-                    .setNameAr(speciality.getName_ar());
+                    .setNameEn(speciality.getNameEn())
+                    .setNameAr(speciality.getNameAr());
             specialityResponses.add(getSpecialityResponse);
         });
         return PageResponse.<GetSpecialityResponse>builder()
@@ -62,16 +67,16 @@ public class SpecialityService {
         Speciality specialityDb = speciality.get();
         GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
         getSpecialityResponse.setId(specialityDb.getId())
-                .setNameEn(specialityDb.getName_en())
-                .setNameAr(specialityDb.getName_ar());
+                .setNameEn(specialityDb.getNameEn())
+                .setNameAr(specialityDb.getNameAr());
         return getSpecialityResponse;
     }
 
     public CreateSpecialityResponse createSpeciality(CreateSpecialityRequest createSpecialityRequest) {
         Speciality speciality = new Speciality();
         speciality.setId(createSpecialityRequest.getId())
-                .setName_en(createSpecialityRequest.getNameEn())
-                .setName_ar(createSpecialityRequest.getNameAr());
+                .setNameEn(createSpecialityRequest.getNameEn())
+                .setNameAr(createSpecialityRequest.getNameAr());
         specialityRepository.save(speciality);
         CreateSpecialityResponse specialityResponse = new CreateSpecialityResponse();
         specialityResponse.setId(speciality.getId());
@@ -83,8 +88,8 @@ public class SpecialityService {
         if (speciality.isPresent()){
             Speciality specialityDb = speciality.get();
             specialityDb.setId(updateSpecialityRequest.getId())
-                    .setName_en(updateSpecialityRequest.getName_en())
-                    .setName_ar(updateSpecialityRequest.getName_ar());
+                    .setNameEn(updateSpecialityRequest.getName_en())
+                    .setNameAr(updateSpecialityRequest.getName_ar());
             specialityRepository.save(specialityDb);
 
             UpdateSpecialityResponse specialityResponse = new UpdateSpecialityResponse();
@@ -98,11 +103,50 @@ public class SpecialityService {
 
     public void deleteSpecialityById(Long id) {
         Optional<Speciality> speciality = specialityRepository.findById(id);
-        if(speciality.isPresent())
+        if (speciality.isPresent())
             specialityRepository.delete(speciality.get());
         else
             throw new HospitalBusinessException("no speciality found");
 
 
+    }
+
+    public PageResponse<GetSpecialityResponse> searchSpeciality(int page, int size, String sortBy, String direction,
+                                                                SearchSpecialityRequest searchSpecialityRequest) {
+        String nameEn = searchSpecialityRequest.getNameEn();
+        String nameAr = searchSpecialityRequest.getNameAr();
+
+        if (nameEn != null && nameEn.isBlank()) {
+            nameEn = null;
+        }
+        if (nameAr != null && nameAr.isBlank()) {
+            nameAr = null;
+        }
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Speciality> specialityPage = specialityRepository.searchSpeciality(nameEn, nameAr, pageable);
+        List<Speciality> specialityList = specialityPage.getContent();
+        List<GetSpecialityResponse> responses = new ArrayList<>();
+
+        for (Speciality speciality : specialityList) {
+            GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
+            getSpecialityResponse
+                    .setNameEn(speciality.getNameEn())
+                    .setNameAr(speciality.getNameAr());
+            responses.add(getSpecialityResponse);
+        }
+
+        return PageResponse.<GetSpecialityResponse>builder()
+                .data(responses)
+                .page(specialityPage.getNumber())
+                .size(specialityPage.getSize())
+                .totalElements(specialityPage.getTotalElements())
+                .totalPages(specialityPage.getTotalPages())
+                .first(specialityPage.isFirst())
+                .last(specialityPage.isLast())
+                .build();
     }
 }

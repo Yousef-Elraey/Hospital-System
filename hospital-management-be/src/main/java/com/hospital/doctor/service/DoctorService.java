@@ -180,30 +180,48 @@ public class DoctorService {
         return patientResponse;
     }
 
-    public GetDoctorResponse searchDoctor(SearchDoctorRequest searchDoctorRequest) {
-        Optional<Speciality> specialityOp = specialityRepository.findByName(searchDoctorRequest.getSpeciality());
-        if (specialityOp.isEmpty()) {
-            throw new HospitalBusinessException("no speciality found");
+    public PageResponse<GetDoctorResponse> searchDoctor(int page, int size, String sortBy, String direction, SearchDoctorRequest searchDoctorRequest) {
+        String doctorName = searchDoctorRequest.getName();
+        String doctorNumber = searchDoctorRequest.getContactNumber();
+        Long specialityId = searchDoctorRequest.getSpecialityId();
+        if (doctorName != null && doctorName.isBlank()) {
+            doctorName = null;
         }
-        Speciality speciality = specialityOp.get();
-
-       Optional<Doctor> doctorOp = doctorRepository.findByNameAndContactNumber(searchDoctorRequest.getName(),
-                                                                    searchDoctorRequest.getContactNumber());
-        if (doctorOp.isEmpty()){
-            throw new HospitalBusinessException("no doctor found");
+        if (doctorNumber != null && doctorNumber.isBlank()) {
+            doctorNumber = null;
         }
-        Doctor doctor = doctorOp.get();
 
-       GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
-        getDoctorResponse.setId(doctor.getId())
-                .setName(doctor.getName())
-                .setSpeciality(speciality)
-                .setContactNumber(doctor.getContactNumber())
-                .setCreatedBy(doctor.getCreatedBy())
-                .setCreatedAt(doctor.getCreatedAt())
-                .setUpdatedBy(doctor.getUpdatedBy())
-                .setUpdatedAt(doctor.getUpdatedAt());
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
 
-        return getDoctorResponse;
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Doctor> doctorPage = doctorRepository.searchDoctors(doctorName, specialityId, doctorNumber, pageable);
+
+        List<Doctor> doctorsList = doctorPage.getContent();
+        List<GetDoctorResponse> doctorsListResponses = new ArrayList<>();
+
+        for (Doctor doctor : doctorsList) {
+            GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
+            getDoctorResponse
+                    .setName(doctor.getName())
+                    .setSpeciality(doctor.getSpeciality())
+                    .setContactNumber(doctor.getContactNumber())
+                    .setCreatedBy(doctor.getCreatedBy())
+                    .setCreatedAt(doctor.getCreatedAt())
+                    .setUpdatedBy(doctor.getUpdatedBy())
+                    .setUpdatedAt(doctor.getUpdatedAt());
+            doctorsListResponses.add(getDoctorResponse);
+        }
+
+        return PageResponse.<GetDoctorResponse>builder()
+                .data(doctorsListResponses)
+                .page(doctorPage.getNumber())
+                .size(doctorPage.getSize())
+                .totalElements(doctorPage.getTotalElements())
+                .totalPages(doctorPage.getTotalPages())
+                .first(doctorPage.isFirst())
+                .last(doctorPage.isLast())
+                .build();
     }
 }

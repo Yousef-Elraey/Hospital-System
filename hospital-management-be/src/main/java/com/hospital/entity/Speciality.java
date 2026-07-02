@@ -20,9 +20,9 @@ public class Speciality {
     private Long id;
 
     @Column(nullable = false)
-    private String name_en;
+    private String nameEn;
 
     @Column(nullable = false)
-    private String name_ar;
+    private String nameAr;
 
 }

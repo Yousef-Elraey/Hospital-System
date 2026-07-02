@@ -1,6 +1,7 @@
 package com.hospital.appointment.controller;
 
 import com.hospital.appointment.dto.request.CreateAppointmentRequest;
+import com.hospital.appointment.dto.request.SearchAppointmentRequest;
 import com.hospital.appointment.dto.request.UpdateAppointmentRequest;
 import com.hospital.appointment.dto.response.CreateAppointmentResponse;
 import com.hospital.appointment.dto.response.GetAppointmentResponse;
@@ -9,6 +10,7 @@ import com.hospital.appointment.service.AppointmentService;
 import com.hospital.dto.BookRequestDto;
 import com.hospital.dto.BookResponseDto;
 import com.hospital.dto.PageResponse;
+import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -81,5 +83,14 @@ public class AppointmentController {
     @PutMapping("/next")
     public ResponseEntity<GetPatientResponse> next() {
         return new ResponseEntity<>(appointmentService.next(), HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetAppointmentResponse>> searchAppointment(@RequestBody SearchAppointmentRequest searchAppointmentRequest,
+                                                                                  @RequestParam(defaultValue = "0") int page,
+                                                                                  @RequestParam(defaultValue = "10") int size,
+                                                                                  @RequestParam(defaultValue = "id") String sortBy,
+                                                                                  @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(appointmentService.searchAppointment(page, size, sortBy, direction, searchAppointmentRequest), HttpStatus.OK);
     }
 }

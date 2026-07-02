@@ -1,12 +1,15 @@
-package com.hospital.medical_record.controller;
+package com.hospital.medicalRecord.controller;
 
 import com.hospital.dto.PageResponse;
-import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
-import com.hospital.medical_record.dto.request.UpdateMedicalRecordRequest;
-import com.hospital.medical_record.dto.response.CreateMedicalRecordResponse;
-import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
-import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
-import com.hospital.medical_record.service.MedicalRecordService;
+import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
+import com.hospital.medicalRecord.dto.request.SearchMedicalRecordRequest;
+import com.hospital.medicalRecord.dto.request.UpdateMedicalRecordRequest;
+import com.hospital.medicalRecord.dto.response.CreateMedicalRecordResponse;
+import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
+import com.hospital.medicalRecord.dto.response.UpdateMedicalRecordResponse;
+import com.hospital.medicalRecord.service.MedicalRecordService;
+import com.hospital.patient.dto.request.SearchPatientRequest;
+import com.hospital.patient.dto.response.GetPatientResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,5 +61,14 @@ public class MedicalRecordController {
     @GetMapping("/medical-record-patient-id/{id}")
     public ResponseEntity<List<GetMedicalRecordResponse>> getByPatientId(@PathVariable Long id) {
         return new ResponseEntity<>(medicalRecordService.getByPatientId(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetMedicalRecordResponse>> searchMedicalRecord(@RequestBody SearchMedicalRecordRequest searchMedicalRecordRequest,
+                                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                                      @RequestParam(defaultValue = "10") int size,
+                                                                                      @RequestParam(defaultValue = "id") String sortBy,
+                                                                                      @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(medicalRecordService.searchMedicalRecord(page, size, sortBy, direction, searchMedicalRecordRequest), HttpStatus.OK);
     }
 }

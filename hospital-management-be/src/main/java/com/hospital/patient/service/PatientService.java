@@ -2,7 +2,9 @@ package com.hospital.patient.service;
 
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JWTService;
+import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.dto.PageResponse;
+import com.hospital.entity.Doctor;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
 import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
@@ -22,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,27 +168,49 @@ public class PatientService {
         return getMedicalRecordResponses;
     }
 
-    public GetPatientResponse searchPatient(SearchPatientRequest searchPatientRequest) {
-        Optional<Patient> patientOp = patientRepository.findByNameAndDateOfBirthAndPhone(
-                searchPatientRequest.getName()
-                , searchPatientRequest.getDateOfBirth()
-                , searchPatientRequest.getPhone());
-        if (patientOp.isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
-        }
-        Patient patient = patientOp.get();
-        GetPatientResponse getPatientResponse = new GetPatientResponse();
-        getPatientResponse.setId(patient.getId())
-                .setName(patient.getName())
-                .setGender(patient.getGender())
-                .setPhone(patient.getPhone())
-                .setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
-                .setDateOfBirth(patient.getDateOfBirth())
-                .setCreatedBy(patient.getCreatedBy())
-                .setCreatedAt(patient.getCreatedAt())
-                .setUpdatedBy(patient.getUpdatedBy())
-                .setUpdatedAt(patient.getUpdatedAt());
+    public PageResponse<GetPatientResponse> searchPatient(int page, int size, String sortBy, String direction, SearchPatientRequest searchPatientRequest) {
+        String patientName = searchPatientRequest.getName();
+        LocalDate patientDateOfBirth = searchPatientRequest.getDateOfBirth();
+        String patientPhone = searchPatientRequest.getPhone();
 
-        return getPatientResponse;
+        if (patientName != null && patientName.isBlank()) {
+            patientName = null;
+        }
+        if (patientPhone != null && patientPhone.isBlank()) {
+            patientPhone = null;
+        }
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Patient> patientPage = patientRepository.searchPatient(patientName, patientDateOfBirth, patientPhone, pageable);
+        List<Patient> patientList = patientPage.getContent();
+        List<GetPatientResponse> responses = new ArrayList<>();
+
+        for (Patient patient : patientList) {
+            GetPatientResponse getPatientResponse = new GetPatientResponse();
+            getPatientResponse
+                    .setName(patient.getName())
+                    .setGender(patient.getGender())
+                    .setPhone(patient.getPhone())
+                    .setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
+                    .setDateOfBirth(patient.getDateOfBirth())
+                    .setCreatedBy(patient.getCreatedBy())
+                    .setCreatedAt(patient.getCreatedAt())
+                    .setUpdatedBy(patient.getUpdatedBy())
+                    .setUpdatedAt(patient.getUpdatedAt());
+            responses.add(getPatientResponse);
+        }
+
+        return PageResponse.<GetPatientResponse>builder()
+                .data(responses)
+                .page(patientPage.getNumber())
+                .size(patientPage.getSize())
+                .totalElements(patientPage.getTotalElements())
+                .totalPages(patientPage.getTotalPages())
+                .first(patientPage.isFirst())
+                .last(patientPage.isLast())
+                .build();
     }
 }

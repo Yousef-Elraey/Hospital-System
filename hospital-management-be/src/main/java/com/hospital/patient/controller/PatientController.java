@@ -1,5 +1,6 @@
 package com.hospital.patient.controller;
 
+import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.dto.PageResponse;
 import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
 import com.hospital.patient.dto.request.CreatePatientRequest;
@@ -63,8 +64,12 @@ public class PatientController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<GetPatientResponse> searchPatient(@Valid @RequestBody SearchPatientRequest searchPatientRequest) {
-        return new ResponseEntity<>(patientService.searchPatient(searchPatientRequest), HttpStatus.OK);
+    public ResponseEntity<PageResponse<GetPatientResponse>> searchPatient(@RequestBody SearchPatientRequest searchPatientRequest,
+                                                                          @RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "10") int size,
+                                                                          @RequestParam(defaultValue = "id") String sortBy,
+                                                                          @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(patientService.searchPatient(page, size, sortBy, direction, searchPatientRequest), HttpStatus.OK);
     }
 
 }
