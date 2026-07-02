@@ -16,10 +16,6 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 public class SearchPatientRequest {
     private String name;
-
-    @Past(message = "Date of birth must be in the past")
     private LocalDate dateOfBirth;
-
-    @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number")
     private String phone;
 }

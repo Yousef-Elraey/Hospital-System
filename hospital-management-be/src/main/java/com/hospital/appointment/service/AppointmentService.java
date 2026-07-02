@@ -1,6 +1,7 @@
 package com.hospital.appointment.service;
 
 import com.hospital.appointment.dto.request.CreateAppointmentRequest;
+import com.hospital.appointment.dto.request.SearchAppointmentRequest;
 import com.hospital.appointment.dto.request.UpdateAppointmentRequest;
 import com.hospital.appointment.dto.response.CreateAppointmentResponse;
 import com.hospital.appointment.dto.response.GetAppointmentResponse;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -344,5 +346,50 @@ public class AppointmentService {
     }
 
 
+    public PageResponse<GetAppointmentResponse> searchAppointment(int page, int size, String sortBy,
+                                                                  String direction, SearchAppointmentRequest searchAppointmentRequest) {
+        Long patientId = searchAppointmentRequest.getPatientId();
+        Long doctorId = searchAppointmentRequest.getDoctorId();
+        Long statusId = searchAppointmentRequest.getStatusId();
+        LocalDateTime start = null;
+        LocalDateTime end = null;
 
+        if (searchAppointmentRequest.getDate() != null) {
+            start = searchAppointmentRequest.getDate().atStartOfDay();
+            end = searchAppointmentRequest.getDate().plusDays(1).atStartOfDay();
+        }
+
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Appointment> appointmentPage = appointmentRepository.searchAppointment(patientId, doctorId, statusId, start, end, pageable);
+        List<Appointment> appointmentList = appointmentPage.getContent();
+        List<GetAppointmentResponse> appointmentResponses = new ArrayList<>();
+        for (Appointment appointment : appointmentList) {
+            GetAppointmentResponse getAppointmentResponse = new GetAppointmentResponse();
+            getAppointmentResponse
+                    .setTiming(appointment.getTiming())
+                    .setAppointmentType(appointment.getAppointmentType())
+                    .setDoctorId(appointment.getDoctor().getId())
+                    .setPatientId(appointment.getPatient().getId())
+                    .setCreatedBy(appointment.getCreatedBy())
+                    .setCreatedAt(appointment.getCreatedAt())
+                    .setUpdatedBy(appointment.getUpdatedBy())
+                    .setUpdatedAt(appointment.getUpdatedAt())
+                    .setStatusId(appointment.getStatus().getId());
+            appointmentResponses.add(getAppointmentResponse);
+        }
+
+        return PageResponse.<GetAppointmentResponse>builder()
+                .data(appointmentResponses)
+                .page(appointmentPage.getNumber())
+                .size(appointmentPage.getSize())
+                .totalPages(appointmentPage.getTotalPages())
+                .totalElements(appointmentPage.getTotalElements())
+                .first(appointmentPage.isFirst())
+                .last(appointmentPage.isLast())
+                .build();
+    }
 }

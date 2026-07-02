@@ -6,12 +6,16 @@ import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.MedicalRecord;
+import com.hospital.entity.Patient;
 import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
+import com.hospital.medicalRecord.dto.request.SearchMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.request.UpdateMedicalRecordRequest;
 import com.hospital.medicalRecord.dto.response.CreateMedicalRecordResponse;
 import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
 import com.hospital.medicalRecord.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medicalRecord.repository.MedicalRecordRepository;
+import com.hospital.patient.dto.request.SearchPatientRequest;
+import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.treatment.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -187,8 +192,49 @@ public class MedicalRecordService {
                 medicalRecordsResponse.add(medicalRecordResponse);
             });
         }
-           return medicalRecordsResponse;
+        return medicalRecordsResponse;
 
     }
 
+    public PageResponse<GetMedicalRecordResponse> searchMedicalRecord(int page, int size, String sortBy, String direction,
+                                                                      SearchMedicalRecordRequest searchMedicalRecordRequest) {
+
+        Long patientId = searchMedicalRecordRequest.getPatientId();
+        Long doctorId = searchMedicalRecordRequest.getDoctorId();
+        Long diagnoseId = searchMedicalRecordRequest.getDiagnoseId();
+
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<MedicalRecord> medicalRecordPage = medicalRecordRepository.searchMedicalRecord(patientId, doctorId, diagnoseId, pageable);
+        List<MedicalRecord> medicalRecordList = medicalRecordPage.getContent();
+        List<GetMedicalRecordResponse> responses = new ArrayList<>();
+
+        for (MedicalRecord medicalRecord : medicalRecordList) {
+            GetMedicalRecordResponse getMedicalRecordResponse = new GetMedicalRecordResponse();
+            getMedicalRecordResponse
+                    .setDiagnoseId(medicalRecord.getDiagnose().getId())
+                    .setTreatmentId(medicalRecord.getTreatment().getId())
+                    .setPatientId(medicalRecord.getPatient().getId())
+                    .setDoctorId(medicalRecord.getDoctor().getId())
+                    .setCreatedAt(medicalRecord.getCreatedAt())
+                    .setCreatedBy(medicalRecord.getCreatedBy())
+                    .setUpdatedAt(medicalRecord.getUpdatedAt())
+                    .setUpdatedBy(medicalRecord.getUpdatedBy());
+
+            responses.add(getMedicalRecordResponse);
+        }
+
+        return PageResponse.<GetMedicalRecordResponse>builder()
+                .data(responses)
+                .page(medicalRecordPage.getNumber())
+                .size(medicalRecordPage.getSize())
+                .totalElements(medicalRecordPage.getTotalElements())
+                .totalPages(medicalRecordPage.getTotalPages())
+                .first(medicalRecordPage.isFirst())
+                .last(medicalRecordPage.isLast())
+                .build();
+    }
 }

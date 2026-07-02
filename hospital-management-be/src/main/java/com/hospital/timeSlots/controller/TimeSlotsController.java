@@ -6,8 +6,11 @@ import com.hospital.appointment.dto.response.CreateAppointmentResponse;
 import com.hospital.appointment.dto.response.GetAppointmentResponse;
 import com.hospital.appointment.dto.response.UpdateAppointmentResponse;
 import com.hospital.dto.PageResponse;
+import com.hospital.patient.dto.request.SearchPatientRequest;
+import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.timeSlots.dto.request.CreateTimeSlotsRequest;
 import com.hospital.timeSlots.dto.request.GenerateTimeSlotsRequest;
+import com.hospital.timeSlots.dto.request.SearchTimeSlotsRequest;
 import com.hospital.timeSlots.dto.request.UpdateTimeSlotsRequest;
 import com.hospital.timeSlots.dto.response.CreateTimeSlotsResponse;
 import com.hospital.timeSlots.dto.response.GetTimeSlotsResponse;
@@ -59,13 +62,24 @@ public class TimeSlotsController {
         timeSlotsService.deleteTimeSlots(id);
         return new ResponseEntity<>("Appointment is deleted", HttpStatus.NO_CONTENT);
     }
+
     @PostMapping("/generate")
-    public ResponseEntity<String>generateTImeSlots(@Valid @RequestBody GenerateTimeSlotsRequest request){
+    public ResponseEntity<String> generateTImeSlots(@Valid @RequestBody GenerateTimeSlotsRequest request) {
         timeSlotsService.generateTimeSlots(request);
-        return new ResponseEntity<>("time slots generated",HttpStatus.CREATED);
+        return new ResponseEntity<>("time slots generated", HttpStatus.CREATED);
     }
+
     @GetMapping("/available/{doctorId}")
-    public ResponseEntity<List<GetTimeSlotsResponse>> getAvailableTimeSlots(@PathVariable Long doctorId){
-        return new ResponseEntity<>(timeSlotsService.getAvailableTimeSlots(doctorId),HttpStatus.OK);
+    public ResponseEntity<List<GetTimeSlotsResponse>> getAvailableTimeSlots(@PathVariable Long doctorId) {
+        return new ResponseEntity<>(timeSlotsService.getAvailableTimeSlots(doctorId), HttpStatus.OK);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetTimeSlotsResponse>> searchTimeSlots(@RequestBody SearchTimeSlotsRequest searchTimeSlotsRequest,
+                                                                              @RequestParam(defaultValue = "0") int page,
+                                                                              @RequestParam(defaultValue = "10") int size,
+                                                                              @RequestParam(defaultValue = "id") String sortBy,
+                                                                              @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(timeSlotsService.searchTimeSlots(page, size, sortBy, direction, searchTimeSlotsRequest), HttpStatus.OK);
     }
 }

@@ -1,7 +1,10 @@
 package com.hospital.speciality.controller;
 
 import com.hospital.dto.PageResponse;
+import com.hospital.patient.dto.request.SearchPatientRequest;
+import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.speciality.dto.request.CreateSpecialityRequest;
+import com.hospital.speciality.dto.request.SearchSpecialityRequest;
 import com.hospital.speciality.dto.request.UpdateSpecialityRequest;
 import com.hospital.speciality.dto.response.CreateSpecialityResponse;
 import com.hospital.speciality.dto.response.GetSpecialityResponse;
@@ -50,6 +53,15 @@ public class SpecialityController {
     public ResponseEntity<String> deleteSpecialityById(@PathVariable Long id) {
         specialityService.deleteSpecialityById(id);
         return new ResponseEntity<>("deleted patient successfully", HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetSpecialityResponse>> searchSpeciality(@RequestBody SearchSpecialityRequest searchSpecialityRequest,
+                                                                                @RequestParam(defaultValue = "0") int page,
+                                                                                @RequestParam(defaultValue = "10") int size,
+                                                                                @RequestParam(defaultValue = "id") String sortBy,
+                                                                                @RequestParam(defaultValue = "asc") String direction) {
+        return new ResponseEntity<>(specialityService.searchSpeciality(page, size, sortBy, direction, searchSpecialityRequest), HttpStatus.OK);
     }
 
 }
