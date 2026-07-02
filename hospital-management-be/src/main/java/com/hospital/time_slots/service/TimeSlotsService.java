@@ -1,18 +1,18 @@
-package com.hospital.timeSlots.service;
+package com.hospital.time_slots.service;
 
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.*;
 import com.hospital.patient.dto.response.GetPatientResponse;
-import com.hospital.timeSlots.dto.request.CreateTimeSlotsRequest;
-import com.hospital.timeSlots.dto.request.GenerateTimeSlotsRequest;
+import com.hospital.time_slots.dto.request.CreateTimeSlotsRequest;
+import com.hospital.time_slots.dto.request.GenerateTimeSlotsRequest;
 import com.hospital.timeSlots.dto.request.SearchTimeSlotsRequest;
-import com.hospital.timeSlots.dto.request.UpdateTimeSlotsRequest;
-import com.hospital.timeSlots.dto.response.CreateTimeSlotsResponse;
-import com.hospital.timeSlots.dto.response.GetTimeSlotsResponse;
-import com.hospital.timeSlots.dto.response.UpdateTimeSlotsResponse;
-import com.hospital.timeSlots.repository.TimeSlotsRepository;
+import com.hospital.time_slots.dto.request.UpdateTimeSlotsRequest;
+import com.hospital.time_slots.dto.response.CreateTimeSlotsResponse;
+import com.hospital.time_slots.dto.response.GetTimeSlotsResponse;
+import com.hospital.time_slots.dto.response.UpdateTimeSlotsResponse;
+import com.hospital.time_slots.repository.TimeSlotsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,22 +1,16 @@
-package com.hospital.timeSlots.controller;
+package com.hospital.time_slots.controller;
 
-import com.hospital.appointment.dto.request.CreateAppointmentRequest;
-import com.hospital.appointment.dto.request.UpdateAppointmentRequest;
-import com.hospital.appointment.dto.response.CreateAppointmentResponse;
-import com.hospital.appointment.dto.response.GetAppointmentResponse;
-import com.hospital.appointment.dto.response.UpdateAppointmentResponse;
+
 import com.hospital.dto.PageResponse;
-import com.hospital.patient.dto.request.SearchPatientRequest;
-import com.hospital.patient.dto.response.GetPatientResponse;
-import com.hospital.timeSlots.dto.request.CreateTimeSlotsRequest;
-import com.hospital.timeSlots.dto.request.GenerateTimeSlotsRequest;
+
+import com.hospital.time_slots.dto.request.CreateTimeSlotsRequest;
+import com.hospital.time_slots.dto.request.GenerateTimeSlotsRequest;
 import com.hospital.timeSlots.dto.request.SearchTimeSlotsRequest;
-import com.hospital.timeSlots.dto.request.UpdateTimeSlotsRequest;
-import com.hospital.timeSlots.dto.response.CreateTimeSlotsResponse;
-import com.hospital.timeSlots.dto.response.GetTimeSlotsResponse;
-import com.hospital.timeSlots.dto.response.UpdateTimeSlotsResponse;
-import com.hospital.timeSlots.service.TimeSlotsService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.hospital.time_slots.dto.request.UpdateTimeSlotsRequest;
+import com.hospital.time_slots.dto.response.CreateTimeSlotsResponse;
+import com.hospital.time_slots.dto.response.GetTimeSlotsResponse;
+import com.hospital.time_slots.dto.response.UpdateTimeSlotsResponse;
+import com.hospital.time_slots.service.TimeSlotsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
