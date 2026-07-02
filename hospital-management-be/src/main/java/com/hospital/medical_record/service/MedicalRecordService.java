@@ -1,4 +1,4 @@
-package com.hospital.medicalRecord.service;
+package com.hospital.medical_record.service;
 
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JWTService;
@@ -7,13 +7,13 @@ import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
-import com.hospital.medicalRecord.dto.request.CreateMedicalRecordRequest;
-import com.hospital.medicalRecord.dto.request.SearchMedicalRecordRequest;
-import com.hospital.medicalRecord.dto.request.UpdateMedicalRecordRequest;
-import com.hospital.medicalRecord.dto.response.CreateMedicalRecordResponse;
-import com.hospital.medicalRecord.dto.response.GetMedicalRecordResponse;
-import com.hospital.medicalRecord.dto.response.UpdateMedicalRecordResponse;
-import com.hospital.medicalRecord.repository.MedicalRecordRepository;
+import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
+import com.hospital.medical_record.dto.request.SearchMedicalRecordRequest;
+import com.hospital.medical_record.dto.request.UpdateMedicalRecordRequest;
+import com.hospital.medical_record.dto.response.CreateMedicalRecordResponse;
+import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
+import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
+import com.hospital.medical_record.repository.MedicalRecordRepository;
 import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;

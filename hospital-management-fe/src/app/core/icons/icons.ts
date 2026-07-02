@@ -6,6 +6,8 @@ export type IconName =
   | 'patients'
   | 'doctors'
   | 'specialities'
+  | 'treatments'
+  | 'diagnoses'
   | 'appointments'
   | 'appointmentSlots'
   | 'appointmentsClipboard'
@@ -34,6 +36,8 @@ export const FA_ICONS: Record<IconName, string> = {
   patients:              'fa-solid fa-hospital-user',
   doctors:               'fa-solid fa-user-doctor',
   specialities:          'fa-solid fa-stethoscope',
+  treatments:            'fa-solid fa-pills',
+  diagnoses:             'fa-solid fa-disease',
   appointments:          'fa-solid fa-calendar-check',
   appointmentSlots:      'fa-solid fa-calendar-days',
   appointmentsClipboard: 'fa-solid fa-clipboard-list',

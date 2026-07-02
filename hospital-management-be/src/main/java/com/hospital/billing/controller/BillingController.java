@@ -8,8 +8,6 @@ import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.billing.service.BillingService;
 import com.hospital.dto.PageResponse;
-import com.hospital.timeSlots.dto.request.SearchTimeSlotsRequest;
-import com.hospital.timeSlots.dto.response.GetTimeSlotsResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

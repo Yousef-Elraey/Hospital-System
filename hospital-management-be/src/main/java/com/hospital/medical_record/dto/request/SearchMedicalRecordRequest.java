@@ -1,4 +1,4 @@
-package com.hospital.medicalRecord.dto.request;
+package com.hospital.medical_record.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

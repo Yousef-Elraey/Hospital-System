@@ -37,14 +37,12 @@ public class TreatmentController {
     @PutMapping("/update")
     public ResponseEntity<UpdateTreatmentResponse> updateTreatment(@RequestBody UpdateTreatmentRequest updateTreatmentRequest){
         return new ResponseEntity<>(treatmentService.updateTreatment(updateTreatmentRequest),HttpStatus.OK);
-
-
-
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTreatmentById(@PathVariable Long id){
         treatmentService.deleteTreatment(id);
-        return new ResponseEntity<>("diagnose deleted",HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("treatment deleted",HttpStatus.NO_CONTENT);
     }
 
 }

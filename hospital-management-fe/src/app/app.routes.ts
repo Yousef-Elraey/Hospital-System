@@ -26,6 +26,16 @@ export const routes: Routes = [
       { path: 'specialities/add', loadComponent: () => import('./pages/specialities/components/specialities-add/specialities-add.component').then(m => m.SpecialitiesAddComponent) },
       { path: 'specialities/:id', loadComponent: () => import('./pages/specialities/components/specialities-view/specialities-view.component').then(m => m.SpecialitiesViewComponent) },
       { path: 'specialities/:id/edit', loadComponent: () => import('./pages/specialities/components/specialities-edit/specialities-edit.component').then(m => m.SpecialitiesEditComponent) },
+      // Treatments
+      { path: 'treatments', loadComponent: () => import('./pages/treatments/components/treatments-list/treatments-list.component').then(m => m.TreatmentsListComponent) },
+      { path: 'treatments/add', loadComponent: () => import('./pages/treatments/components/treatments-add/treatments-add.component').then(m => m.TreatmentsAddComponent) },
+      { path: 'treatments/:id', loadComponent: () => import('./pages/treatments/components/treatments-view/treatments-view.component').then(m => m.TreatmentsViewComponent) },
+      { path: 'treatments/:id/edit', loadComponent: () => import('./pages/treatments/components/treatments-edit/treatments-edit.component').then(m => m.TreatmentsEditComponent) },
+      // Diagnoses
+      { path: 'diagnoses', loadComponent: () => import('./pages/diagnoses/components/diagnoses-list/diagnoses-list.component').then(m => m.DiagnosesListComponent) },
+      { path: 'diagnoses/add', loadComponent: () => import('./pages/diagnoses/components/diagnoses-add/diagnoses-add.component').then(m => m.DiagnosesAddComponent) },
+      { path: 'diagnoses/:id', loadComponent: () => import('./pages/diagnoses/components/diagnoses-view/diagnoses-view.component').then(m => m.DiagnosesViewComponent) },
+      { path: 'diagnoses/:id/edit', loadComponent: () => import('./pages/diagnoses/components/diagnoses-edit/diagnoses-edit.component').then(m => m.DiagnosesEditComponent) },
       // Appointments
       { path: 'appointments', loadComponent: () => import('./pages/appointments/components/appointments-list/appointments-list.component').then(m => m.AppointmentsListComponent) },
       { path: 'appointments/add', loadComponent: () => import('./pages/appointments/components/appointments-add/appointments-add.component').then(m => m.AppointmentsAddComponent) },

@@ -37,10 +37,8 @@ public class DiagnoseController {
     @PutMapping("/update")
     public ResponseEntity<UpdateDiagnoseResponse> updateDiagnose(@RequestBody UpdateDiagnoseRequest updateDiagnoseRequest){
         return new ResponseEntity<>(diagnoseService.updateDiagnose(updateDiagnoseRequest),HttpStatus.OK);
-
-
-
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteDiagnoseById(@PathVariable Long id){
         diagnoseService.deleteDiagnose(id);

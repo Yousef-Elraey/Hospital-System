@@ -1,0 +1,31 @@
+<div class="list-page">
+  <app-page-header titleKey="diagnoses.newDiagnose" subtitleKey="diagnoses.subtitle" iconName="diagnoses"></app-page-header>
+  <div class="card form-card">
+    <form #formRef="ngForm" (ngSubmit)="save(formRef)">
+      <div class="form-fields-grid">
+        <div class="mb-3">
+          <app-required-form-label labelKey="diagnoses.nameEn" htmlFor="diagnoseNameEn" />
+          <input id="diagnoseNameEn" type="text" class="form-control" [(ngModel)]="model.nameEn" name="nameEn" required
+                 #nameEnRef="ngModel"
+                 [class.is-invalid]="nameEnRef.invalid && (nameEnRef.touched || formRef.submitted)" />
+          @if (nameEnRef.invalid && (nameEnRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+        <div class="mb-3">
+          <app-required-form-label labelKey="diagnoses.nameAr" htmlFor="diagnoseNameAr" />
+          <input id="diagnoseNameAr" type="text" class="form-control" [(ngModel)]="model.nameAr" name="nameAr" required
+                 #nameArRef="ngModel"
+                 [class.is-invalid]="nameArRef.invalid && (nameArRef.touched || formRef.submitted)" />
+          @if (nameArRef.invalid && (nameArRef.touched || formRef.submitted)) {
+            <div class="invalid-feedback d-block">{{ 'validation.required' | translate }}</div>
+          }
+        </div>
+      </div>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> {{ 'common.save' | translate }}</button>
+        <button type="button" class="btn btn-outline-secondary" (click)="cancel()"><i class="fa-solid fa-xmark"></i> {{ 'common.cancel' | translate }}</button>
+      </div>
+    </form>
+  </div>
+</div>

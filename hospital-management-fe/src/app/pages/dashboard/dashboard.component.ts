@@ -32,5 +32,7 @@ export class DashboardComponent {
     { to: '/reports', labelKey: 'breadcrumb.reports', descKey: 'dashboard.desc.reports', icon: 'reports', color: MODULE_COLORS['reports'] },
     { to: '/billing', labelKey: 'breadcrumb.billing', descKey: 'dashboard.desc.billing', icon: 'billing', color: MODULE_COLORS['billing'] },
     { to: '/medical-records', labelKey: 'breadcrumb.medicalRecords', descKey: 'dashboard.desc.medicalRecords', icon: 'medicalRecords', color: MODULE_COLORS['medicalRecords'] },
+    { to: '/treatments', labelKey: 'breadcrumb.treatments', descKey: 'dashboard.desc.treatments', icon: 'treatments', color: MODULE_COLORS['treatments'] },
+    { to: '/diagnoses', labelKey: 'breadcrumb.diagnoses', descKey: 'dashboard.desc.diagnoses', icon: 'diagnoses', color: MODULE_COLORS['diagnoses'] },
   ];
 }

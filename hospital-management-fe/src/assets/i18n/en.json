@@ -12,6 +12,8 @@
     "patients": "Patients",
     "doctors": "Doctors",
     "specialities": "Specialities",
+    "treatments": "Treatments",
+    "diagnoses": "Diagnoses",
     "appointments": "Appointments",
     "appointmentSlots": "Appointment Time Slots",
     "billing": "Billing",
@@ -27,6 +29,8 @@
     "patients": "Patients",
     "doctors": "Doctors",
     "specialities": "Specialities",
+    "treatments": "Treatments",
+    "diagnoses": "Diagnoses",
     "appointments": "Appointments",
     "appointmentSlots": "Appointment Time Slots",
     "billing": "Billing",
@@ -48,7 +52,9 @@
     "deleteAppointment": "Are you sure you want to delete this appointment? This cannot be undone.",
     "deleteSlot": "Are you sure you want to delete this time slot? This cannot be undone.",
     "deleteBilling": "Are you sure you want to delete this billing record? This cannot be undone.",
-    "deleteRecord": "Are you sure you want to delete this medical record? This cannot be undone."
+    "deleteRecord": "Are you sure you want to delete this medical record? This cannot be undone.",
+    "deleteTreatment": "Are you sure you want to delete this treatment? This cannot be undone.",
+    "deleteDiagnose": "Are you sure you want to delete this diagnosis? This cannot be undone."
   },
   "common": {
     "back": "Back",
@@ -116,7 +122,9 @@
       "appointmentSlots": "Generate available time slots",
       "reports": "Charts, KPIs, and analytics",
       "billing": "Invoices and payments",
-      "medicalRecords": "Diagnoses and treatments"
+      "medicalRecords": "Diagnoses and treatments",
+      "treatments": "Treatment catalog and medications",
+      "diagnoses": "Diagnosis catalog"
     }
   },
   "patients": {
@@ -168,6 +176,29 @@
     "nameEn": "Speciality (English)",
     "nameAr": "Speciality (Arabic)",
     "noSpecialities": "No specialities."
+  },
+  "treatments": {
+    "title": "Treatments",
+    "subtitle": "Manage treatment catalog",
+    "addTreatment": "Add Treatment",
+    "newTreatment": "New Treatment",
+    "editTreatment": "Edit Treatment",
+    "viewTreatment": "View Treatment",
+    "nameEn": "Treatment (English)",
+    "nameAr": "Treatment (Arabic)",
+    "activeIngredient": "Active ingredient",
+    "noTreatments": "No treatments."
+  },
+  "diagnoses": {
+    "title": "Diagnoses",
+    "subtitle": "Manage diagnosis catalog",
+    "addDiagnose": "Add Diagnosis",
+    "newDiagnose": "New Diagnosis",
+    "editDiagnose": "Edit Diagnosis",
+    "viewDiagnose": "View Diagnosis",
+    "nameEn": "Diagnosis (English)",
+    "nameAr": "Diagnosis (Arabic)",
+    "noDiagnoses": "No diagnoses."
   },
   "appointments": {
     "title": "Appointments",

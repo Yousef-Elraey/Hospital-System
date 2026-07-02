@@ -1,4 +1,4 @@
-package com.hospital.timeSlots.dto.request;
+package com.hospital.time_slots.dto.request;
 
 import com.hospital.entity.TimeSlotsStatus;
 import lombok.AllArgsConstructor;

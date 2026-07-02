@@ -12,11 +12,13 @@
     "patients": "المرضى",
     "doctors": "الأطباء",
     "specialities": "التخصصات",
+    "treatments": "العلاجات",
+    "diagnoses": "التشخيصات",
     "appointments": "المواعيد",
     "appointmentSlots": "الفترات الزمنية للمواعيد",
     "billing": "الفواتير",
     "reports": "التقارير والتحليلات",
-    "medicalRecords": "السجلات الطبية",
+    "medicalRecords": "الكشوفات",
     "logout": "تسجيل الخروج",
     "defaultRole": "طبيب عام",
     "userMenu": "قائمة المستخدم",
@@ -27,11 +29,13 @@
     "patients": "المرضى",
     "doctors": "الأطباء",
     "specialities": "التخصصات",
+    "treatments": "العلاجات",
+    "diagnoses": "التشخيصات",
     "appointments": "المواعيد",
     "appointmentSlots": "الفترات الزمنية للمواعيد",
     "billing": "الفواتير",
     "reports": "التقارير والتحليلات",
-    "medicalRecords": "السجلات الطبية",
+    "medicalRecords": "الكشوفات",
     "add": "إضافة",
     "edit": "تعديل",
     "view": "عرض",
@@ -48,7 +52,9 @@
     "deleteAppointment": "هل أنت متأكد من حذف هذا الموعد؟ لا يمكن التراجع عن هذا الإجراء.",
     "deleteSlot": "هل أنت متأكد من حذف هذه الفترة الزمنية؟ لا يمكن التراجع عن هذا الإجراء.",
     "deleteBilling": "هل أنت متأكد من حذف سجل الفاتورة هذا؟ لا يمكن التراجع عن هذا الإجراء.",
-    "deleteRecord": "هل أنت متأكد من حذف السجل الطبي هذا؟ لا يمكن التراجع عن هذا الإجراء."
+    "deleteRecord": "هل أنت متأكد من حذف السجل الطبي هذا؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteTreatment": "هل أنت متأكد من حذف هذا العلاج؟ لا يمكن التراجع عن هذا الإجراء.",
+    "deleteDiagnose": "هل أنت متأكد من حذف هذا التشخيص؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "common": {
     "back": "رجوع",
@@ -116,7 +122,9 @@
       "appointmentSlots": "إنشاء الفترات الزمنية المتاحة",
       "reports": "مخططات ومؤشرات وتحليلات",
       "billing": "الفواتير والمدفوعات",
-      "medicalRecords": "التشخيصات والعلاجات"
+      "medicalRecords": "التشخيصات والعلاجات",
+      "treatments": "كتالوج العلاجات والأدوية",
+      "diagnoses": "كتالوج التشخيصات"
     }
   },
   "patients": {
@@ -168,6 +176,29 @@
     "nameEn": "التخصص (English)",
     "nameAr": "التخصص (العربية)",
     "noSpecialities": "لا توجد تخصصات."
+  },
+  "treatments": {
+    "title": "العلاجات",
+    "subtitle": "إدارة كتالوج العلاجات",
+    "addTreatment": "إضافة علاج",
+    "newTreatment": "علاج جديد",
+    "editTreatment": "تعديل العلاج",
+    "viewTreatment": "عرض العلاج",
+    "nameEn": "العلاج (English)",
+    "nameAr": "العلاج (العربية)",
+    "activeIngredient": "المادة الفعالة",
+    "noTreatments": "لا توجد علاجات."
+  },
+  "diagnoses": {
+    "title": "التشخيصات",
+    "subtitle": "إدارة كتالوج التشخيصات",
+    "addDiagnose": "إضافة تشخيص",
+    "newDiagnose": "تشخيص جديد",
+    "editDiagnose": "تعديل التشخيص",
+    "viewDiagnose": "عرض التشخيص",
+    "nameEn": "التشخيص (English)",
+    "nameAr": "التشخيص (العربية)",
+    "noDiagnoses": "لا توجد تشخيصات."
   },
   "appointments": {
     "title": "المواعيد",
@@ -300,8 +331,8 @@
     }
   },
   "medicalRecords": {
-    "title": "السجلات الطبية",
-    "subtitle": "عرض وإدارة السجلات الطبية",
+    "title": "الكشوفات",
+    "subtitle": "عرض وإدارة الكشوفات الطبية",
     "addRecord": "إضافة سجل",
     "newRecord": "سجل طبي جديد",
     "newConsultation": "استشارة جديدة",
