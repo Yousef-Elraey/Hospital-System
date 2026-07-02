@@ -1,0 +1,19 @@
+<div class="list-page">
+  <app-page-header titleKey="diagnoses.viewDiagnose" subtitleKey="diagnoses.subtitle" iconName="diagnoses"></app-page-header>
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else if (diagnose) {
+    <div class="card form-card">
+      <dl class="view-dl">
+        <dt>{{ 'diagnoses.nameEn' | translate }}</dt>
+        <dd>{{ diagnose.nameEn || '-' }}</dd>
+        <dt>{{ 'diagnoses.nameAr' | translate }}</dt>
+        <dd>{{ diagnose.nameAr || '-' }}</dd>
+      </dl>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <a [routerLink]="['/diagnoses', id, 'edit']" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> {{ 'common.edit' | translate }}</a>
+        <a routerLink="/diagnoses" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> {{ 'common.back' | translate }}</a>
+      </div>
+    </div>
+  }
+</div>

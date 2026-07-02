@@ -2,12 +2,14 @@ package com.hospital.medical_record.controller;
 
 import com.hospital.dto.PageResponse;
 import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
-import com.hospital.medicalRecord.dto.request.SearchMedicalRecordRequest;
+import com.hospital.medical_record.dto.request.SearchMedicalRecordRequest;
 import com.hospital.medical_record.dto.request.UpdateMedicalRecordRequest;
 import com.hospital.medical_record.dto.response.CreateMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medical_record.service.MedicalRecordService;
+import com.hospital.patient.dto.request.SearchPatientRequest;
+import com.hospital.patient.dto.response.GetPatientResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

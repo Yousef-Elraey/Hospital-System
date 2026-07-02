@@ -12,6 +12,8 @@ export const MODULE_COLORS: Record<string, string> = {
   medicalRecords: '#d97706',
   medicalRecord: '#d97706',
   specialities: '#db2777',
+  treatments: '#0891b2',
+  diagnoses: '#be185d',
   reports: '#4f46e5',
   home: '#4f46e5',
   logo: '#4f46e5',

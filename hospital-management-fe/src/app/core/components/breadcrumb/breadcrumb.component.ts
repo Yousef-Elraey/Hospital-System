@@ -56,6 +56,8 @@ export class BreadcrumbComponent {
       patients: 'breadcrumb.patients',
       doctors: 'breadcrumb.doctors',
       specialities: 'breadcrumb.specialities',
+      treatments: 'breadcrumb.treatments',
+      diagnoses: 'breadcrumb.diagnoses',
       appointments: 'breadcrumb.appointments',
       'appointment-slots': 'breadcrumb.appointmentSlots',
       billing: 'breadcrumb.billing',

@@ -1,11 +1,10 @@
 package com.hospital.time_slots.controller;
 
-
 import com.hospital.dto.PageResponse;
 
 import com.hospital.time_slots.dto.request.CreateTimeSlotsRequest;
 import com.hospital.time_slots.dto.request.GenerateTimeSlotsRequest;
-import com.hospital.timeSlots.dto.request.SearchTimeSlotsRequest;
+import com.hospital.time_slots.dto.request.SearchTimeSlotsRequest;
 import com.hospital.time_slots.dto.request.UpdateTimeSlotsRequest;
 import com.hospital.time_slots.dto.response.CreateTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.GetTimeSlotsResponse;

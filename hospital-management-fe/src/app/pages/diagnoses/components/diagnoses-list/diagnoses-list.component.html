@@ -1,0 +1,56 @@
+<div class="list-page">
+  <app-page-header titleKey="diagnoses.title" subtitleKey="diagnoses.subtitle" iconName="diagnoses">
+    <a pageActions routerLink="/diagnoses/add" class="btn btn-primary">
+      <i class="fa-solid fa-plus"></i>
+      {{ 'diagnoses.addDiagnose' | translate }}
+    </a>
+  </app-page-header>
+
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card data-table-card">
+      <div class="table-responsive">
+        <table class="table table-striped hm-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ 'diagnoses.nameEn' | translate }}</th>
+              <th>{{ 'diagnoses.nameAr' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of list; track d.id) {
+              <tr>
+                <td>{{ d.id }}</td>
+                <td><a [routerLink]="['/diagnoses', d.id]" class="fw-semibold link-primary text-decoration-none">{{ d.nameEn }}</a></td>
+                <td>{{ d.nameAr }}</td>
+                <td>
+                  <div class="table-actions" role="group" [attr.aria-label]="'common.view' | translate">
+                    <a [routerLink]="['/diagnoses', d.id]" class="btn btn-light btn-sm" [attr.title]="'common.view' | translate" [attr.aria-label]="'common.view' | translate"><i class="fa-solid fa-eye text-info"></i></a>
+                    <a [routerLink]="['/diagnoses', d.id, 'edit']" class="btn btn-light btn-sm" [attr.title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"><i class="fa-solid fa-pen-to-square text-primary"></i></a>
+                    <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate" (click)="delete(d)"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (list.length === 0) {
+        <p class="data-table-empty mb-0">{{ 'diagnoses.noDiagnoses' | translate }}</p>
+      } @else {
+        <app-list-pagination
+          [totalItems]="totalElements"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          selectName="diagnosesPageSize"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setPageSize($event)"
+        />
+      }
+    </div>
+  }
+</div>

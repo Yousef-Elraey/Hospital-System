@@ -93,21 +93,22 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
     { route: '/', labelKey: 'breadcrumb.home', icon: 'home', color: MODULE_COLORS['home'], exact: true },
 
-    { route: '/patients', labelKey: 'nav.patients', icon: 'patients', color: MODULE_COLORS['patients'] },
+    { route: '/medical-records', labelKey: 'nav.medicalRecords', icon: 'medicalRecord', color: MODULE_COLORS['medicalRecords'] },
 
-    { route: '/doctors', labelKey: 'nav.doctors', icon: 'doctors', color: MODULE_COLORS['doctors'] },
 
     { route: '/appointments', labelKey: 'nav.appointments', icon: 'appointments', color: MODULE_COLORS['appointments'] },
 
-    { route: '/appointment-slots', labelKey: 'nav.appointmentSlots', icon: 'appointmentSlots', color: MODULE_COLORS['appointmentSlots'] },
 
-    { route: '/reports', labelKey: 'nav.reports', icon: 'reports', color: MODULE_COLORS['reports'] },
 
     { route: '/billing', labelKey: 'nav.billing', icon: 'billing', color: MODULE_COLORS['billing'] },
 
-    { route: '/medical-records', labelKey: 'nav.medicalRecords', icon: 'medicalRecord', color: MODULE_COLORS['medicalRecords'] },
-
+    { route: '/doctors', labelKey: 'nav.doctors', icon: 'doctors', color: MODULE_COLORS['doctors'] },
+    { route: '/patients', labelKey: 'nav.patients', icon: 'patients', color: MODULE_COLORS['patients'] },
+    { route: '/treatments', labelKey: 'nav.treatments', icon: 'treatments', color: MODULE_COLORS['treatments'] },
+    { route: '/diagnoses', labelKey: 'nav.diagnoses', icon: 'diagnoses', color: MODULE_COLORS['diagnoses'] },
     { route: '/specialities', labelKey: 'nav.specialities', icon: 'specialities', color: MODULE_COLORS['specialities'] },
+    { route: '/reports', labelKey: 'nav.reports', icon: 'reports', color: MODULE_COLORS['reports'] },
+    { route: '/appointment-slots', labelKey: 'nav.appointmentSlots', icon: 'appointmentSlots', color: MODULE_COLORS['appointmentSlots'] },
 
   ];
 

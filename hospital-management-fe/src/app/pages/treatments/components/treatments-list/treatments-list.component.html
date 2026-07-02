@@ -1,0 +1,58 @@
+<div class="list-page">
+  <app-page-header titleKey="treatments.title" subtitleKey="treatments.subtitle" iconName="treatments">
+    <a pageActions routerLink="/treatments/add" class="btn btn-primary">
+      <i class="fa-solid fa-plus"></i>
+      {{ 'treatments.addTreatment' | translate }}
+    </a>
+  </app-page-header>
+
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card data-table-card">
+      <div class="table-responsive">
+        <table class="table table-striped hm-table align-middle mb-0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>{{ 'treatments.nameEn' | translate }}</th>
+              <th>{{ 'treatments.nameAr' | translate }}</th>
+              <th>{{ 'treatments.activeIngredient' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of list; track t.id) {
+              <tr>
+                <td>{{ t.id }}</td>
+                <td><a [routerLink]="['/treatments', t.id]" class="fw-semibold link-primary text-decoration-none">{{ t.nameEn }}</a></td>
+                <td>{{ t.nameAr }}</td>
+                <td>{{ t.activeIngredient }}</td>
+                <td>
+                  <div class="table-actions" role="group" [attr.aria-label]="'common.view' | translate">
+                    <a [routerLink]="['/treatments', t.id]" class="btn btn-light btn-sm" [attr.title]="'common.view' | translate" [attr.aria-label]="'common.view' | translate"><i class="fa-solid fa-eye text-info"></i></a>
+                    <a [routerLink]="['/treatments', t.id, 'edit']" class="btn btn-light btn-sm" [attr.title]="'common.edit' | translate" [attr.aria-label]="'common.edit' | translate"><i class="fa-solid fa-pen-to-square text-primary"></i></a>
+                    <button type="button" class="btn btn-light btn-sm" [attr.title]="'common.delete' | translate" [attr.aria-label]="'common.delete' | translate" (click)="delete(t)"><i class="fa-solid fa-trash-can text-danger"></i></button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (list.length === 0) {
+        <p class="data-table-empty mb-0">{{ 'treatments.noTreatments' | translate }}</p>
+      } @else {
+        <app-list-pagination
+          [totalItems]="totalElements"
+          [pageSize]="pageSize"
+          [currentPage]="currentPage"
+          [pageSizeOptions]="pageSizeOptions"
+          selectName="treatmentsPageSize"
+          (pageChange)="setPage($event)"
+          (pageSizeChange)="setPageSize($event)"
+        />
+      }
+    </div>
+  }
+</div>

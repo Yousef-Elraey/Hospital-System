@@ -1,0 +1,21 @@
+<div class="list-page">
+  <app-page-header titleKey="treatments.viewTreatment" subtitleKey="treatments.subtitle" iconName="treatments"></app-page-header>
+  @if (loading) {
+    <p class="list-loading"><i class="fa-solid fa-spinner fa-spin"></i> {{ 'common.loading' | translate }}</p>
+  } @else if (treatment) {
+    <div class="card form-card">
+      <dl class="view-dl">
+        <dt>{{ 'treatments.nameEn' | translate }}</dt>
+        <dd>{{ treatment.nameEn || '-' }}</dd>
+        <dt>{{ 'treatments.nameAr' | translate }}</dt>
+        <dd>{{ treatment.nameAr || '-' }}</dd>
+        <dt>{{ 'treatments.activeIngredient' | translate }}</dt>
+        <dd>{{ treatment.activeIngredient || '-' }}</dd>
+      </dl>
+      <div class="d-flex flex-wrap gap-2 mt-3">
+        <a [routerLink]="['/treatments', id, 'edit']" class="btn btn-primary"><i class="fa-solid fa-pen-to-square"></i> {{ 'common.edit' | translate }}</a>
+        <a routerLink="/treatments" class="btn btn-outline-secondary"><i class="fa-solid fa-arrow-left"></i> {{ 'common.back' | translate }}</a>
+      </div>
+    </div>
+  }
+</div>

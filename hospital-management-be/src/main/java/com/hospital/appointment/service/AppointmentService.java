@@ -15,7 +15,7 @@ import com.hospital.dto.BookResponseDto;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.*;
 import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
-import com.hospital.medical_record.service.MedicalRecordService;
+import com.hospital.medical_record.service.*;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.status.repository.AppointmentStatusRepository;
