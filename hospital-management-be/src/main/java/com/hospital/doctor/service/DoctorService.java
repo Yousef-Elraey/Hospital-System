@@ -203,7 +203,7 @@ public class DoctorService {
 
         for (Doctor doctor : doctorsList) {
             GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
-            getDoctorResponse
+            getDoctorResponse.setId(doctor.getId())
                     .setName(doctor.getName())
                     .setSpeciality(doctor.getSpeciality())
                     .setContactNumber(doctor.getContactNumber())

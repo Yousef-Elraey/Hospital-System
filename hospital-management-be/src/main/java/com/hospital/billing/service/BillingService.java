@@ -5,6 +5,7 @@ import com.hospital.billing.dto.request.SearchBillingRequest;
 import com.hospital.billing.dto.request.UpdateBillingRequest;
 import com.hospital.billing.dto.response.CreateBillingResponse;
 import com.hospital.billing.dto.response.GetBillingResponse;
+import com.hospital.billing.dto.response.SearchBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.billing.repository.BillingRepository;
 import com.hospital.common.exception.HospitalBusinessException;
@@ -131,7 +132,7 @@ public class BillingService {
             billingRepository.deleteById(id);
     }
 
-    public PageResponse<GetBillingResponse> searchBilling(int page, int size, String sortBy, String direction, SearchBillingRequest searchBillingRequest) {
+    public PageResponse<SearchBillingResponse> searchBilling(int page, int size, String sortBy, String direction, SearchBillingRequest searchBillingRequest) {
         Long patientId = searchBillingRequest.getPatientId();
         Long amount = searchBillingRequest.getAmount();
 
@@ -142,21 +143,21 @@ public class BillingService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Billing> billingPage = billingRepository.searchBilling(patientId, amount, pageable);
         List<Billing> billingList = billingPage.getContent();
-        List<GetBillingResponse> responses = new ArrayList<>();
+        List<SearchBillingResponse> responses = new ArrayList<>();
 
         for (Billing billing : billingList) {
-            GetBillingResponse getBillingResponse = new GetBillingResponse();
-            getBillingResponse
+            SearchBillingResponse searchBillingResponse = new SearchBillingResponse();
+            searchBillingResponse.setId(billing.getId())
                     .setAmount(billing.getAmount())
                     .setCreatedBy(billing.getCreatedBy())
                     .setCreatedAt(billing.getCreatedAt())
                     .setUpdatedBy(billing.getUpdatedBy())
                     .setUpdatedAt(billing.getUpdatedAt())
-                    .setPatient_id(billing.getPatient().getId());
-            responses.add(getBillingResponse);
+                    .setPatientName(billing.getPatient().getName());
+            responses.add(searchBillingResponse);
         }
 
-        return PageResponse.<GetBillingResponse>builder()
+        return PageResponse.<SearchBillingResponse>builder()
                 .data(responses)
                 .page(billingPage.getNumber())
                 .size(billingPage.getSize())

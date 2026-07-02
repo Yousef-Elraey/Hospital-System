@@ -5,6 +5,7 @@ import com.hospital.appointment.dto.request.SearchAppointmentRequest;
 import com.hospital.appointment.dto.request.UpdateAppointmentRequest;
 import com.hospital.appointment.dto.response.CreateAppointmentResponse;
 import com.hospital.appointment.dto.response.GetAppointmentResponse;
+import com.hospital.appointment.dto.response.SearchAppointmentResponse;
 import com.hospital.appointment.dto.response.UpdateAppointmentResponse;
 import com.hospital.appointment.service.AppointmentService;
 import com.hospital.dto.BookRequestDto;
@@ -86,11 +87,11 @@ public class AppointmentController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<PageResponse<GetAppointmentResponse>> searchAppointment(@RequestBody SearchAppointmentRequest searchAppointmentRequest,
-                                                                                  @RequestParam(defaultValue = "0") int page,
-                                                                                  @RequestParam(defaultValue = "10") int size,
-                                                                                  @RequestParam(defaultValue = "id") String sortBy,
-                                                                                  @RequestParam(defaultValue = "asc") String direction) {
+    public ResponseEntity<PageResponse<SearchAppointmentResponse>> searchAppointment(@RequestBody SearchAppointmentRequest searchAppointmentRequest,
+                                                                                     @RequestParam(defaultValue = "0") int page,
+                                                                                     @RequestParam(defaultValue = "10") int size,
+                                                                                     @RequestParam(defaultValue = "id") String sortBy,
+                                                                                     @RequestParam(defaultValue = "asc") String direction) {
         return new ResponseEntity<>(appointmentService.searchAppointment(page, size, sortBy, direction, searchAppointmentRequest), HttpStatus.OK);
     }
 }

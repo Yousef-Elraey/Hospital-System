@@ -5,6 +5,7 @@ import com.hospital.billing.dto.request.SearchBillingRequest;
 import com.hospital.billing.dto.request.UpdateBillingRequest;
 import com.hospital.billing.dto.response.CreateBillingResponse;
 import com.hospital.billing.dto.response.GetBillingResponse;
+import com.hospital.billing.dto.response.SearchBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.billing.service.BillingService;
 import com.hospital.dto.PageResponse;
@@ -53,11 +54,11 @@ public class BillingController {
 
 
     @PostMapping("/search")
-    public ResponseEntity<PageResponse<GetBillingResponse>> searchBilling(@RequestBody SearchBillingRequest searchBillingRequest,
-                                                                          @RequestParam(defaultValue = "0") int page,
-                                                                          @RequestParam(defaultValue = "10") int size,
-                                                                          @RequestParam(defaultValue = "id") String sortBy,
-                                                                          @RequestParam(defaultValue = "asc") String direction) {
+    public ResponseEntity<PageResponse<SearchBillingResponse>> searchBilling(@RequestBody SearchBillingRequest searchBillingRequest,
+                                                                             @RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "10") int size,
+                                                                             @RequestParam(defaultValue = "id") String sortBy,
+                                                                             @RequestParam(defaultValue = "asc") String direction) {
         return new ResponseEntity<>(billingService.searchBilling(page, size, sortBy, direction, searchBillingRequest), HttpStatus.OK);
     }
 

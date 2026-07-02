@@ -190,7 +190,7 @@ public class PatientService {
 
         for (Patient patient : patientList) {
             GetPatientResponse getPatientResponse = new GetPatientResponse();
-            getPatientResponse
+            getPatientResponse.setId(patient.getId())
                     .setName(patient.getName())
                     .setGender(patient.getGender())
                     .setPhone(patient.getPhone())

@@ -5,6 +5,7 @@ import com.hospital.appointment.dto.request.SearchAppointmentRequest;
 import com.hospital.appointment.dto.request.UpdateAppointmentRequest;
 import com.hospital.appointment.dto.response.CreateAppointmentResponse;
 import com.hospital.appointment.dto.response.GetAppointmentResponse;
+import com.hospital.appointment.dto.response.SearchAppointmentResponse;
 import com.hospital.appointment.dto.response.UpdateAppointmentResponse;
 import com.hospital.appointment.repository.AppointmentRepository;
 import com.hospital.common.exception.HospitalBusinessException;
@@ -346,8 +347,8 @@ public class AppointmentService {
     }
 
 
-    public PageResponse<GetAppointmentResponse> searchAppointment(int page, int size, String sortBy,
-                                                                  String direction, SearchAppointmentRequest searchAppointmentRequest) {
+    public PageResponse<SearchAppointmentResponse> searchAppointment(int page, int size, String sortBy,
+                                                                     String direction, SearchAppointmentRequest searchAppointmentRequest) {
         Long patientId = searchAppointmentRequest.getPatientId();
         Long doctorId = searchAppointmentRequest.getDoctorId();
         Long statusId = searchAppointmentRequest.getStatusId();
@@ -366,23 +367,24 @@ public class AppointmentService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Appointment> appointmentPage = appointmentRepository.searchAppointment(patientId, doctorId, statusId, start, end, pageable);
         List<Appointment> appointmentList = appointmentPage.getContent();
-        List<GetAppointmentResponse> appointmentResponses = new ArrayList<>();
+        List<SearchAppointmentResponse> appointmentResponses = new ArrayList<>();
         for (Appointment appointment : appointmentList) {
-            GetAppointmentResponse getAppointmentResponse = new GetAppointmentResponse();
-            getAppointmentResponse
+            SearchAppointmentResponse searchAppointmentResponse = new SearchAppointmentResponse();
+            searchAppointmentResponse.setId(appointment.getId())
                     .setTiming(appointment.getTiming())
                     .setAppointmentType(appointment.getAppointmentType())
-                    .setDoctorId(appointment.getDoctor().getId())
-                    .setPatientId(appointment.getPatient().getId())
+                    .setDoctorName(appointment.getDoctor().getName())
+                    .setPatientName(appointment.getPatient().getName())
                     .setCreatedBy(appointment.getCreatedBy())
                     .setCreatedAt(appointment.getCreatedAt())
                     .setUpdatedBy(appointment.getUpdatedBy())
                     .setUpdatedAt(appointment.getUpdatedAt())
-                    .setStatusId(appointment.getStatus().getId());
-            appointmentResponses.add(getAppointmentResponse);
+                    .setStatusName(appointment.getStatus().getNameEn());
+
+            appointmentResponses.add(searchAppointmentResponse);
         }
 
-        return PageResponse.<GetAppointmentResponse>builder()
+        return PageResponse.<SearchAppointmentResponse>builder()
                 .data(appointmentResponses)
                 .page(appointmentPage.getNumber())
                 .size(appointmentPage.getSize())

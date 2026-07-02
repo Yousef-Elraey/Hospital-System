@@ -8,6 +8,7 @@ import com.hospital.time_slots.dto.request.SearchTimeSlotsRequest;
 import com.hospital.time_slots.dto.request.UpdateTimeSlotsRequest;
 import com.hospital.time_slots.dto.response.CreateTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.GetTimeSlotsResponse;
+import com.hospital.time_slots.dto.response.SearchTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.UpdateTimeSlotsResponse;
 import com.hospital.time_slots.service.TimeSlotsService;
 import jakarta.validation.Valid;
@@ -68,11 +69,11 @@ public class TimeSlotsController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<PageResponse<GetTimeSlotsResponse>> searchTimeSlots(@RequestBody SearchTimeSlotsRequest searchTimeSlotsRequest,
-                                                                              @RequestParam(defaultValue = "0") int page,
-                                                                              @RequestParam(defaultValue = "10") int size,
-                                                                              @RequestParam(defaultValue = "id") String sortBy,
-                                                                              @RequestParam(defaultValue = "asc") String direction) {
+    public ResponseEntity<PageResponse<SearchTimeSlotsResponse>> searchTimeSlots(@RequestBody SearchTimeSlotsRequest searchTimeSlotsRequest,
+                                                                                 @RequestParam(defaultValue = "0") int page,
+                                                                                 @RequestParam(defaultValue = "10") int size,
+                                                                                 @RequestParam(defaultValue = "id") String sortBy,
+                                                                                 @RequestParam(defaultValue = "asc") String direction) {
         return new ResponseEntity<>(timeSlotsService.searchTimeSlots(page, size, sortBy, direction, searchTimeSlotsRequest), HttpStatus.OK);
     }
 }

@@ -6,6 +6,7 @@ import com.hospital.medical_record.dto.request.SearchMedicalRecordRequest;
 import com.hospital.medical_record.dto.request.UpdateMedicalRecordRequest;
 import com.hospital.medical_record.dto.response.CreateMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
+import com.hospital.medical_record.dto.response.SearchMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medical_record.service.MedicalRecordService;
 import com.hospital.patient.dto.request.SearchPatientRequest;
@@ -64,11 +65,11 @@ public class MedicalRecordController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<PageResponse<GetMedicalRecordResponse>> searchMedicalRecord(@RequestBody SearchMedicalRecordRequest searchMedicalRecordRequest,
-                                                                                      @RequestParam(defaultValue = "0") int page,
-                                                                                      @RequestParam(defaultValue = "10") int size,
-                                                                                      @RequestParam(defaultValue = "id") String sortBy,
-                                                                                      @RequestParam(defaultValue = "asc") String direction) {
+    public ResponseEntity<PageResponse<SearchMedicalRecordResponse>> searchMedicalRecord(@RequestBody SearchMedicalRecordRequest searchMedicalRecordRequest,
+                                                                                         @RequestParam(defaultValue = "0") int page,
+                                                                                         @RequestParam(defaultValue = "10") int size,
+                                                                                         @RequestParam(defaultValue = "id") String sortBy,
+                                                                                         @RequestParam(defaultValue = "asc") String direction) {
         return new ResponseEntity<>(medicalRecordService.searchMedicalRecord(page, size, sortBy, direction, searchMedicalRecordRequest), HttpStatus.OK);
     }
 }

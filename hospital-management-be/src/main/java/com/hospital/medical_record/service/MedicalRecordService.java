@@ -12,6 +12,7 @@ import com.hospital.medical_record.dto.request.SearchMedicalRecordRequest;
 import com.hospital.medical_record.dto.request.UpdateMedicalRecordRequest;
 import com.hospital.medical_record.dto.response.CreateMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
+import com.hospital.medical_record.dto.response.SearchMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medical_record.repository.MedicalRecordRepository;
 import com.hospital.patient.dto.request.SearchPatientRequest;
@@ -196,8 +197,8 @@ public class MedicalRecordService {
 
     }
 
-    public PageResponse<GetMedicalRecordResponse> searchMedicalRecord(int page, int size, String sortBy, String direction,
-                                                                      SearchMedicalRecordRequest searchMedicalRecordRequest) {
+    public PageResponse<SearchMedicalRecordResponse> searchMedicalRecord(int page, int size, String sortBy, String direction,
+                                                                         SearchMedicalRecordRequest searchMedicalRecordRequest) {
 
         Long patientId = searchMedicalRecordRequest.getPatientId();
         Long doctorId = searchMedicalRecordRequest.getDoctorId();
@@ -210,24 +211,24 @@ public class MedicalRecordService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<MedicalRecord> medicalRecordPage = medicalRecordRepository.searchMedicalRecord(patientId, doctorId, diagnoseId, pageable);
         List<MedicalRecord> medicalRecordList = medicalRecordPage.getContent();
-        List<GetMedicalRecordResponse> responses = new ArrayList<>();
+        List<SearchMedicalRecordResponse> responses = new ArrayList<>();
 
         for (MedicalRecord medicalRecord : medicalRecordList) {
-            GetMedicalRecordResponse getMedicalRecordResponse = new GetMedicalRecordResponse();
-            getMedicalRecordResponse
-                    .setDiagnoseId(medicalRecord.getDiagnose().getId())
-                    .setTreatmentId(medicalRecord.getTreatment().getId())
-                    .setPatientId(medicalRecord.getPatient().getId())
-                    .setDoctorId(medicalRecord.getDoctor().getId())
+            SearchMedicalRecordResponse searchMedicalRecordResponse = new SearchMedicalRecordResponse();
+            searchMedicalRecordResponse.setId(medicalRecord.getId())
+                    .setDiagnoseName(medicalRecord.getDiagnose().getName_en())
+                    .setTreatmentName(medicalRecord.getTreatment().getName_en())
+                    .setPatientName(medicalRecord.getPatient().getName())
+                    .setDoctorName(medicalRecord.getDoctor().getName())
                     .setCreatedAt(medicalRecord.getCreatedAt())
                     .setCreatedBy(medicalRecord.getCreatedBy())
                     .setUpdatedAt(medicalRecord.getUpdatedAt())
                     .setUpdatedBy(medicalRecord.getUpdatedBy());
 
-            responses.add(getMedicalRecordResponse);
+            responses.add(searchMedicalRecordResponse);
         }
 
-        return PageResponse.<GetMedicalRecordResponse>builder()
+        return PageResponse.<SearchMedicalRecordResponse>builder()
                 .data(responses)
                 .page(medicalRecordPage.getNumber())
                 .size(medicalRecordPage.getSize())

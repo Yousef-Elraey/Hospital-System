@@ -133,7 +133,7 @@ public class SpecialityService {
 
         for (Speciality speciality : specialityList) {
             GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
-            getSpecialityResponse
+            getSpecialityResponse.setId(speciality.getId())
                     .setNameEn(speciality.getNameEn())
                     .setNameAr(speciality.getNameAr());
             responses.add(getSpecialityResponse);

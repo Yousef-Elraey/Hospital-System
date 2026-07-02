@@ -10,6 +10,7 @@ import com.hospital.time_slots.dto.request.SearchTimeSlotsRequest;
 import com.hospital.time_slots.dto.request.UpdateTimeSlotsRequest;
 import com.hospital.time_slots.dto.response.CreateTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.GetTimeSlotsResponse;
+import com.hospital.time_slots.dto.response.SearchTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.UpdateTimeSlotsResponse;
 import com.hospital.time_slots.repository.TimeSlotsRepository;
 import lombok.RequiredArgsConstructor;
@@ -197,7 +198,7 @@ public class TimeSlotsService {
         return responses;
     }
 
-    public PageResponse<GetTimeSlotsResponse> searchTimeSlots(int page, int size, String sortBy, String direction, SearchTimeSlotsRequest searchTimeSlotsRequest) {
+    public PageResponse<SearchTimeSlotsResponse> searchTimeSlots(int page, int size, String sortBy, String direction, SearchTimeSlotsRequest searchTimeSlotsRequest) {
         Long doctorId = searchTimeSlotsRequest.getDoctorId();
         TimeSlotsStatus timeSlotsStatus = searchTimeSlotsRequest.getTimeSlotsStatus();
         LocalDate from = searchTimeSlotsRequest.getFrom();
@@ -211,21 +212,21 @@ public class TimeSlotsService {
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<TimeSlots> timeSlotsPage = timeSlotsRepository.searchTimeSlots(doctorId, timeSlotsStatus, from, to, pageable);
         List<TimeSlots> timeSlotsList = timeSlotsPage.getContent();
-        List<GetTimeSlotsResponse> responses = new ArrayList<>();
+        List<SearchTimeSlotsResponse> responses = new ArrayList<>();
 
         for (TimeSlots timeSlots : timeSlotsList) {
-            GetTimeSlotsResponse getTimeSlotsResponse = new GetTimeSlotsResponse();
-            getTimeSlotsResponse
-                    .setDoctorId(timeSlots.getDoctor().getId())
+            SearchTimeSlotsResponse searchTimeSlotsResponse = new SearchTimeSlotsResponse();
+            searchTimeSlotsResponse.setId(timeSlots.getId())
+                    .setDoctorName(timeSlots.getDoctor().getName())
                     .setDay(timeSlots.getDay())
                     .setStart(timeSlots.getStart())
                     .setEnd(timeSlots.getEnd())
                     .setStatus(timeSlots.getStatus())
                     .setAppointmentType(timeSlots.getAppointmentType());
-            responses.add(getTimeSlotsResponse);
+            responses.add(searchTimeSlotsResponse);
         }
 
-        return PageResponse.<GetTimeSlotsResponse>builder()
+        return PageResponse.<SearchTimeSlotsResponse>builder()
                 .data(responses)
                 .page(timeSlotsPage.getNumber())
                 .size(timeSlotsPage.getSize())
