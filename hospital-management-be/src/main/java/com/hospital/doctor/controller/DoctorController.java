@@ -10,6 +10,7 @@ import com.hospital.doctor.service.DoctorService;
 import com.hospital.dto.PageResponse;
 import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
 import com.hospital.patient.dto.response.GetPatientResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/doctor")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class DoctorController {
 private final DoctorService doctorService;
 

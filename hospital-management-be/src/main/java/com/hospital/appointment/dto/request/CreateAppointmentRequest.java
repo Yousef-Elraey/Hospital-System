@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Setter
 @Accessors(chain = true)
 public class CreateAppointmentRequest {
-    private Long id;
 
     @NotNull(message = "timing is required")
     private LocalDateTime timing;
@@ -27,8 +26,7 @@ public class CreateAppointmentRequest {
 
     @NotNull(message = "patient_id is required")
     private Long patientId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
     @NotNull(message = "status_id is required")
     private Long statusId;
 

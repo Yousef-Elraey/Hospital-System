@@ -13,8 +13,6 @@ import java.time.LocalDateTime;
 @Setter
 @Accessors(chain = true)
 public class CreateDoctorRequest {
- private Long id;
-
  @NotBlank(message = "name is required")
  private String name;
 
@@ -24,7 +22,4 @@ public class CreateDoctorRequest {
  @NotBlank(message = "contact_number is required")
  @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number") // valid for Egyptian numbers only
  private String contactNumber;
- private LocalDateTime createdAt;
- private LocalDateTime updatedAt;
-
 }

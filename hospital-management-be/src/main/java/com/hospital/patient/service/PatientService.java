@@ -1,10 +1,8 @@
 package com.hospital.patient.service;
 
 import com.hospital.common.exception.HospitalBusinessException;
-import com.hospital.common.security.JWTService;
-import com.hospital.doctor.dto.response.GetDoctorResponse;
+import com.hospital.common.security.JwtService;
 import com.hospital.dto.PageResponse;
-import com.hospital.entity.Doctor;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.entity.Patient;
 import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
@@ -37,7 +35,7 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final MedicalRecordService medicalRecordService;
-    private final JWTService jwtService;
+    private final JwtService jwtService;
 
     public PageResponse<GetPatientResponse> getAllPatients(int page, int size, String sortBy, String direction){
         Sort sort = direction.equalsIgnoreCase("desc")
@@ -107,10 +105,7 @@ public class PatientService {
                 .setName(createPatientRequest.getName())
                 .setGender(createPatientRequest.getGender())
                 .setPhone(createPatientRequest.getPhone())
-                .setDateOfBirth(createPatientRequest.getDateOfBirth())
-                .setCreatedAt(LocalDateTime.now())
-                .setUpdatedAt(LocalDateTime.now())
-                .setId(createPatientRequest.getId());
+                .setDateOfBirth(createPatientRequest.getDateOfBirth());
         patientRepository.save(patient);
         CreatePatientResponse patientResponse = new CreatePatientResponse();
         patientResponse.setId(patient.getId());

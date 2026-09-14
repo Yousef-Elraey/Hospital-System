@@ -1,12 +1,11 @@
 package com.hospital.medical_record.service;
 
 import com.hospital.common.exception.HospitalBusinessException;
-import com.hospital.common.security.JWTService;
+import com.hospital.common.security.JwtService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.MedicalRecord;
-import com.hospital.entity.Patient;
 import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
 import com.hospital.medical_record.dto.request.SearchMedicalRecordRequest;
 import com.hospital.medical_record.dto.request.UpdateMedicalRecordRequest;
@@ -15,8 +14,6 @@ import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.SearchMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medical_record.repository.MedicalRecordRepository;
-import com.hospital.patient.dto.request.SearchPatientRequest;
-import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.treatment.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +37,7 @@ public class MedicalRecordService {
     private final DoctorRepository doctorRepository;
     private final DiagnoseRepository diagnoseRepository;
     private final TreatmentRepository treatmentRepository;
-    private final JWTService jwtService;
+    private final JwtService jwtService;
 
     public PageResponse<GetMedicalRecordResponse> getAllMedicalRecords(int page, int size,String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
@@ -216,7 +212,7 @@ public class MedicalRecordService {
         for (MedicalRecord medicalRecord : medicalRecordList) {
             SearchMedicalRecordResponse searchMedicalRecordResponse = new SearchMedicalRecordResponse();
             searchMedicalRecordResponse.setId(medicalRecord.getId())
-                    .setDiagnoseName(medicalRecord.getDiagnose().getName_en())
+                    .setDiagnoseName(medicalRecord.getDiagnose().getNameEn())
                     .setTreatmentName(medicalRecord.getTreatment().getName_en())
                     .setPatientName(medicalRecord.getPatient().getName())
                     .setDoctorName(medicalRecord.getDoctor().getName())

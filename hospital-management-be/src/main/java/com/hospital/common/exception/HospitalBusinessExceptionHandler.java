@@ -16,7 +16,6 @@ import java.util.Map;
 @ControllerAdvice(annotations = RestController.class)
 public class HospitalBusinessExceptionHandler {
 
-    // Method to handle generic exceptions
     @ExceptionHandler(HospitalBusinessException.class)
     public ResponseEntity<ErrorResponseDto> handleGeneralException(HospitalBusinessException ex) {
         ErrorResponseDto errorResponseDto = ErrorResponseDto.builder()

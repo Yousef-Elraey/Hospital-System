@@ -1,6 +1,7 @@
-package com.hospital.users;
+package com.hospital.common.security;
 
-import com.hospital.entity.Users;
+import com.hospital.entity.Role;
+import com.hospital.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,18 +9,18 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class MyUserDetails implements UserDetails {
-   @Autowired
-    private Users user;
+    private final User user;
 
-    public MyUserDetails(Users user) {
+    public MyUserDetails(User user) {
         this.user = user;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("user"));
+        return List.of((new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
     }
 
     @Override
@@ -29,7 +30,15 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getUserName();
+        return user.getEmail();
+    }
+
+    public Long getId() {
+        return user.getId();
+    }
+
+    public Role getRole() {
+        return user.getRole();
     }
 
     @Override
@@ -49,6 +58,7 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.getActive();
     }
 }
+

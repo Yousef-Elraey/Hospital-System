@@ -2,7 +2,7 @@ package com.hospital.doctor.service;
 
 import com.hospital.appointment.service.AppointmentService;
 import com.hospital.common.exception.HospitalBusinessException;
-import com.hospital.common.security.JWTService;
+import com.hospital.common.security.JwtService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.dto.request.CreateDoctorRequest;
 import com.hospital.doctor.dto.request.SearchDoctorRequest;
@@ -41,7 +41,7 @@ public class DoctorService {
     private final SpecialityRepository specialityRepository;
     private final DiagnoseRepository diagnoseRepository;
     private final TreatmentRepository treatmentRepository;
-    private final JWTService jwtService;
+    private final JwtService jwtService;
 
     public PageResponse<GetDoctorResponse> getAllDoctors(int page,int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
@@ -107,12 +107,9 @@ public class DoctorService {
             throw new HospitalBusinessException("this number is already on system");
         }
         Doctor doctor = new Doctor();
-        doctor.setId(createDoctorRequest.getId());
         doctor.setName(createDoctorRequest.getName());
         doctor.setSpeciality(specialityOp.get());
         doctor.setContactNumber(createDoctorRequest.getContactNumber());
-        doctor.setCreatedAt(LocalDateTime.now());
-        doctor.setUpdatedAt(LocalDateTime.now());
         doctorRepository.save(doctor);
         CreateDoctorResponse doctorResponse = new CreateDoctorResponse();
         doctorResponse.setId(doctor.getId());

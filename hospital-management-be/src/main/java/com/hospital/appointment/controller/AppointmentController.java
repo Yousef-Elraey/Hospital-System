@@ -11,11 +11,12 @@ import com.hospital.appointment.service.AppointmentService;
 import com.hospital.dto.BookRequestDto;
 import com.hospital.dto.BookResponseDto;
 import com.hospital.dto.PageResponse;
-import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.response.GetPatientResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,16 +24,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/appointment")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class AppointmentController {
    private final AppointmentService appointmentService;
 
     @GetMapping("/appointments")
-    public ResponseEntity<PageResponse<GetAppointmentResponse>> getAllAppointments
-                                                                (@RequestParam(defaultValue = "0")int page
-                                                                 ,@RequestParam(defaultValue = "10") int size,
+    public ResponseEntity<PageResponse<GetAppointmentResponse>> getAllAppointments(
+                                                                 @ParameterObject SearchAppointmentRequest searchAppointmentRequest,
+                                                                 @RequestParam(defaultValue = "0")int page,
+                                                                 @RequestParam(defaultValue = "10") int size,
                                                                  @RequestParam(defaultValue = "id") String sortBy,
                                                                  @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(appointmentService.getAllAppointments(page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(appointmentService.getAllAppointments(searchAppointmentRequest,
+                                                                        page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

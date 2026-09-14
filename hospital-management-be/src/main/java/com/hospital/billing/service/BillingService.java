@@ -1,5 +1,6 @@
 package com.hospital.billing.service;
 
+import com.hospital.appointment.specification.AppointmentSpecification;
 import com.hospital.billing.dto.request.CreateBillingRequest;
 import com.hospital.billing.dto.request.SearchBillingRequest;
 import com.hospital.billing.dto.request.UpdateBillingRequest;
@@ -8,22 +9,22 @@ import com.hospital.billing.dto.response.GetBillingResponse;
 import com.hospital.billing.dto.response.SearchBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.billing.repository.BillingRepository;
+import com.hospital.billing.specification.BillingSpecification;
 import com.hospital.common.exception.HospitalBusinessException;
-import com.hospital.common.security.JWTService;
+import com.hospital.common.security.JwtService;
 import com.hospital.dto.PageResponse;
+import com.hospital.entity.Appointment;
 import com.hospital.entity.Billing;
 import com.hospital.entity.Patient;
-import com.hospital.patient.dto.request.SearchPatientRequest;
-import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,19 +33,35 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class BillingService {
-   private final BillingRepository billingRepository;
-   private final PatientRepository patientRepository;
-   private final JWTService jwtService;
+    private final BillingRepository billingRepository;
+    private final PatientRepository patientRepository;
+    private final JwtService jwtService;
 
-    public PageResponse<GetBillingResponse> getAllBillings(int page,int size,String sortBy, String direction) {
+    public PageResponse<GetBillingResponse> getAllBillings(SearchBillingRequest searchBillingRequest,
+                                                           int page, int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
-        Pageable pageable = PageRequest.of(page,size,sort);
-        Page<Billing> billingPage = billingRepository.findAll(pageable);
-        List<Billing> billings =  billingPage.getContent();
-        if(billings.isEmpty()){
-            throw new HospitalBusinessException("no billings found");
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Specification<Billing> specification  = Specification.where(null);
+        specification = specification
+                .and(BillingSpecification.hasPatientId(searchBillingRequest.getPatientId()))
+                .and(BillingSpecification.hasAmount(searchBillingRequest.getAmount()));
+
+
+        Page<Billing> billingPage = billingRepository.findAll(specification, pageable);
+        List<Billing> billings = billingPage.getContent();
+        if (billings.isEmpty()) {
+            PageResponse.<GetBillingResponse>builder()
+                    .data(new ArrayList<>())
+                    .page(billingPage.getNumber())
+                    .size(billingPage.getSize())
+                    .totalElements(billingPage.getTotalElements())
+                    .totalPages(billingPage.getTotalPages())
+                    .first(billingPage.isFirst())
+                    .last(billingPage.isLast())
+                    .build();
         }
         List<GetBillingResponse> billingsResponse = new ArrayList<>();
         for (Billing billing : billings) {

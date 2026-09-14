@@ -18,7 +18,6 @@ import java.util.List;
 @Getter
 @Accessors(chain = true)
 public class CreatePatientRequest {
-    private Long id;
 
     @NotBlank(message = "name is required")
     private String name;
@@ -30,12 +29,10 @@ public class CreatePatientRequest {
     @Pattern(regexp = "^(\\+20|0)1[0-9]{9}$", message = "Invalid Egyptian phone number")
     // valid for Egyptian numbers only
     private String phone;
-    private List<CreateMedicalRecordRequest> medicalRecords;
 
     @Past(message = "Date of birth must be in the past")
     @NotNull(message = "dateOfBirth is required")
     private LocalDate dateOfBirth;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
 
 }

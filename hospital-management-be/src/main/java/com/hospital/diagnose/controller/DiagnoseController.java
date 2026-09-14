@@ -1,13 +1,16 @@
 package com.hospital.diagnose.controller;
 
 import com.hospital.diagnose.dto.request.CreateDiagnoseRequest;
+import com.hospital.diagnose.dto.request.SearchDiagnoseRequest;
 import com.hospital.diagnose.dto.request.UpdateDiagnoseRequest;
 import com.hospital.diagnose.dto.response.CreateDiagnoseResponse;
 import com.hospital.diagnose.dto.response.GetDiagnoseResponse;
 import com.hospital.diagnose.dto.response.UpdateDiagnoseResponse;
 import com.hospital.diagnose.service.DiagnoseService;
 import com.hospital.dto.PageResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +18,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/diagnose")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class DiagnoseController {
     private final DiagnoseService diagnoseService;
 
     @GetMapping("/diagnoses")
-    public ResponseEntity<PageResponse<GetDiagnoseResponse>> getAllDiagnoses(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<PageResponse<GetDiagnoseResponse>> getAllDiagnoses(@ParameterObject
+                                                                             SearchDiagnoseRequest searchDiagnoseRequest,
+                                                                             @RequestParam(defaultValue = "0")int page,
                                                                              @RequestParam(defaultValue = "10")int size,
                                                                              @RequestParam(defaultValue = "id") String sortBy,
                                                                              @RequestParam(defaultValue = "asc") String direction ){
-        return new ResponseEntity<>(diagnoseService.getAllDiagnoses(page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(diagnoseService.getAllDiagnoses(searchDiagnoseRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
     @GetMapping("/{id}")
     public ResponseEntity<GetDiagnoseResponse> getDiagnoseById(@PathVariable Long id){

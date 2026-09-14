@@ -10,6 +10,7 @@ import com.hospital.patient.dto.response.CreatePatientResponse;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.dto.response.UpdatePatientResponse;
 import com.hospital.patient.service.PatientService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/patient")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class PatientController {
 
   private final PatientService patientService;

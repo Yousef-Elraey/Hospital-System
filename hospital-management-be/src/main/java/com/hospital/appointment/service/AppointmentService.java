@@ -8,8 +8,9 @@ import com.hospital.appointment.dto.response.GetAppointmentResponse;
 import com.hospital.appointment.dto.response.SearchAppointmentResponse;
 import com.hospital.appointment.dto.response.UpdateAppointmentResponse;
 import com.hospital.appointment.repository.AppointmentRepository;
+import com.hospital.appointment.specification.AppointmentSpecification;
 import com.hospital.common.exception.HospitalBusinessException;
-import com.hospital.common.security.JWTService;
+import com.hospital.common.security.JwtService;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.BookRequestDto;
 import com.hospital.dto.BookResponseDto;
@@ -26,10 +27,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,19 +44,36 @@ public class AppointmentService {
     private final MedicalRecordService medicalRecordService;
     private final AppointmentStatusRepository appointmentStatusRepository;
     private final TimeSlotsRepository timeSlotsRepository;
-    private final JWTService jwtService;
+    private final JwtService jwtService;
 
 
-    public PageResponse<GetAppointmentResponse> getAllAppointments(int page, int size, String sortBy, String direction) {
-        Sort sort = direction.equalsIgnoreCase("desc")
+    public PageResponse<GetAppointmentResponse> getAllAppointments(SearchAppointmentRequest searchAppointmentRequest,
+                                                                   int page, int size, String sortBy, String direction) {
+            Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Appointment> appointmentPage = appointmentRepository.findAll(pageable);
+
+        Specification<Appointment> specification  = Specification.where(null);
+        specification = specification
+                        .and(AppointmentSpecification.hasDoctorId(searchAppointmentRequest.getDoctorId()))
+                        .and(AppointmentSpecification.hasPatientId(searchAppointmentRequest.getPatientId()))
+                        .and(AppointmentSpecification.hasStatusId(searchAppointmentRequest.getStatusId()));
+
+        Page<Appointment> appointmentPage = appointmentRepository.findAll(specification, pageable);
 
         List<Appointment> appointments = appointmentPage.getContent();
         if (appointments.isEmpty()) {
-            throw new HospitalBusinessException("no appointments found");
+            PageResponse.<GetAppointmentResponse>builder()
+                    .data(new ArrayList<>())
+                    .page(appointmentPage.getNumber())
+                    .size(appointmentPage.getSize())
+                    .totalElements(appointmentPage.getTotalElements())
+                    .totalPages(appointmentPage.getTotalPages())
+                    .first(appointmentPage.isFirst())
+                    .last(appointmentPage.isLast())
+                    .build();
+
         }
         List<GetAppointmentResponse> appointmentsResponse = new ArrayList<>();
 
@@ -128,11 +145,8 @@ public class AppointmentService {
             throw new HospitalBusinessException("invalid status id");
         }
         Appointment appointment = new Appointment();
-        appointment.setId(createAppointmentRequest.getId());
         appointment.setTiming(createAppointmentRequest.getTiming());
         appointment.setAppointmentType(createAppointmentRequest.getAppointmentType());
-        appointment.setCreatedAt(LocalDateTime.now());
-        appointment.setUpdatedAt(LocalDateTime.now());
         appointment.setPatient(patientOp.get());
         appointment.setDoctor(doctorOp.get());
         appointment.setStatus(statusOp.get());
@@ -160,7 +174,6 @@ public class AppointmentService {
             Appointment appointment = appointmentTemp.get();
             appointment.setTiming(updateAppointmentRequest.getTiming());
             appointment.setAppointmentType(updateAppointmentRequest.getAppointmentType());
-            appointment.setUpdatedAt(LocalDateTime.now());
             appointment.setDoctor(doctorRepository.findById(updateAppointmentRequest.getDoctorId()).get());
             appointment.setPatient(patientRepository.findById(updateAppointmentRequest.getPatientId()).get());
             appointment.setStatus(appointmentStatusRepository.findById(updateAppointmentRequest.getStatusId()).get());
@@ -206,9 +219,7 @@ public class AppointmentService {
                 .setPatient(patientOp.get())
                 .setDoctor(doctorOp.get())
                 .setTimeSlots(timeSlotsOp.get())
-                .setStatus(appointmentOp.get())
-                .setCreatedAt(LocalDateTime.now())
-                .setUpdatedAt(LocalDateTime.now());
+                .setStatus(appointmentOp.get());
         appointmentRepository.save(appointment);
 
         List<Appointment> appointments = appointmentRepository.appointmentsStatusNewPaidPending();
@@ -355,10 +366,10 @@ public class AppointmentService {
         LocalDateTime start = null;
         LocalDateTime end = null;
 
-        if (searchAppointmentRequest.getDate() != null) {
-            start = searchAppointmentRequest.getDate().atStartOfDay();
-            end = searchAppointmentRequest.getDate().plusDays(1).atStartOfDay();
-        }
+//        if (appointmentSearchRequest.getDate() != null) {
+//            start = appointmentSearchRequest.getDate().atStartOfDay();
+//            end = appointmentSearchRequest.getDate().plusDays(1).atStartOfDay();
+//        }
 
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()

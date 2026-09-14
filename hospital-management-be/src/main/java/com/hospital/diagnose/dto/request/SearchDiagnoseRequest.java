@@ -1,5 +1,6 @@
-package com.hospital.appointment.dto.request;
+package com.hospital.diagnose.dto.request;
 
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class SearchAppointmentRequest {
-    private Long patientId;
-    private Long doctorId;
-    private Long statusId;
+public class SearchDiagnoseRequest {
+    private String nameEN;
+    private String nameAr;
+
 }

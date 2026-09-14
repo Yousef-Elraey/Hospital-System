@@ -1,0 +1,73 @@
+package com.hospital.user.specification;
+
+import com.hospital.entity.Role;
+import com.hospital.entity.User;
+import org.springframework.data.jpa.domain.Specification;
+
+public class UserSpecification {
+    public static Specification<User> hasId(Long id) {
+        return (root, query, cb) ->
+                id == null
+                        ? null
+                        : cb.equal(root.get("id"), id);
+    }
+
+    public static Specification<User> hasUserName(String userName) {
+        return (root, query, cb) ->
+                userName == null
+                        ? null
+                        : cb.like(
+                        cb.lower(root.get("userName")),
+                        "%" + userName.toLowerCase() + "%");
+    }
+
+    public static Specification<User> hasPhone(String phone) {
+        return (root, query, cb) ->
+                phone == null
+                        ? null
+                        : cb.like(
+                        cb.lower(root.get("phone")),
+                        "%" + phone.toLowerCase() + "%");
+    }
+
+    public static Specification<User> hasEmail(String email) {
+        return (root, query, cb) ->
+                email == null
+                        ? null
+                        : cb.like(
+                        cb.lower(root.get("email")),
+                        "%" + email.toLowerCase() + "%");
+    }
+
+    public static Specification<User> hasFullName(String fullName) {
+        return (root, query, cb) ->
+                fullName == null
+                        ? null
+                        : cb.like(
+                        cb.lower(root.get("fullName")),
+                        "%" + fullName.toLowerCase() + "%");
+    }
+
+    public static Specification<User> hasRole(Role role) {
+        return (root, query, cb) ->
+                role == null
+                        ? null
+                        : cb.equal(root.get("role"), role);
+    }
+
+    public static Specification<User> hasPassword(String password) {
+        return (root, query, cb) ->
+                password == null
+                        ? null
+                        : cb.like(
+                        cb.lower(root.get("password")),
+                        "%" + password.toLowerCase() + "%");
+    }
+
+    public static Specification<User> hasActive(Boolean active) {
+        return (root, query, cb) ->
+                active == null
+                        ? null
+                        : cb.equal(root.get("active"), active);
+    }
+}

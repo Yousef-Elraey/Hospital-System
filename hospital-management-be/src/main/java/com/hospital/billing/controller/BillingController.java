@@ -11,6 +11,7 @@ import com.hospital.billing.service.BillingService;
 import com.hospital.dto.PageResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,11 +24,12 @@ public class BillingController {
     private final BillingService billingService;
 
     @GetMapping("/billings")
-    public ResponseEntity<PageResponse<GetBillingResponse>> getAllBillings(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<PageResponse<GetBillingResponse>> getAllBillings(@ParameterObject SearchBillingRequest searchBillingRequest,
+                                                                           @RequestParam(defaultValue = "0")int page,
                                                                            @RequestParam(defaultValue = "10")int size,
                                                                            @RequestParam(defaultValue = "id") String sortBy,
                                                                            @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(billingService.getAllBillings(page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(billingService.getAllBillings(searchBillingRequest, page, size, sortBy, direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
