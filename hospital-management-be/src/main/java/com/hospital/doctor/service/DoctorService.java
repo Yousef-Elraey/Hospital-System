@@ -11,6 +11,7 @@ import com.hospital.doctor.dto.response.CreateDoctorResponse;
 import com.hospital.doctor.dto.response.GetDoctorResponse;
 import com.hospital.doctor.dto.response.UpdateDoctorResponse;
 import com.hospital.doctor.repository.DoctorRepository;
+import com.hospital.doctor.specification.DoctorSpecification;
 import com.hospital.dto.PageResponse;
 import com.hospital.entity.*;
 import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,14 +45,34 @@ public class DoctorService {
     private final TreatmentRepository treatmentRepository;
     private final JwtService jwtService;
 
-    public PageResponse<GetDoctorResponse> getAllDoctors(int page,int size, String sortBy, String direction) {
+    public PageResponse<GetDoctorResponse> getAllDoctors(SearchDoctorRequest searchDoctorRequest,
+                                                         int page,int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
-
         Pageable pageable = PageRequest.of(page,size,sort);
-        Page<Doctor> doctorPage = doctorRepository.findAll(pageable);
-       List<Doctor> doctors = doctorPage.getContent();
+
+        Specification<Doctor> specification = Specification.where(null);
+        specification = specification
+                .and(DoctorSpecification.hasContactNumber(searchDoctorRequest.getContactNumber()))
+                .and(DoctorSpecification.hasName(searchDoctorRequest.getName()))
+                .and(DoctorSpecification.hasSpecialityId(searchDoctorRequest.getSpecialityId()));
+
+        Page<Doctor> doctorPage = doctorRepository.findAll(specification,pageable);
+        List<Doctor> doctors = doctorPage.getContent();
+
+        if (doctors.isEmpty()){
+            return PageResponse.<GetDoctorResponse>builder()
+                    .data(new ArrayList<>())
+                    .page(doctorPage.getNumber())
+                    .size(doctorPage.getSize())
+                    .totalElements(doctorPage.getTotalElements())
+                    .totalPages(doctorPage.getTotalPages())
+                    .first(doctorPage.isFirst())
+                    .last(doctorPage.isLast())
+                    .build();
+        }
+
         List<GetDoctorResponse> getDoctorResponses = new ArrayList<>();
         for (Doctor doctor : doctors) {
             GetDoctorResponse getDoctorResponse = new GetDoctorResponse();

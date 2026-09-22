@@ -1,7 +1,9 @@
 package com.hospital.speciality.service;
 
 import com.hospital.common.exception.HospitalBusinessException;
+import com.hospital.diagnose.specification.DiagnoseSpecification;
 import com.hospital.dto.PageResponse;
+import com.hospital.entity.Diagnose;
 import com.hospital.entity.Patient;
 import com.hospital.entity.Speciality;
 import com.hospital.patient.dto.request.SearchPatientRequest;
@@ -13,11 +15,13 @@ import com.hospital.speciality.dto.response.CreateSpecialityResponse;
 import com.hospital.speciality.dto.response.GetSpecialityResponse;
 import com.hospital.speciality.dto.response.UpdateSpecialityResponse;
 import com.hospital.speciality.repository.SpecialityRepository;
+import com.hospital.speciality.specification.SpecialitySpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,18 +34,25 @@ import java.util.Optional;
 public class SpecialityService {
     private final SpecialityRepository specialityRepository;
 
-    public PageResponse<GetSpecialityResponse> getAllSpecialities(int page, int size, String sortBy, String direction) {
+    public PageResponse<GetSpecialityResponse> getAllSpecialities(SearchSpecialityRequest searchSpecialityRequest,
+                                                                  int page, int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page,size,sort);
 
-        Page<Speciality> specialityPage = specialityRepository.findAll(pageable);
+        Specification<Speciality> specification  = Specification.where(null);
+        specification = specification
+                .and(SpecialitySpecification.hasNameAr(searchSpecialityRequest.getNameAr()))
+                .and(SpecialitySpecification.hasNameEn(searchSpecialityRequest.getNameEn()));
+
+        Page<Speciality> specialityPage = specialityRepository.findAll(specification,pageable);
+
         List<Speciality> specialities = specialityPage.getContent();
-        if (specialities.isEmpty())
-            throw new HospitalBusinessException("no specialities found");
         List<GetSpecialityResponse> specialityResponses = new ArrayList<>();
+
+        if (!specialities.isEmpty()){
         specialities.forEach(speciality -> {
             GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
             getSpecialityResponse.setId(speciality.getId())
@@ -49,6 +60,8 @@ public class SpecialityService {
                     .setNameAr(speciality.getNameAr());
             specialityResponses.add(getSpecialityResponse);
         });
+        }
+
         return PageResponse.<GetSpecialityResponse>builder()
                 .data(specialityResponses)
                 .page(specialityPage.getNumber())

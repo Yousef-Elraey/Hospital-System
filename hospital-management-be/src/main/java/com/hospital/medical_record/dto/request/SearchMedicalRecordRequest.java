@@ -13,4 +13,5 @@ public class SearchMedicalRecordRequest {
     private Long patientId;
     private Long doctorId;
     private Long diagnoseId;
+    private Long treatmentId;
 }

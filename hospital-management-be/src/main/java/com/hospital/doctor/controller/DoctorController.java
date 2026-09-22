@@ -13,6 +13,7 @@ import com.hospital.patient.dto.response.GetPatientResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,12 @@ public class DoctorController {
 private final DoctorService doctorService;
 
     @GetMapping("/doctors")
-    public ResponseEntity<PageResponse<GetDoctorResponse>> getAllDoctors(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<PageResponse<GetDoctorResponse>> getAllDoctors(@ParameterObject SearchDoctorRequest searchDoctorRequest,
+                                                                         @RequestParam(defaultValue = "0")int page,
                                                                          @RequestParam(defaultValue = "10")int size,
                                                                          @RequestParam(defaultValue = "id") String sortBy,
                                                                          @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(doctorService.getAllDoctors(page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(doctorService.getAllDoctors(searchDoctorRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

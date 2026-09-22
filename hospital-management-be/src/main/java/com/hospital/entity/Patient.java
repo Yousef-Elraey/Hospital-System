@@ -19,17 +19,20 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Patient extends BaseEntity{
-
      @Column(nullable = false)
      private String name;
+
      @Column(nullable = false)
      @Enumerated(EnumType.STRING)
      private Gender gender;
+
      @Column(nullable = false)
      private String phone;
+
      @Column(nullable = false)
      private LocalDate dateOfBirth;
-    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+
+     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
      private List<MedicalRecord> medicalRecords;
 
 

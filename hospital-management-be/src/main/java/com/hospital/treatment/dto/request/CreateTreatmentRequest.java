@@ -13,7 +13,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class CreateTreatmentRequest {
-    private Long id;
 
     @NotBlank(message = "name_en is required")
     private String nameEn;

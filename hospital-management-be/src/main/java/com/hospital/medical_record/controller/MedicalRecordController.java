@@ -11,8 +11,10 @@ import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medical_record.service.MedicalRecordService;
 import com.hospital.patient.dto.request.SearchPatientRequest;
 import com.hospital.patient.dto.response.GetPatientResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +24,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/medical-record")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class MedicalRecordController {
 
    private final MedicalRecordService medicalRecordService;
 
     @GetMapping("/medical-records")
-    public ResponseEntity<PageResponse<GetMedicalRecordResponse>> getAllRecords(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<PageResponse<GetMedicalRecordResponse>> getAllRecords(@ParameterObject
+                                                                                SearchMedicalRecordRequest searchMedicalRecordRequest,
+                                                                                @RequestParam(defaultValue = "0")int page,
                                                                                 @RequestParam(defaultValue = "10")int size,
                                                                                 @RequestParam(defaultValue = "id") String sortBy,
                                                                                 @RequestParam(defaultValue = "asc") String direction) {
-            return new ResponseEntity<>(medicalRecordService.getAllMedicalRecords(page,size,sortBy,direction), HttpStatus.OK);
+            return new ResponseEntity<>(medicalRecordService.getAllMedicalRecords(searchMedicalRecordRequest,
+                                                                        page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

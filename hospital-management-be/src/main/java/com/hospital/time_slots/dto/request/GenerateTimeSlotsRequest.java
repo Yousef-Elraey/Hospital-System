@@ -2,6 +2,7 @@ package com.hospital.time_slots.dto.request;
 
 import com.hospital.entity.AppointmentType;
 import com.hospital.entity.TimeSlotsStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,8 +19,17 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GenerateTimeSlotsRequest {
-
+    @Schema(
+            type = "string",
+            format = "time",
+            example = "09:00"
+    )
     private LocalTime start;
+    @Schema(
+            type = "string",
+            format = "time",
+            example = "09:00"
+    )
     private LocalTime end;
     private LocalDate dayStart;
     private LocalDate dayEnd;
@@ -27,6 +37,6 @@ public class GenerateTimeSlotsRequest {
     private Long duration;
     private List<String> days;
     private AppointmentType appointmentType;
-    private TimeSlotsStatus status = TimeSlotsStatus.AVAILABLE;
+    private TimeSlotsStatus timeSlotsStatus;
 
 }

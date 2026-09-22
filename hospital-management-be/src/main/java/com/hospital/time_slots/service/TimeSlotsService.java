@@ -1,5 +1,6 @@
 package com.hospital.time_slots.service;
 
+import com.hospital.appointment.specification.AppointmentSpecification;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
@@ -13,11 +14,13 @@ import com.hospital.time_slots.dto.response.GetTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.SearchTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.UpdateTimeSlotsResponse;
 import com.hospital.time_slots.repository.TimeSlotsRepository;
+import com.hospital.time_slots.specification.TimeSlotsSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,30 +35,41 @@ public class TimeSlotsService {
     private final TimeSlotsRepository timeSlotsRepository;
     private final DoctorRepository doctorRepository;
 
-    public PageResponse<GetTimeSlotsResponse> getAllTimeSlots(int page, int size, String sortBy, String direction) {
+    public PageResponse<GetTimeSlotsResponse> getAllTimeSlots(SearchTimeSlotsRequest searchTimeSlotsRequest,
+                                                              int page, int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
         Pageable pageable = PageRequest.of(page,size,sort);
-        Page<TimeSlots> timeSlotsPage = timeSlotsRepository.findAll(pageable);
+
+        Specification<TimeSlots> specification  = Specification.where(null);
+        specification = specification
+                .and(TimeSlotsSpecification.hasDoctorId(searchTimeSlotsRequest.getDoctorId()))
+                .and(TimeSlotsSpecification.hasAppointmentType(searchTimeSlotsRequest.getAppointmentType()))
+                .and(TimeSlotsSpecification.hasTimeSlotsStatus(searchTimeSlotsRequest.getTimeSlotsStatus()))
+                .and(TimeSlotsSpecification.hasDay(searchTimeSlotsRequest.getDay()))
+                .and(TimeSlotsSpecification.hasStart(searchTimeSlotsRequest.getStart()))
+                .and(TimeSlotsSpecification.hasEnd(searchTimeSlotsRequest.getEnd()));
+
+        Page<TimeSlots> timeSlotsPage = timeSlotsRepository.findAll(specification,pageable);
 
         List<TimeSlots> timeSlotsList = timeSlotsPage.getContent();
-
-        if (timeSlotsList.isEmpty()) {
-            throw new HospitalBusinessException("no timeSlots found");
-        }
         List<GetTimeSlotsResponse> getTimeSlotsResponses = new ArrayList<>();
-        for (TimeSlots timeSlots: timeSlotsList) {
-            GetTimeSlotsResponse getTimeSlotsResponse = new GetTimeSlotsResponse();
-            getTimeSlotsResponse.setId(timeSlots.getId())
-                    .setDoctorId(timeSlots.getDoctor().getId())
-                    .setDay(timeSlots.getDay())
-                    .setStart(timeSlots.getStart())
-                    .setEnd(timeSlots.getEnd())
-                    .setStatus(timeSlots.getStatus())
-                    .setAppointmentType(timeSlots.getAppointmentType());
-            getTimeSlotsResponses.add(getTimeSlotsResponse);
+
+        if (!timeSlotsList.isEmpty()) {
+            for (TimeSlots timeSlots: timeSlotsList) {
+                GetTimeSlotsResponse getTimeSlotsResponse = new GetTimeSlotsResponse();
+                getTimeSlotsResponse.setId(timeSlots.getId())
+                        .setDoctorId(timeSlots.getDoctor().getId())
+                        .setDay(timeSlots.getDay())
+                        .setStart(timeSlots.getStart())
+                        .setEnd(timeSlots.getEnd())
+                        .setTimeSlotsStatus(timeSlots.getTimeSlotsStatus())
+                        .setAppointmentType(timeSlots.getAppointmentType());
+                getTimeSlotsResponses.add(getTimeSlotsResponse);
+            }
         }
+
         return PageResponse.<GetTimeSlotsResponse>builder()
                 .data(getTimeSlotsResponses)
                 .page(timeSlotsPage.getNumber())
@@ -79,7 +93,7 @@ public class TimeSlotsService {
                 .setDay(timeSlotsDb.getDay())
                 .setStart(timeSlotsDb.getStart())
                 .setEnd(timeSlotsDb.getEnd())
-                .setStatus(timeSlotsDb.getStatus())
+                .setTimeSlotsStatus(timeSlotsDb.getTimeSlotsStatus())
                 .setAppointmentType(timeSlotsDb.getAppointmentType());
 
         return getTimeSlotsResponse;
@@ -97,7 +111,7 @@ public class TimeSlotsService {
                 .setDay(createTimeSlotsRequest.getDay())
                 .setStart(createTimeSlotsRequest.getStart())
                 .setEnd(createTimeSlotsRequest.getEnd())
-                .setStatus(createTimeSlotsRequest.getStatus())
+                .setTimeSlotsStatus(createTimeSlotsRequest.getTimeSlotsStatus())
                 .setAppointmentType(createTimeSlotsRequest.getAppointmentType());
 
         timeSlotsRepository.save(timeSlots);
@@ -122,7 +136,7 @@ public class TimeSlotsService {
                 .setDay(updateTimeSlotsRequest.getDay())
                 .setStart(timeSlots.getStart())
                 .setEnd(timeSlots.getEnd())
-                .setStatus(updateTimeSlotsRequest.getStatus())
+                .setTimeSlotsStatus(updateTimeSlotsRequest.getTimeSlotsStatus())
                 .setAppointmentType(updateTimeSlotsRequest.getAppointmentType());
 
         timeSlotsRepository.save(timeSlots);
@@ -165,7 +179,7 @@ public class TimeSlotsService {
                        .setDay(currentDay)
                        .setStart(slotStart)
                        .setEnd(slotEnd)
-                       .setStatus(request.getStatus());
+                       .setTimeSlotsStatus(TimeSlotsStatus.AVAILABLE);
                 timeSlotsRepository.save(timeSlots);
                 slotStart = slotEnd;
            }
@@ -190,7 +204,7 @@ public class TimeSlotsService {
                     .setDay(timeSlots.getDay())
                     .setStart(timeSlots.getStart())
                     .setEnd(timeSlots.getEnd())
-                    .setStatus(timeSlots.getStatus())
+                    .setTimeSlotsStatus(timeSlots.getTimeSlotsStatus())
                     .setAppointmentType(timeSlots.getAppointmentType());
             responses.add(getTimeSlotsResponse);
         }
@@ -198,42 +212,42 @@ public class TimeSlotsService {
         return responses;
     }
 
-    public PageResponse<SearchTimeSlotsResponse> searchTimeSlots(int page, int size, String sortBy, String direction, SearchTimeSlotsRequest searchTimeSlotsRequest) {
-        Long doctorId = searchTimeSlotsRequest.getDoctorId();
-        TimeSlotsStatus timeSlotsStatus = searchTimeSlotsRequest.getTimeSlotsStatus();
-        LocalDate from = searchTimeSlotsRequest.getFrom();
-        LocalDate to = searchTimeSlotsRequest.getTo();
-
-
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<TimeSlots> timeSlotsPage = timeSlotsRepository.searchTimeSlots(doctorId, timeSlotsStatus, from, to, pageable);
-        List<TimeSlots> timeSlotsList = timeSlotsPage.getContent();
-        List<SearchTimeSlotsResponse> responses = new ArrayList<>();
-
-        for (TimeSlots timeSlots : timeSlotsList) {
-            SearchTimeSlotsResponse searchTimeSlotsResponse = new SearchTimeSlotsResponse();
-            searchTimeSlotsResponse.setId(timeSlots.getId())
-                    .setDoctorName(timeSlots.getDoctor().getName())
-                    .setDay(timeSlots.getDay())
-                    .setStart(timeSlots.getStart())
-                    .setEnd(timeSlots.getEnd())
-                    .setStatus(timeSlots.getStatus())
-                    .setAppointmentType(timeSlots.getAppointmentType());
-            responses.add(searchTimeSlotsResponse);
-        }
-
-        return PageResponse.<SearchTimeSlotsResponse>builder()
-                .data(responses)
-                .page(timeSlotsPage.getNumber())
-                .size(timeSlotsPage.getSize())
-                .totalElements(timeSlotsPage.getTotalElements())
-                .totalPages(timeSlotsPage.getTotalPages())
-                .first(timeSlotsPage.isFirst())
-                .last(timeSlotsPage.isLast())
-                .build();
-    }
+//    public PageResponse<SearchTimeSlotsResponse> searchTimeSlots(int page, int size, String sortBy, String direction, SearchTimeSlotsRequest searchTimeSlotsRequest) {
+//        Long doctorId = searchTimeSlotsRequest.getDoctorId();
+//        TimeSlotsStatus timeSlotsStatus = searchTimeSlotsRequest.getTimeSlotsStatus();
+//        LocalTime from = searchTimeSlotsRequest.getStart();
+//        LocalTime to = searchTimeSlotsRequest.getEnd();
+//
+//
+//        Sort sort = direction.equalsIgnoreCase("desc")
+//                ? Sort.by(sortBy).descending()
+//                : Sort.by(sortBy).ascending();
+//
+//        Pageable pageable = PageRequest.of(page, size, sort);
+//        Page<TimeSlots> timeSlotsPage = timeSlotsRepository.searchTimeSlots(doctorId, timeSlotsStatus, from, to, pageable);
+//        List<TimeSlots> timeSlotsList = timeSlotsPage.getContent();
+//        List<SearchTimeSlotsResponse> responses = new ArrayList<>();
+//
+//        for (TimeSlots timeSlots : timeSlotsList) {
+//            SearchTimeSlotsResponse searchTimeSlotsResponse = new SearchTimeSlotsResponse();
+//            searchTimeSlotsResponse.setId(timeSlots.getId())
+//                    .setDoctorName(timeSlots.getDoctor().getName())
+//                    .setDay(timeSlots.getDay())
+//                    .setStart(timeSlots.getStart())
+//                    .setEnd(timeSlots.getEnd())
+//                    .setTimeSlotsStatus(timeSlots.getTimeSlotsStatus())
+//                    .setAppointmentType(timeSlots.getAppointmentType());
+//            responses.add(searchTimeSlotsResponse);
+//        }
+//
+//        return PageResponse.<SearchTimeSlotsResponse>builder()
+//                .data(responses)
+//                .page(timeSlotsPage.getNumber())
+//                .size(timeSlotsPage.getSize())
+//                .totalElements(timeSlotsPage.getTotalElements())
+//                .totalPages(timeSlotsPage.getTotalPages())
+//                .first(timeSlotsPage.isFirst())
+//                .last(timeSlotsPage.isLast())
+//                .build();
+//    }
 }

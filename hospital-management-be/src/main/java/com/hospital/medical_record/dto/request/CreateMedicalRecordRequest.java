@@ -15,8 +15,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Accessors(chain = true)
 public class CreateMedicalRecordRequest {
-    private Long id;
-
     @NotNull(message = "diagnose is required")
     private Long diagnoseId;
 
@@ -28,6 +26,4 @@ public class CreateMedicalRecordRequest {
 
     @NotNull(message = "doctor_id is required")
     private Long doctorId;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }

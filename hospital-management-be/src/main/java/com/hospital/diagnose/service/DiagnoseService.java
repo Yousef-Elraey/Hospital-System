@@ -40,7 +40,7 @@ public class DiagnoseService {
         Specification<Diagnose> specification  = Specification.where(null);
         specification = specification
                 .and(DiagnoseSpecification.hasNameAr(searchDiagnoseRequest.getNameAr()))
-                .and(DiagnoseSpecification.hasNameEn(searchDiagnoseRequest.getNameEN()));
+                .and(DiagnoseSpecification.hasNameEn(searchDiagnoseRequest.getNameEn()));
 
         Page<Diagnose> diagnosePage = diagnoseRepository.findAll(specification, pageable);
      List<Diagnose> diagnoses = diagnosePage.getContent();
@@ -90,8 +90,7 @@ public class DiagnoseService {
 
     public CreateDiagnoseResponse createDiagnose(CreateDiagnoseRequest createDiagnoseRequest) {
         Diagnose diagnose = new Diagnose();
-        diagnose.setId(createDiagnoseRequest.getId())
-                .setNameEn(createDiagnoseRequest.getNameEn())
+        diagnose.setNameEn(createDiagnoseRequest.getNameEn())
                 .setNameAr(createDiagnoseRequest.getNameAr());
         diagnoseRepository.save(diagnose);
         CreateDiagnoseResponse diagnoseResponse = new CreateDiagnoseResponse();

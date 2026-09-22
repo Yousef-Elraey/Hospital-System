@@ -15,16 +15,19 @@ import com.hospital.patient.dto.response.CreatePatientResponse;
 import com.hospital.patient.dto.response.GetPatientResponse;
 import com.hospital.patient.dto.response.UpdatePatientResponse;
 import com.hospital.patient.repository.PatientRepository;
+import com.hospital.patient.specification.PatientSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,13 +40,21 @@ public class PatientService {
     private final MedicalRecordService medicalRecordService;
     private final JwtService jwtService;
 
-    public PageResponse<GetPatientResponse> getAllPatients(int page, int size, String sortBy, String direction){
+    public PageResponse<GetPatientResponse> getAllPatients(SearchPatientRequest searchPatientRequest,
+                                                           int page, int size, String sortBy, String direction){
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
-
         Pageable pageable = PageRequest.of(page,size,sort);
-        Page<Patient> patientPage = patientRepository.findAll(pageable);
+
+        Specification<Patient> specification = Specification.where(null);
+        specification = specification
+                .and(PatientSpecification.hasName(searchPatientRequest.getName()))
+                .and(PatientSpecification.hasPhone(searchPatientRequest.getPhone()))
+                .and(PatientSpecification.hasGender(searchPatientRequest.getGender()))
+                .and(PatientSpecification.hasDateOfBirth(searchPatientRequest.getDateOfBirth()));
+
+        Page<Patient> patientPage = patientRepository.findAll(specification,pageable);
         List<Patient> patients = patientPage.getContent();
 
         List<GetPatientResponse> patientsResponse = new ArrayList<>();
@@ -115,6 +126,7 @@ public class PatientService {
 
 
     public UpdatePatientResponse updatePatientData(UpdatePatientRequest updatePatientRequest) {
+
 
         Optional<Patient> patientTemp = patientRepository.findById(updatePatientRequest.getId());
         if (patientTemp.isPresent()) {

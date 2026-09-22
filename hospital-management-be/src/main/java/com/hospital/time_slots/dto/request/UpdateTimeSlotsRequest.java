@@ -32,7 +32,7 @@ public class UpdateTimeSlotsRequest {
     @NotNull(message = "time is required")
     private LocalTime end;
     @NotNull(message = "status is required")
-    private TimeSlotsStatus status;
+    private TimeSlotsStatus timeSlotsStatus;
 
     @NotNull(message = "appointment type is required")
     private AppointmentType appointmentType;

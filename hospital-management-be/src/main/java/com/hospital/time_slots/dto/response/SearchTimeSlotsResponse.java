@@ -18,6 +18,6 @@ public class SearchTimeSlotsResponse {
     private LocalDate day;
     private LocalTime start;
     private LocalTime end;
-    private TimeSlotsStatus status;
+    private TimeSlotsStatus timeSlotsStatus;
     private AppointmentType appointmentType;
 }

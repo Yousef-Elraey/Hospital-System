@@ -1,5 +1,6 @@
 package com.hospital.patient.dto.request;
 
+import com.hospital.entity.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
@@ -16,6 +17,7 @@ import java.time.LocalDate;
 @Accessors(chain = true)
 public class SearchPatientRequest {
     private String name;
-    private LocalDate dateOfBirth;
+    private Gender gender;
     private String phone;
+    private LocalDate dateOfBirth;
 }

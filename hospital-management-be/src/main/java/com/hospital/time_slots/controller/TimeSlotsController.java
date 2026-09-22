@@ -11,8 +11,10 @@ import com.hospital.time_slots.dto.response.GetTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.SearchTimeSlotsResponse;
 import com.hospital.time_slots.dto.response.UpdateTimeSlotsResponse;
 import com.hospital.time_slots.service.TimeSlotsService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +24,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/time-slots")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class TimeSlotsController {
     private final TimeSlotsService timeSlotsService;
 
     @GetMapping("time-slots")
-    public ResponseEntity<PageResponse<GetTimeSlotsResponse>> getAllTimeSlots(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<PageResponse<GetTimeSlotsResponse>> getAllTimeSlots(@ParameterObject SearchTimeSlotsRequest searchTimeSlotsRequest,
+                                                                              @RequestParam(defaultValue = "0")int page,
                                                                               @RequestParam(defaultValue = "10")int size,
                                                                               @RequestParam(defaultValue = "id") String sortBy,
                                                                               @RequestParam(defaultValue = "asc") String direction){
-        return new ResponseEntity<>(timeSlotsService.getAllTimeSlots(page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(timeSlotsService.getAllTimeSlots(searchTimeSlotsRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -68,12 +72,12 @@ public class TimeSlotsController {
         return new ResponseEntity<>(timeSlotsService.getAvailableTimeSlots(doctorId), HttpStatus.OK);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<PageResponse<SearchTimeSlotsResponse>> searchTimeSlots(@RequestBody SearchTimeSlotsRequest searchTimeSlotsRequest,
-                                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                                 @RequestParam(defaultValue = "10") int size,
-                                                                                 @RequestParam(defaultValue = "id") String sortBy,
-                                                                                 @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(timeSlotsService.searchTimeSlots(page, size, sortBy, direction, searchTimeSlotsRequest), HttpStatus.OK);
-    }
+//    @PostMapping("/search")
+//    public ResponseEntity<PageResponse<SearchTimeSlotsResponse>> searchTimeSlots(@RequestBody SearchTimeSlotsRequest searchTimeSlotsRequest,
+//                                                                                 @RequestParam(defaultValue = "0") int page,
+//                                                                                 @RequestParam(defaultValue = "10") int size,
+//                                                                                 @RequestParam(defaultValue = "id") String sortBy,
+//                                                                                 @RequestParam(defaultValue = "asc") String direction) {
+//        return new ResponseEntity<>(timeSlotsService.searchTimeSlots(page, size, sortBy, direction, searchTimeSlotsRequest), HttpStatus.OK);
+//    }
 }

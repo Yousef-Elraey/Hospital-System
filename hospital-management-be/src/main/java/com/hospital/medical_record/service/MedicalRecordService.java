@@ -1,10 +1,12 @@
 package com.hospital.medical_record.service;
 
+import com.hospital.appointment.specification.AppointmentSpecification;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JwtService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
+import com.hospital.entity.Appointment;
 import com.hospital.entity.MedicalRecord;
 import com.hospital.medical_record.dto.request.CreateMedicalRecordRequest;
 import com.hospital.medical_record.dto.request.SearchMedicalRecordRequest;
@@ -14,6 +16,7 @@ import com.hospital.medical_record.dto.response.GetMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.SearchMedicalRecordResponse;
 import com.hospital.medical_record.dto.response.UpdateMedicalRecordResponse;
 import com.hospital.medical_record.repository.MedicalRecordRepository;
+import com.hospital.medical_record.specification.MedicalRecordSpecification;
 import com.hospital.patient.repository.PatientRepository;
 import com.hospital.treatment.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,19 +43,26 @@ public class MedicalRecordService {
     private final TreatmentRepository treatmentRepository;
     private final JwtService jwtService;
 
-    public PageResponse<GetMedicalRecordResponse> getAllMedicalRecords(int page, int size,String sortBy, String direction) {
+    public PageResponse<GetMedicalRecordResponse> getAllMedicalRecords(SearchMedicalRecordRequest searchMedicalRecordRequest,
+                                                                       int page, int size,String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
                 : Sort.by(sortBy).ascending();
 
         Pageable pageable = PageRequest.of(page,size,sort);
-        Page<MedicalRecord> medicalRecordPage = medicalRecordRepository.findAll(pageable);
-       List<MedicalRecord> medicalRecords = medicalRecordPage.getContent();
-        if (medicalRecords.isEmpty()){
-            throw new HospitalBusinessException("no medical_records found");
-        }
-        List<GetMedicalRecordResponse> medicalRecordsResponse = new ArrayList<>();
 
+        Specification<MedicalRecord> specification  = Specification.where(null);
+        specification = specification
+                .and(MedicalRecordSpecification.hasDoctorId(searchMedicalRecordRequest.getDoctorId()))
+                .and(MedicalRecordSpecification.hasPatientId(searchMedicalRecordRequest.getPatientId()))
+                .and(MedicalRecordSpecification.hasDiagnoseId(searchMedicalRecordRequest.getDiagnoseId()))
+                .and(MedicalRecordSpecification.hasTreatmentId(searchMedicalRecordRequest.getTreatmentId()));
+
+        Page<MedicalRecord> medicalRecordPage = medicalRecordRepository.findAll(specification,pageable);
+       List<MedicalRecord> medicalRecords = medicalRecordPage.getContent();
+
+        List<GetMedicalRecordResponse> medicalRecordsResponse = new ArrayList<>();
+        if (!medicalRecords.isEmpty()){
             for (MedicalRecord record : medicalRecords) {
                 GetMedicalRecordResponse medicalRecordResponse = new GetMedicalRecordResponse();
                 medicalRecordResponse.setId(record.getId())
@@ -64,6 +75,7 @@ public class MedicalRecordService {
                         .setUpdatedAt(record.getUpdatedAt())
                         .setUpdatedBy(record.getUpdatedBy());
                 medicalRecordsResponse.add(medicalRecordResponse);
+            }
         }
 
         return PageResponse.<GetMedicalRecordResponse>builder()
@@ -117,10 +129,7 @@ public class MedicalRecordService {
                 .setPatient(patientRepository.findById(medicalRecordRequest.getPatientId()).get())
                 .setDoctor(doctorRepository.findById(medicalRecordRequest.getDoctorId()).get())
                 .setDiagnose(diagnoseRepository.findById(medicalRecordRequest.getDiagnoseId()).get())
-                .setTreatment(treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).get())
-                .setCreatedAt(LocalDateTime.now())
-                .setUpdatedAt(LocalDateTime.now())
-                .setId(medicalRecordRequest.getId());
+                .setTreatment(treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).get());
 
         medicalRecordRepository.save(dbMedicalRecord);
         CreateMedicalRecordResponse medicalRecordResponse = new CreateMedicalRecordResponse();
@@ -213,7 +222,7 @@ public class MedicalRecordService {
             SearchMedicalRecordResponse searchMedicalRecordResponse = new SearchMedicalRecordResponse();
             searchMedicalRecordResponse.setId(medicalRecord.getId())
                     .setDiagnoseName(medicalRecord.getDiagnose().getNameEn())
-                    .setTreatmentName(medicalRecord.getTreatment().getName_en())
+                    .setTreatmentName(medicalRecord.getTreatment().getNameEn())
                     .setPatientName(medicalRecord.getPatient().getName())
                     .setDoctorName(medicalRecord.getDoctor().getName())
                     .setCreatedAt(medicalRecord.getCreatedAt())

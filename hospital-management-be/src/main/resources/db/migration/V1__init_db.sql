@@ -50,7 +50,7 @@ CREATE TABLE time_slots(
     day DATE NOT NULL,
     start TIME NOT NULL,
     end TIME NOT NULL,
-    status VARCHAR(10) DEFAULT "AVAILABLE",
+    time_slots_status VARCHAR(10) DEFAULT "AVAILABLE",
 
     CONSTRAINT FK_doctor_time_slots
      FOREIGN key (doctor_id) REFERENCES doctor(id)

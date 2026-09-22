@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class SearchDiagnoseRequest {
-    private String nameEN;
+    private String nameEn;
     private String nameAr;
 
 }

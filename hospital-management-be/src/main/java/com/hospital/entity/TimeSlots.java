@@ -15,7 +15,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "time_slots")
-@Builder
 public class TimeSlots {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +28,6 @@ public class TimeSlots {
     private LocalTime start;
     private LocalTime end;
     @Enumerated(value = EnumType.STRING)
-    @Builder.Default
-    private TimeSlotsStatus status = TimeSlotsStatus.AVAILABLE;
+    private TimeSlotsStatus timeSlotsStatus ;
 
 }

@@ -1,6 +1,5 @@
-package com.hospital.diagnose.dto.request;
+package com.hospital.status.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +11,8 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class CreateDiagnoseRequest {
-    @NotBlank(message = "name_en is required")
+public class SearchAppointmentStatusRequest {
+    private Long id;
     private String nameEn;
-    @NotBlank(message = "name_ar is required")
     private String nameAr;
-
 }

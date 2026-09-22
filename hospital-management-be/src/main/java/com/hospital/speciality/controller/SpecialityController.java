@@ -10,8 +10,10 @@ import com.hospital.speciality.dto.response.CreateSpecialityResponse;
 import com.hospital.speciality.dto.response.GetSpecialityResponse;
 import com.hospital.speciality.dto.response.UpdateSpecialityResponse;
 import com.hospital.speciality.service.SpecialityService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +21,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/speciality")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer Authentication")
 public class SpecialityController {
 
   private final SpecialityService specialityService;
 
     @GetMapping("/specialities")
-    public ResponseEntity<PageResponse<GetSpecialityResponse>> getAllSpecialities(@RequestParam(defaultValue = "0")int page,
+    public ResponseEntity<PageResponse<GetSpecialityResponse>> getAllSpecialities(@ParameterObject SearchSpecialityRequest searchSpecialityRequest,
+                                                                                  @RequestParam(defaultValue = "0")int page,
                                                                                   @RequestParam(defaultValue = "10")int size,
                                                                                   @RequestParam(defaultValue = "id") String sortBy,
                                                                                   @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(specialityService.getAllSpecialities(page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(specialityService.getAllSpecialities(searchSpecialityRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
