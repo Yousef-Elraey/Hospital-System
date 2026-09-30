@@ -25,13 +25,13 @@ import org.springframework.web.bind.annotation.*;
 public class DoctorController {
 private final DoctorService doctorService;
 
-    @GetMapping("/doctors")
-    public ResponseEntity<PageResponse<GetDoctorResponse>> getAllDoctors(@ParameterObject SearchDoctorRequest searchDoctorRequest,
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetDoctorResponse>> searchDoctor(@ParameterObject SearchDoctorRequest searchDoctorRequest,
                                                                          @RequestParam(defaultValue = "0")int page,
                                                                          @RequestParam(defaultValue = "10")int size,
                                                                          @RequestParam(defaultValue = "id") String sortBy,
                                                                          @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(doctorService.getAllDoctors(searchDoctorRequest,page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(doctorService.searchDoctor(searchDoctorRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -60,13 +60,7 @@ private final DoctorService doctorService;
         return new ResponseEntity<>(doctorService.startSession(createMedicalRecordRequest), HttpStatus.OK);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<PageResponse<GetDoctorResponse>> searchDoctor(@RequestBody SearchDoctorRequest request,
-                                                                        @RequestParam(defaultValue = "0") int page,
-                                                                        @RequestParam(defaultValue = "10") int size,
-                                                                        @RequestParam(defaultValue = "id") String sortBy,
-                                                                        @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(doctorService.searchDoctor(page, size, sortBy, direction, request), HttpStatus.OK);
-    }
+
+
 
 }

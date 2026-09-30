@@ -19,16 +19,4 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, JpaSpec
 
     Optional<Patient> findByNameAndDateOfBirthAndPhone(String name, LocalDate dateOfBirth, String phone);
 
-    @Query("""
-                SELECT p
-                FROM Patient p
-                WHERE (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%')))
-                      AND (:dateOfBirth IS NULL OR p.dateOfBirth = :dateOfBirth)
-                      AND (:phone IS NULL OR p.phone = :phone)
-            """)
-    Page<Patient> searchPatient(@Param("name") String name,
-                                @Param("dateOfBirth") LocalDate dateOfBirth,
-                                @Param("phone") String phone,
-                                Pageable pageable);
-
 }

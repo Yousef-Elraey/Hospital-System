@@ -40,7 +40,7 @@ public class PatientService {
     private final MedicalRecordService medicalRecordService;
     private final JwtService jwtService;
 
-    public PageResponse<GetPatientResponse> getAllPatients(SearchPatientRequest searchPatientRequest,
+    public PageResponse<GetPatientResponse> searchPatient(SearchPatientRequest searchPatientRequest,
                                                            int page, int size, String sortBy, String direction){
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -175,49 +175,4 @@ public class PatientService {
         return getMedicalRecordResponses;
     }
 
-    public PageResponse<GetPatientResponse> searchPatient(int page, int size, String sortBy, String direction, SearchPatientRequest searchPatientRequest) {
-        String patientName = searchPatientRequest.getName();
-        LocalDate patientDateOfBirth = searchPatientRequest.getDateOfBirth();
-        String patientPhone = searchPatientRequest.getPhone();
-
-        if (patientName != null && patientName.isBlank()) {
-            patientName = null;
-        }
-        if (patientPhone != null && patientPhone.isBlank()) {
-            patientPhone = null;
-        }
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Patient> patientPage = patientRepository.searchPatient(patientName, patientDateOfBirth, patientPhone, pageable);
-        List<Patient> patientList = patientPage.getContent();
-        List<GetPatientResponse> responses = new ArrayList<>();
-
-        for (Patient patient : patientList) {
-            GetPatientResponse getPatientResponse = new GetPatientResponse();
-            getPatientResponse.setId(patient.getId())
-                    .setName(patient.getName())
-                    .setGender(patient.getGender())
-                    .setPhone(patient.getPhone())
-                    .setMedicalRecords(medicalRecordService.getByPatientId(patient.getId()))
-                    .setDateOfBirth(patient.getDateOfBirth())
-                    .setCreatedBy(patient.getCreatedBy())
-                    .setCreatedAt(patient.getCreatedAt())
-                    .setUpdatedBy(patient.getUpdatedBy())
-                    .setUpdatedAt(patient.getUpdatedAt());
-            responses.add(getPatientResponse);
-        }
-
-        return PageResponse.<GetPatientResponse>builder()
-                .data(responses)
-                .page(patientPage.getNumber())
-                .size(patientPage.getSize())
-                .totalElements(patientPage.getTotalElements())
-                .totalPages(patientPage.getTotalPages())
-                .first(patientPage.isFirst())
-                .last(patientPage.isLast())
-                .build();
-    }
 }

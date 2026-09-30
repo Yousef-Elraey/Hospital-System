@@ -21,12 +21,4 @@ public interface SpecialityRepository extends JpaRepository<Speciality, Long>, J
             """)
     Optional<Speciality> findByName(@Param("name") String name);
 
-    @Query("""
-            SELECT s FROM Speciality s
-            WHERE (:nameEn IS NULL OR LOWER(s.nameEn) = LOWER(:nameEn))
-                AND (:nameAr IS NULL OR LOWER(s.nameAr) = LOWER(:nameAr))
-            """)
-    Page<Speciality> searchSpeciality(@Param("nameEn") String nameEn,
-                                      @Param("nameAr") String nameAr,
-                                      Pageable pageable);
 }

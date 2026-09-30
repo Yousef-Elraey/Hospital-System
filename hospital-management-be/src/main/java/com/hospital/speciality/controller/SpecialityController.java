@@ -26,13 +26,13 @@ public class SpecialityController {
 
   private final SpecialityService specialityService;
 
-    @GetMapping("/specialities")
-    public ResponseEntity<PageResponse<GetSpecialityResponse>> getAllSpecialities(@ParameterObject SearchSpecialityRequest searchSpecialityRequest,
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetSpecialityResponse>> searchSpeciality(@ParameterObject SearchSpecialityRequest searchSpecialityRequest,
                                                                                   @RequestParam(defaultValue = "0")int page,
                                                                                   @RequestParam(defaultValue = "10")int size,
                                                                                   @RequestParam(defaultValue = "id") String sortBy,
                                                                                   @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(specialityService.getAllSpecialities(searchSpecialityRequest,page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(specialityService.searchSpeciality(searchSpecialityRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -59,13 +59,5 @@ public class SpecialityController {
         return new ResponseEntity<>("deleted patient successfully", HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<PageResponse<GetSpecialityResponse>> searchSpeciality(@RequestBody SearchSpecialityRequest searchSpecialityRequest,
-                                                                                @RequestParam(defaultValue = "0") int page,
-                                                                                @RequestParam(defaultValue = "10") int size,
-                                                                                @RequestParam(defaultValue = "id") String sortBy,
-                                                                                @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(specialityService.searchSpeciality(page, size, sortBy, direction, searchSpecialityRequest), HttpStatus.OK);
-    }
 
 }

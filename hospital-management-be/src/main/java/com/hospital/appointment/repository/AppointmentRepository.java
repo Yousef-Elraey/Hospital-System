@@ -29,20 +29,5 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
     @Query("from Appointment a where a.status.id = 3 order by a.updatedAt")
     List<Appointment> appointmentsStatusPending();
 
-    @Query("""
-            SELECT a
-                 FROM Appointment a
-                 WHERE (:patientId IS NULL OR a.patient.id = :patientId)
-                  AND (:doctorId IS NULL OR a.doctor.id = :doctorId)
-                  AND (:statusId IS NULL OR a.status.id = :statusId)
-                  AND (:start IS NULL OR (a.timing >= :start AND a.timing < :end))
-            """)
-    Page<Appointment> searchAppointment(@Param("patientId") Long patientId,
-                                        @Param("doctorId") Long doctorId,
-                                        @Param("statusId") Long statusId,
-                                        @Param("start") LocalDateTime start,
-                                        @Param("end") LocalDateTime end,
-                                        Pageable pageable);
-
 
 }

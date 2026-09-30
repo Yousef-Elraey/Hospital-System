@@ -47,7 +47,7 @@ public class AppointmentService {
     private final JwtService jwtService;
 
 
-    public PageResponse<GetAppointmentResponse> getAllAppointments(SearchAppointmentRequest searchAppointmentRequest,
+    public PageResponse<GetAppointmentResponse> searchAppointment(SearchAppointmentRequest searchAppointmentRequest,
                                                                    int page, int size, String sortBy, String direction) {
             Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -355,54 +355,5 @@ public class AppointmentService {
         appointmentRepository.save(currentAppointmentDb);
 
         return patientResponse;
-    }
-
-
-    public PageResponse<SearchAppointmentResponse> searchAppointment(int page, int size, String sortBy,
-                                                                     String direction, SearchAppointmentRequest searchAppointmentRequest) {
-        Long patientId = searchAppointmentRequest.getPatientId();
-        Long doctorId = searchAppointmentRequest.getDoctorId();
-        Long statusId = searchAppointmentRequest.getStatusId();
-        LocalDateTime start = null;
-        LocalDateTime end = null;
-
-//        if (appointmentSearchRequest.getDate() != null) {
-//            start = appointmentSearchRequest.getDate().atStartOfDay();
-//            end = appointmentSearchRequest.getDate().plusDays(1).atStartOfDay();
-//        }
-
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Appointment> appointmentPage = appointmentRepository.searchAppointment(patientId, doctorId, statusId, start, end, pageable);
-        List<Appointment> appointmentList = appointmentPage.getContent();
-        List<SearchAppointmentResponse> appointmentResponses = new ArrayList<>();
-        for (Appointment appointment : appointmentList) {
-            SearchAppointmentResponse searchAppointmentResponse = new SearchAppointmentResponse();
-            searchAppointmentResponse.setId(appointment.getId())
-                    .setTiming(appointment.getTiming())
-                    .setAppointmentType(appointment.getAppointmentType())
-                    .setDoctorName(appointment.getDoctor().getName())
-                    .setPatientName(appointment.getPatient().getName())
-                    .setCreatedBy(appointment.getCreatedBy())
-                    .setCreatedAt(appointment.getCreatedAt())
-                    .setUpdatedBy(appointment.getUpdatedBy())
-                    .setUpdatedAt(appointment.getUpdatedAt())
-                    .setStatusName(appointment.getStatus().getNameEn());
-
-            appointmentResponses.add(searchAppointmentResponse);
-        }
-
-        return PageResponse.<SearchAppointmentResponse>builder()
-                .data(appointmentResponses)
-                .page(appointmentPage.getNumber())
-                .size(appointmentPage.getSize())
-                .totalPages(appointmentPage.getTotalPages())
-                .totalElements(appointmentPage.getTotalElements())
-                .first(appointmentPage.isFirst())
-                .last(appointmentPage.isLast())
-                .build();
     }
 }

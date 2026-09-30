@@ -23,13 +23,13 @@ public class BillingController {
 
     private final BillingService billingService;
 
-    @GetMapping("/billings")
-    public ResponseEntity<PageResponse<GetBillingResponse>> getAllBillings(@ParameterObject SearchBillingRequest searchBillingRequest,
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetBillingResponse>> searchBilling(@ParameterObject SearchBillingRequest searchBillingRequest,
                                                                            @RequestParam(defaultValue = "0")int page,
                                                                            @RequestParam(defaultValue = "10")int size,
                                                                            @RequestParam(defaultValue = "id") String sortBy,
                                                                            @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(billingService.getAllBillings(searchBillingRequest, page, size, sortBy, direction), HttpStatus.OK);
+        return new ResponseEntity<>(billingService.searchBilling(searchBillingRequest, page, size, sortBy, direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -55,13 +55,7 @@ public class BillingController {
     }
 
 
-    @PostMapping("/search")
-    public ResponseEntity<PageResponse<SearchBillingResponse>> searchBilling(@RequestBody SearchBillingRequest searchBillingRequest,
-                                                                             @RequestParam(defaultValue = "0") int page,
-                                                                             @RequestParam(defaultValue = "10") int size,
-                                                                             @RequestParam(defaultValue = "id") String sortBy,
-                                                                             @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(billingService.searchBilling(page, size, sortBy, direction, searchBillingRequest), HttpStatus.OK);
-    }
+
+
 
 }

@@ -21,16 +21,5 @@ public interface TimeSlotsRepository extends JpaRepository<TimeSlots, Long>, Jpa
             "AND t.day >= CURRENT_DATE")
     List<TimeSlots> getAvailableTimeSlots(@Param("doctorId") Long doctorId);
 
-    @Query("""
-            select t from TimeSlots t
-            where (:doctorId is null or t.doctor.id = :doctorId)
-                and (:timeSlotsStatus is null or t.timeSlotsStatus = :timeSlotsStatus)
-                and (:start is null or (t.day >= :start and t.day <= :start))
-            """)
-    Page<TimeSlots> searchTimeSlots(@Param("doctorId") Long doctorId,
-                                    @Param("timeSlotsStatus") TimeSlotsStatus timeSlotsStatus,
-                                    @Param("start") LocalTime start,
-                                    @Param("end") LocalTime end,
-                                    Pageable pageable);
 }
 

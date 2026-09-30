@@ -34,7 +34,7 @@ import java.util.Optional;
 public class SpecialityService {
     private final SpecialityRepository specialityRepository;
 
-    public PageResponse<GetSpecialityResponse> getAllSpecialities(SearchSpecialityRequest searchSpecialityRequest,
+    public PageResponse<GetSpecialityResponse> searchSpeciality(SearchSpecialityRequest searchSpecialityRequest,
                                                                   int page, int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -122,44 +122,5 @@ public class SpecialityService {
             throw new HospitalBusinessException("no speciality found");
 
 
-    }
-
-    public PageResponse<GetSpecialityResponse> searchSpeciality(int page, int size, String sortBy, String direction,
-                                                                SearchSpecialityRequest searchSpecialityRequest) {
-        String nameEn = searchSpecialityRequest.getNameEn();
-        String nameAr = searchSpecialityRequest.getNameAr();
-
-        if (nameEn != null && nameEn.isBlank()) {
-            nameEn = null;
-        }
-        if (nameAr != null && nameAr.isBlank()) {
-            nameAr = null;
-        }
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Speciality> specialityPage = specialityRepository.searchSpeciality(nameEn, nameAr, pageable);
-        List<Speciality> specialityList = specialityPage.getContent();
-        List<GetSpecialityResponse> responses = new ArrayList<>();
-
-        for (Speciality speciality : specialityList) {
-            GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
-            getSpecialityResponse.setId(speciality.getId())
-                    .setNameEn(speciality.getNameEn())
-                    .setNameAr(speciality.getNameAr());
-            responses.add(getSpecialityResponse);
-        }
-
-        return PageResponse.<GetSpecialityResponse>builder()
-                .data(responses)
-                .page(specialityPage.getNumber())
-                .size(specialityPage.getSize())
-                .totalElements(specialityPage.getTotalElements())
-                .totalPages(specialityPage.getTotalPages())
-                .first(specialityPage.isFirst())
-                .last(specialityPage.isLast())
-                .build();
     }
 }

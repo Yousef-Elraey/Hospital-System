@@ -28,14 +28,14 @@ public class PatientController {
 
   private final PatientService patientService;
 
-    @GetMapping("/patients")
-    public ResponseEntity<PageResponse<GetPatientResponse>> getAllPatients(@ParameterObject
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetPatientResponse>> searchPatient(@ParameterObject
                                                                            SearchPatientRequest searchPatientRequest,
                                                                            @RequestParam(defaultValue = "0") int page,
                                                                            @RequestParam(defaultValue = "10") int size,
                                                                            @RequestParam(defaultValue = "id") String sortBy,
                                                                            @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(patientService.getAllPatients(searchPatientRequest,page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(patientService.searchPatient(searchPatientRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -68,13 +68,6 @@ public class PatientController {
         return new ResponseEntity<>(patientService.showPatientHistory(id), HttpStatus.OK);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<PageResponse<GetPatientResponse>> searchPatient(@RequestBody SearchPatientRequest searchPatientRequest,
-                                                                          @RequestParam(defaultValue = "0") int page,
-                                                                          @RequestParam(defaultValue = "10") int size,
-                                                                          @RequestParam(defaultValue = "id") String sortBy,
-                                                                          @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(patientService.searchPatient(page, size, sortBy, direction, searchPatientRequest), HttpStatus.OK);
-    }
+
 
 }

@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.*;
 public class AppointmentController {
    private final AppointmentService appointmentService;
 
-    @GetMapping("/appointments")
-    public ResponseEntity<PageResponse<GetAppointmentResponse>> getAllAppointments(
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetAppointmentResponse>> searchAppointment(
                                                                  @ParameterObject SearchAppointmentRequest searchAppointmentRequest,
                                                                  @RequestParam(defaultValue = "0")int page,
                                                                  @RequestParam(defaultValue = "10") int size,
                                                                  @RequestParam(defaultValue = "id") String sortBy,
                                                                  @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(appointmentService.getAllAppointments(searchAppointmentRequest,
+        return new ResponseEntity<>(appointmentService.searchAppointment(searchAppointmentRequest,
                                                                         page,size,sortBy,direction), HttpStatus.OK);
     }
 
@@ -88,14 +88,5 @@ public class AppointmentController {
     @PutMapping("/next")
     public ResponseEntity<GetPatientResponse> next() {
         return new ResponseEntity<>(appointmentService.next(), HttpStatus.OK);
-    }
-
-    @PostMapping("/search")
-    public ResponseEntity<PageResponse<SearchAppointmentResponse>> searchAppointment(@RequestBody SearchAppointmentRequest searchAppointmentRequest,
-                                                                                     @RequestParam(defaultValue = "0") int page,
-                                                                                     @RequestParam(defaultValue = "10") int size,
-                                                                                     @RequestParam(defaultValue = "id") String sortBy,
-                                                                                     @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(appointmentService.searchAppointment(page, size, sortBy, direction, searchAppointmentRequest), HttpStatus.OK);
     }
 }

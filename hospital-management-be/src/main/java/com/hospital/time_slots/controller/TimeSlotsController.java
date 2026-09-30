@@ -28,13 +28,13 @@ import java.util.List;
 public class TimeSlotsController {
     private final TimeSlotsService timeSlotsService;
 
-    @GetMapping("/time-slots")
-    public ResponseEntity<PageResponse<GetTimeSlotsResponse>> getAllTimeSlots(@ParameterObject SearchTimeSlotsRequest searchTimeSlotsRequest,
+    @PostMapping("/search")
+    public ResponseEntity<PageResponse<GetTimeSlotsResponse>> searchTimeSlots(@ParameterObject SearchTimeSlotsRequest searchTimeSlotsRequest,
                                                                               @RequestParam(defaultValue = "0")int page,
                                                                               @RequestParam(defaultValue = "10")int size,
                                                                               @RequestParam(defaultValue = "id") String sortBy,
                                                                               @RequestParam(defaultValue = "asc") String direction){
-        return new ResponseEntity<>(timeSlotsService.getAllTimeSlots(searchTimeSlotsRequest,page,size,sortBy,direction), HttpStatus.OK);
+        return new ResponseEntity<>(timeSlotsService.searchTimeSlots(searchTimeSlotsRequest,page,size,sortBy,direction), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -72,12 +72,5 @@ public class TimeSlotsController {
         return new ResponseEntity<>(timeSlotsService.getAvailableTimeSlots(doctorId), HttpStatus.OK);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<PageResponse<SearchTimeSlotsResponse>> searchTimeSlots(@RequestBody SearchTimeSlotsRequest searchTimeSlotsRequest,
-                                                                                 @RequestParam(defaultValue = "0") int page,
-                                                                                 @RequestParam(defaultValue = "10") int size,
-                                                                                 @RequestParam(defaultValue = "id") String sortBy,
-                                                                                 @RequestParam(defaultValue = "asc") String direction) {
-        return new ResponseEntity<>(timeSlotsService.searchTimeSlots(page, size, sortBy, direction, searchTimeSlotsRequest), HttpStatus.OK);
-    }
+
 }

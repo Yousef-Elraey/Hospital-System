@@ -12,10 +12,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BillingRepository extends JpaRepository<Billing, Long>, JpaSpecificationExecutor<Billing> {
 
-    @Query("SELECT b FROM Billing b " +
-            "WHERE (:patientId IS NULL OR b.patient.id = :patientId) " +
-            "AND (:amount IS NULL OR b.amount = :amount)")
-    Page<Billing> searchBilling(@Param("patientId") Long patientId,
-                                @Param("amount") Long amount,
-                                Pageable pageable);
 }

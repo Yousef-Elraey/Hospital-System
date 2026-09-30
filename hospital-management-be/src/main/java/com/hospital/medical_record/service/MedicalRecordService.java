@@ -43,7 +43,7 @@ public class MedicalRecordService {
     private final TreatmentRepository treatmentRepository;
     private final JwtService jwtService;
 
-    public PageResponse<GetMedicalRecordResponse> getAllMedicalRecords(SearchMedicalRecordRequest searchMedicalRecordRequest,
+    public PageResponse<GetMedicalRecordResponse> searchMedicalRecord(SearchMedicalRecordRequest searchMedicalRecordRequest,
                                                                        int page, int size,String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -200,47 +200,5 @@ public class MedicalRecordService {
         }
         return medicalRecordsResponse;
 
-    }
-
-    public PageResponse<SearchMedicalRecordResponse> searchMedicalRecord(int page, int size, String sortBy, String direction,
-                                                                         SearchMedicalRecordRequest searchMedicalRecordRequest) {
-
-        Long patientId = searchMedicalRecordRequest.getPatientId();
-        Long doctorId = searchMedicalRecordRequest.getDoctorId();
-        Long diagnoseId = searchMedicalRecordRequest.getDiagnoseId();
-
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<MedicalRecord> medicalRecordPage = medicalRecordRepository.searchMedicalRecord(patientId, doctorId, diagnoseId, pageable);
-        List<MedicalRecord> medicalRecordList = medicalRecordPage.getContent();
-        List<SearchMedicalRecordResponse> responses = new ArrayList<>();
-
-        for (MedicalRecord medicalRecord : medicalRecordList) {
-            SearchMedicalRecordResponse searchMedicalRecordResponse = new SearchMedicalRecordResponse();
-            searchMedicalRecordResponse.setId(medicalRecord.getId())
-                    .setDiagnoseName(medicalRecord.getDiagnose().getNameEn())
-                    .setTreatmentName(medicalRecord.getTreatment().getNameEn())
-                    .setPatientName(medicalRecord.getPatient().getName())
-                    .setDoctorName(medicalRecord.getDoctor().getName())
-                    .setCreatedAt(medicalRecord.getCreatedAt())
-                    .setCreatedBy(medicalRecord.getCreatedBy())
-                    .setUpdatedAt(medicalRecord.getUpdatedAt())
-                    .setUpdatedBy(medicalRecord.getUpdatedBy());
-
-            responses.add(searchMedicalRecordResponse);
-        }
-
-        return PageResponse.<SearchMedicalRecordResponse>builder()
-                .data(responses)
-                .page(medicalRecordPage.getNumber())
-                .size(medicalRecordPage.getSize())
-                .totalElements(medicalRecordPage.getTotalElements())
-                .totalPages(medicalRecordPage.getTotalPages())
-                .first(medicalRecordPage.isFirst())
-                .last(medicalRecordPage.isLast())
-                .build();
     }
 }

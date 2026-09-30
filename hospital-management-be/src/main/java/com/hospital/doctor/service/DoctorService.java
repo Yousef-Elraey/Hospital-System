@@ -45,7 +45,7 @@ public class DoctorService {
     private final TreatmentRepository treatmentRepository;
     private final JwtService jwtService;
 
-    public PageResponse<GetDoctorResponse> getAllDoctors(SearchDoctorRequest searchDoctorRequest,
+    public PageResponse<GetDoctorResponse> searchDoctor(SearchDoctorRequest searchDoctorRequest,
                                                          int page,int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -169,7 +169,6 @@ public class DoctorService {
 
     }
 
-    // still need for (debug and test)
     public GetPatientResponse startSession(CreateMedicalRecordRequest createMedicalRecordRequest) {
 
 
@@ -197,50 +196,5 @@ public class DoctorService {
                 .setUpdatedAt(LocalDateTime.now());
         medicalRecordRepository.save(medicalRecordDb);
         return patientResponse;
-    }
-
-    public PageResponse<GetDoctorResponse> searchDoctor(int page, int size, String sortBy, String direction, SearchDoctorRequest searchDoctorRequest) {
-        String doctorName = searchDoctorRequest.getName();
-        String doctorNumber = searchDoctorRequest.getContactNumber();
-        Long specialityId = searchDoctorRequest.getSpecialityId();
-        if (doctorName != null && doctorName.isBlank()) {
-            doctorName = null;
-        }
-        if (doctorNumber != null && doctorNumber.isBlank()) {
-            doctorNumber = null;
-        }
-
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Doctor> doctorPage = doctorRepository.searchDoctors(doctorName, specialityId, doctorNumber, pageable);
-
-        List<Doctor> doctorsList = doctorPage.getContent();
-        List<GetDoctorResponse> doctorsListResponses = new ArrayList<>();
-
-        for (Doctor doctor : doctorsList) {
-            GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
-            getDoctorResponse.setId(doctor.getId())
-                    .setName(doctor.getName())
-                    .setSpeciality(doctor.getSpeciality())
-                    .setContactNumber(doctor.getContactNumber())
-                    .setCreatedBy(doctor.getCreatedBy())
-                    .setCreatedAt(doctor.getCreatedAt())
-                    .setUpdatedBy(doctor.getUpdatedBy())
-                    .setUpdatedAt(doctor.getUpdatedAt());
-            doctorsListResponses.add(getDoctorResponse);
-        }
-
-        return PageResponse.<GetDoctorResponse>builder()
-                .data(doctorsListResponses)
-                .page(doctorPage.getNumber())
-                .size(doctorPage.getSize())
-                .totalElements(doctorPage.getTotalElements())
-                .totalPages(doctorPage.getTotalPages())
-                .first(doctorPage.isFirst())
-                .last(doctorPage.isLast())
-                .build();
     }
 }

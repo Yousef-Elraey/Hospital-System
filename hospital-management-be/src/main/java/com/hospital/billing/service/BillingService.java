@@ -37,7 +37,7 @@ public class BillingService {
     private final PatientRepository patientRepository;
     private final JwtService jwtService;
 
-    public PageResponse<GetBillingResponse> getAllBillings(SearchBillingRequest searchBillingRequest,
+    public PageResponse<GetBillingResponse> searchBilling(SearchBillingRequest searchBillingRequest,
                                                            int page, int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
                 ? Sort.by(sortBy).descending()
@@ -147,41 +147,5 @@ public class BillingService {
             throw new HospitalBusinessException("medicalRecord not found");
         else
             billingRepository.deleteById(id);
-    }
-
-    public PageResponse<SearchBillingResponse> searchBilling(int page, int size, String sortBy, String direction, SearchBillingRequest searchBillingRequest) {
-        Long patientId = searchBillingRequest.getPatientId();
-        Long amount = searchBillingRequest.getAmount();
-
-        Sort sort = direction.equalsIgnoreCase("desc")
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
-
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Billing> billingPage = billingRepository.searchBilling(patientId, amount, pageable);
-        List<Billing> billingList = billingPage.getContent();
-        List<SearchBillingResponse> responses = new ArrayList<>();
-
-        for (Billing billing : billingList) {
-            SearchBillingResponse searchBillingResponse = new SearchBillingResponse();
-            searchBillingResponse.setId(billing.getId())
-                    .setAmount(billing.getAmount())
-                    .setCreatedBy(billing.getCreatedBy())
-                    .setCreatedAt(billing.getCreatedAt())
-                    .setUpdatedBy(billing.getUpdatedBy())
-                    .setUpdatedAt(billing.getUpdatedAt())
-                    .setPatientName(billing.getPatient().getName());
-            responses.add(searchBillingResponse);
-        }
-
-        return PageResponse.<SearchBillingResponse>builder()
-                .data(responses)
-                .page(billingPage.getNumber())
-                .size(billingPage.getSize())
-                .totalElements(billingPage.getTotalElements())
-                .totalPages(billingPage.getTotalPages())
-                .first(billingPage.isFirst())
-                .last(billingPage.isLast())
-                .build();
     }
 }
