@@ -85,15 +85,15 @@
   "login": {
     "title": "Hospital Management",
     "subtitle": "Sign in to continue",
-    "username": "Username",
     "password": "Password",
-    "usernamePlaceholder": "Enter your username",
     "passwordPlaceholder": "Enter your password",
     "signIn": "Sign in",
-    "errorRequired": "Please enter a username.",
-    "errorInvalid": "Invalid username or password.",
+    "errorRequired": "Please enter an email.",
+    "errorInvalid": "Invalid email or password.",
     "noAccount": "Don't have an account?",
-    "goToRegister": "Create one"
+    "goToRegister": "Create one",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email"
   },
   "register": {
     "title": "Create account",
@@ -110,7 +110,17 @@
     "errorRequiredUsername": "Please enter a username.",
     "errorRequiredPassword": "Please enter a password.",
     "errorPasswordMismatch": "Passwords do not match.",
-    "errorFailed": "Registration failed. Please try again."
+    "errorFailed": "Registration failed. Please try again.",
+    "fullName": "Full name",
+    "fullNamePlaceholder": "Enter your full name",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "phone": "Phone",
+    "phonePlaceholder": "Enter your phone number",
+    "address": "Address",
+    "addressPlaceholder": "Enter your address",
+    "errorRequiredEmail": "Please enter an email.",
+    "errorRequiredFullName": "Please enter your full name."
   },
   "dashboard": {
     "title": "Dashboard",

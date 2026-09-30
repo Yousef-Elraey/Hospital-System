@@ -14,7 +14,7 @@ import { LocaleService } from '../../core/services/locale.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  username = '';
+  email = '';
   password = '';
   error = '';
   submitting = false;
@@ -28,12 +28,12 @@ export class LoginComponent {
 
   onSubmit(): void {
     this.error = '';
-    if (!this.username.trim()) {
+    if (!this.email.trim()) {
       this.error = this.translate.instant('login.errorRequired');
       return;
     }
     this.submitting = true;
-    this.auth.login(this.username, this.password).subscribe({
+    this.auth.login(this.email, this.password).subscribe({
       next: () => this.router.navigate(['/'], { replaceUrl: true }),
       error: () => {
         this.submitting = false;

@@ -85,15 +85,15 @@
   "login": {
     "title": "إدارة المستشفى",
     "subtitle": "سجّل الدخول للمتابعة",
-    "username": "اسم المستخدم",
     "password": "كلمة المرور",
-    "usernamePlaceholder": "أدخل اسم المستخدم",
     "passwordPlaceholder": "أدخل كلمة المرور",
     "signIn": "تسجيل الدخول",
-    "errorRequired": "يرجى إدخال اسم المستخدم.",
-    "errorInvalid": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+    "errorRequired": "يرجى إدخال البريد الإلكتروني.",
+    "errorInvalid": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
     "noAccount": "ليس لديك حساب؟",
-    "goToRegister": "إنشاء حساب"
+    "goToRegister": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني"
   },
   "register": {
     "title": "إنشاء حساب",
@@ -110,7 +110,17 @@
     "errorRequiredUsername": "يرجى إدخال اسم المستخدم.",
     "errorRequiredPassword": "يرجى إدخال كلمة المرور.",
     "errorPasswordMismatch": "كلمتا المرور غير متطابقتين.",
-    "errorFailed": "فشل التسجيل. حاول مرة أخرى."
+    "errorFailed": "فشل التسجيل. حاول مرة أخرى.",
+    "fullName": "الاسم الكامل",
+    "fullNamePlaceholder": "أدخل اسمك الكامل",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "phone": "رقم الهاتف",
+    "phonePlaceholder": "أدخل رقم هاتفك",
+    "address": "العنوان",
+    "addressPlaceholder": "أدخل عنوانك",
+    "errorRequiredEmail": "يرجى إدخال البريد الإلكتروني.",
+    "errorRequiredFullName": "يرجى إدخال الاسم الكامل."
   },
   "dashboard": {
     "title": "لوحة التحكم",

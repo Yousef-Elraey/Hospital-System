@@ -22,9 +22,9 @@
       <form (ngSubmit)="onSubmit()">
         <div class="mb-3">
           <label class="form-label small text-uppercase fw-semibold text-muted">
-            <i class="fa-solid fa-user me-1 opacity-75"></i>{{ 'login.username' | translate }}
+            <i class="fa-solid fa-envelope me-1 opacity-75"></i>{{ 'login.email' | translate }}
           </label>
-          <input type="text" class="form-control" [(ngModel)]="username" name="username" [placeholder]="'login.usernamePlaceholder' | translate" autocomplete="username" />
+          <input type="email" class="form-control" [(ngModel)]="email" name="email" [placeholder]="'login.emailPlaceholder' | translate" autocomplete="email" />
         </div>
         <div class="mb-3">
           <label class="form-label small text-uppercase fw-semibold text-muted">
@@ -33,9 +33,9 @@
           <input type="password" class="form-control" [(ngModel)]="password" name="password" [placeholder]="'login.passwordPlaceholder' | translate" autocomplete="current-password" />
         </div>
         @if (error) {
-          <div class="alert alert-danger d-flex align-items-center gap-2 py-2 small mb-3" role="alert">
-            <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
-          </div>
+        <div class="alert alert-danger d-flex align-items-center gap-2 py-2 small mb-3" role="alert">
+          <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+        </div>
         }
         <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" [disabled]="submitting">
           <i class="fa-solid fa-right-to-bracket"></i> {{ 'login.signIn' | translate }}

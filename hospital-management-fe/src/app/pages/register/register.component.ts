@@ -15,6 +15,10 @@ import { LocaleService } from '../../core/services/locale.service';
 })
 export class RegisterComponent {
   username = '';
+  phone = '';
+  email = '';
+  fullName = '';
+  address = '';
   password = '';
   confirmPassword = '';
   error = '';
@@ -33,6 +37,14 @@ export class RegisterComponent {
       this.error = this.translate.instant('register.errorRequiredUsername');
       return;
     }
+    if (!this.email.trim()) {
+      this.error = this.translate.instant('register.errorRequiredEmail');
+      return;
+    }
+    if (!this.fullName.trim()) {
+      this.error = this.translate.instant('register.errorRequiredFullName');
+      return;
+    }
     if (!this.password) {
       this.error = this.translate.instant('register.errorRequiredPassword');
       return;
@@ -43,7 +55,14 @@ export class RegisterComponent {
     }
 
     this.submitting = true;
-    this.auth.register(this.username, this.password).subscribe({
+    this.auth.register({
+      userName: this.username,
+      phone: this.phone,
+      email: this.email,
+      fullName: this.fullName,
+      address: this.address,
+      password: this.password,
+    }).subscribe({
       next: () => this.router.navigate(['/login'], { replaceUrl: true }),
       error: () => {
         this.submitting = false;
