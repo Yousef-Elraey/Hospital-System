@@ -212,42 +212,42 @@ public class TimeSlotsService {
         return responses;
     }
 
-//    public PageResponse<SearchTimeSlotsResponse> searchTimeSlots(int page, int size, String sortBy, String direction, SearchTimeSlotsRequest searchTimeSlotsRequest) {
-//        Long doctorId = searchTimeSlotsRequest.getDoctorId();
-//        TimeSlotsStatus timeSlotsStatus = searchTimeSlotsRequest.getTimeSlotsStatus();
-//        LocalTime from = searchTimeSlotsRequest.getStart();
-//        LocalTime to = searchTimeSlotsRequest.getEnd();
-//
-//
-//        Sort sort = direction.equalsIgnoreCase("desc")
-//                ? Sort.by(sortBy).descending()
-//                : Sort.by(sortBy).ascending();
-//
-//        Pageable pageable = PageRequest.of(page, size, sort);
-//        Page<TimeSlots> timeSlotsPage = timeSlotsRepository.searchTimeSlots(doctorId, timeSlotsStatus, from, to, pageable);
-//        List<TimeSlots> timeSlotsList = timeSlotsPage.getContent();
-//        List<SearchTimeSlotsResponse> responses = new ArrayList<>();
-//
-//        for (TimeSlots timeSlots : timeSlotsList) {
-//            SearchTimeSlotsResponse searchTimeSlotsResponse = new SearchTimeSlotsResponse();
-//            searchTimeSlotsResponse.setId(timeSlots.getId())
-//                    .setDoctorName(timeSlots.getDoctor().getName())
-//                    .setDay(timeSlots.getDay())
-//                    .setStart(timeSlots.getStart())
-//                    .setEnd(timeSlots.getEnd())
-//                    .setTimeSlotsStatus(timeSlots.getTimeSlotsStatus())
-//                    .setAppointmentType(timeSlots.getAppointmentType());
-//            responses.add(searchTimeSlotsResponse);
-//        }
-//
-//        return PageResponse.<SearchTimeSlotsResponse>builder()
-//                .data(responses)
-//                .page(timeSlotsPage.getNumber())
-//                .size(timeSlotsPage.getSize())
-//                .totalElements(timeSlotsPage.getTotalElements())
-//                .totalPages(timeSlotsPage.getTotalPages())
-//                .first(timeSlotsPage.isFirst())
-//                .last(timeSlotsPage.isLast())
-//                .build();
-//    }
+    public PageResponse<SearchTimeSlotsResponse> searchTimeSlots(int page, int size, String sortBy, String direction, SearchTimeSlotsRequest searchTimeSlotsRequest) {
+        Long doctorId = searchTimeSlotsRequest.getDoctorId();
+        TimeSlotsStatus timeSlotsStatus = searchTimeSlotsRequest.getTimeSlotsStatus();
+        LocalTime from = searchTimeSlotsRequest.getStart();
+        LocalTime to = searchTimeSlotsRequest.getEnd();
+
+
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<TimeSlots> timeSlotsPage = timeSlotsRepository.searchTimeSlots(doctorId, timeSlotsStatus, from, to, pageable);
+        List<TimeSlots> timeSlotsList = timeSlotsPage.getContent();
+        List<SearchTimeSlotsResponse> responses = new ArrayList<>();
+
+        for (TimeSlots timeSlots : timeSlotsList) {
+            SearchTimeSlotsResponse searchTimeSlotsResponse = new SearchTimeSlotsResponse();
+            searchTimeSlotsResponse.setId(timeSlots.getId())
+                    .setDoctorName(timeSlots.getDoctor().getName())
+                    .setDay(timeSlots.getDay())
+                    .setStart(timeSlots.getStart())
+                    .setEnd(timeSlots.getEnd())
+                    .setTimeSlotsStatus(timeSlots.getTimeSlotsStatus())
+                    .setAppointmentType(timeSlots.getAppointmentType());
+            responses.add(searchTimeSlotsResponse);
+        }
+
+        return PageResponse.<SearchTimeSlotsResponse>builder()
+                .data(responses)
+                .page(timeSlotsPage.getNumber())
+                .size(timeSlotsPage.getSize())
+                .totalElements(timeSlotsPage.getTotalElements())
+                .totalPages(timeSlotsPage.getTotalPages())
+                .first(timeSlotsPage.isFirst())
+                .last(timeSlotsPage.isLast())
+                .build();
+    }
 }
