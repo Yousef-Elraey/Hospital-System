@@ -1,5 +1,6 @@
 package com.hospital.patient.service;
 
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JwtService;
 import com.hospital.dto.PageResponse;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -88,8 +90,8 @@ public class PatientService {
     public GetPatientResponse getPatientById(Long id) {
         Optional<Patient> patientOp = patientRepository.findById(id);
         if (patientOp.isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+id+") not found");        }
         Patient patient = patientOp.get();
         GetPatientResponse patientResponse = new GetPatientResponse();
         patientResponse.setId(patient.getId())
@@ -109,7 +111,8 @@ public class PatientService {
     public CreatePatientResponse addPatient(CreatePatientRequest createPatientRequest) {
 
         if (patientRepository.findByPhone(createPatientRequest.getPhone()).isPresent()) {
-            throw new HospitalBusinessException("this phone number is already exist");
+            throw new HospitalBusinessException(HttpStatus.CONFLICT,ErrorCode.PATIENT_ALREADY_EXIST.name()
+                    ,"patient with phone ("+createPatientRequest.getPhone()+") is already exist");
         }
         Patient patient = new Patient();
         patient
@@ -141,23 +144,25 @@ public class PatientService {
             patientResponse.setId(dbPatient.getId());
             return patientResponse;
         } else
-            throw new HospitalBusinessException("no patient found");
-
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+updatePatientRequest.getId()+") not found");
     }
 
     public void deletePatientById(Long id) {
-        if (patientRepository.findById(id).isEmpty())
-            throw new HospitalBusinessException("no patient found");
-        else
+        if (patientRepository.findById(id).isEmpty()){
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+id+") not found");
+        }else {
             patientRepository.deleteById(id);
+        }
     }
 
     public List<GetMedicalRecordResponse> showPatientHistory(Long id) {
 
         List<MedicalRecord> medicalRecords = medicalRecordRepository.findMedicalRecordsByPatientId(id);
         if (medicalRecords.isEmpty()){
-            throw new HospitalBusinessException("no medical_records found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.MEDICAL_RECORD_NOT_FOUND.name()
+                    ,"patient with id ("+id+") has no medical_records");        }
         List<GetMedicalRecordResponse> getMedicalRecordResponses = new ArrayList<>();
         medicalRecords.forEach(medicalRecord -> {
             GetMedicalRecordResponse getMedicalRecordResponse = new GetMedicalRecordResponse();

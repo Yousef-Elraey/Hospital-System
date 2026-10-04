@@ -2,6 +2,7 @@ package com.hospital.auth.service;
 
 import com.hospital.auth.dto.request.LoginRequest;
 import com.hospital.auth.dto.response.LoginResponse;
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.AuthenticatedUser;
 import com.hospital.common.security.CurrentUser;
@@ -14,6 +15,7 @@ import com.hospital.user.dto.response.CreateUserResponse;
 import com.hospital.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -35,9 +37,8 @@ public class AuthService {
 
     public CreateUserResponse register(CreateUserRequest userRequest) {
         if (userRepository.findByEmail(userRequest.getEmail()).isPresent()) {
-            throw new HospitalBusinessException("user already exist");
+            throw new HospitalBusinessException(HttpStatus.CONFLICT, ErrorCode.USER_ALREADY_EXIST.name(), "user already exist");
         }
-
         User userDb = new User();
         userDb.setUserName(userRequest.getUserName())
                 .setPhone(userRequest.getPhone())
@@ -60,7 +61,7 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() ->
-                new HospitalBusinessException("user with email " + loginRequest.getEmail() + " not found"));
+                new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND.name(), "user with email " + loginRequest.getEmail() + " not found"));
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
@@ -75,7 +76,7 @@ public class AuthService {
             userRepository.save(user);
             return response;
         }
-        throw new HospitalBusinessException("you are not authenticated");
+        throw new HospitalBusinessException(HttpStatus.UNAUTHORIZED,ErrorCode.USER_NOT_UNAUTHORIZED.name(), "you are not authenticated");
     }
 
     public void logout(HttpServletRequest request) {
@@ -83,7 +84,7 @@ public class AuthService {
 
         Optional<User> userOp = userRepository.findByEmail(currentUser.getEmail());
         if (userOp.isEmpty()) {
-            throw new HospitalBusinessException("user not found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.USER_NOT_FOUND.name(), "user not found");
         }
         User user = userOp.get();
         String authHeader =
@@ -91,7 +92,7 @@ public class AuthService {
 
         if (authHeader == null ||
                 !authHeader.startsWith("Bearer ")) {
-            throw new HospitalBusinessException("Token not found");
+            throw new HospitalBusinessException(HttpStatus.BAD_REQUEST,ErrorCode.TOKEN_NOT_VALID.name(), "Token not found");
         }
 
         String token = authHeader.substring(7);

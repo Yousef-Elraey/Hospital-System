@@ -1,6 +1,7 @@
 package com.hospital.time_slots.service;
 
 import com.hospital.appointment.specification.AppointmentSpecification;
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.doctor.repository.DoctorRepository;
 import com.hospital.dto.PageResponse;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -84,7 +86,8 @@ public class TimeSlotsService {
     public GetTimeSlotsResponse getTimeSlotsById(Long id) {
         Optional<TimeSlots> timeSlots = timeSlotsRepository.findById(id);
         if (timeSlots.isEmpty()){
-            throw new HospitalBusinessException("no time slots found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TIME_SLOTS_NOT_FOUND.name()
+                    ,"time_slot with id ("+id+") not found");
         }
         TimeSlots timeSlotsDb = timeSlots.get();
         GetTimeSlotsResponse getTimeSlotsResponse = new GetTimeSlotsResponse();
@@ -103,7 +106,8 @@ public class TimeSlotsService {
     public CreateTimeSlotsResponse createTimeSlots(CreateTimeSlotsRequest createTimeSlotsRequest) {
         Optional<Doctor> doctorOp = doctorRepository.findById(createTimeSlotsRequest.getDoctorId());
         if (doctorOp.isEmpty()){
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DOCTOR_NOT_FOUND.name()
+                    , "doctor with id (" + createTimeSlotsRequest.getDoctorId() + ") not found");
         }
         TimeSlots timeSlots = new TimeSlots();
         timeSlots.setId(createTimeSlotsRequest.getId())
@@ -125,10 +129,12 @@ public class TimeSlotsService {
        Optional<TimeSlots> timeSlotsOp = timeSlotsRepository.findById(updateTimeSlotsRequest.getId());
       Optional<Doctor> doctorOp = doctorRepository.findById(updateTimeSlotsRequest.getDoctorId());
        if (timeSlotsOp.isEmpty()){
-           throw new HospitalBusinessException("no time slots found");
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TIME_SLOTS_NOT_FOUND.name()
+                   ,"time_slot with id ("+updateTimeSlotsRequest.getId()+") not found");
        }
        if(doctorOp.isEmpty()){
-           throw new HospitalBusinessException("no doctor found");
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DOCTOR_NOT_FOUND.name()
+                   , "doctor with id (" + updateTimeSlotsRequest.getDoctorId() + ") not found");
        }
        TimeSlots timeSlots = timeSlotsOp.get();
         timeSlots
@@ -147,7 +153,8 @@ public class TimeSlotsService {
 
     public void deleteTimeSlots(Long id) {
        if(timeSlotsRepository.findById(id).isEmpty()){
-           throw new HospitalBusinessException("no time slots found");
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TIME_SLOTS_NOT_FOUND.name()
+                   ,"time_slot with id ("+id+") not found");
        }else {
            timeSlotsRepository.deleteById(id);
        }
@@ -158,7 +165,8 @@ public class TimeSlotsService {
       LocalDate dayEnd = request.getDayEnd();
       Optional<Doctor> doctorOp = doctorRepository.findById(request.getDoctorId());
      if (doctorOp.isEmpty()){
-         throw new HospitalBusinessException("doctor not found");
+         throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DOCTOR_NOT_FOUND.name()
+                 , "doctor with id (" + request.getDoctorId() + ") not found");
      }
       Doctor doctor = doctorOp.get();
        List<String> specificDays = request.getDays().stream()
@@ -194,7 +202,7 @@ public class TimeSlotsService {
     public List<GetTimeSlotsResponse> getAvailableTimeSlots(Long doctorId) {
         List<TimeSlots> AvailableTimeSlots = timeSlotsRepository.getAvailableTimeSlots(doctorId);
        if (AvailableTimeSlots.isEmpty()){
-           throw new HospitalBusinessException("no time slots available");
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.TIME_SLOTS_NOT_FOUND.name(), "no time slots available");
        }
        List<GetTimeSlotsResponse> responses = new ArrayList<>();
         for (TimeSlots timeSlots: AvailableTimeSlots) {

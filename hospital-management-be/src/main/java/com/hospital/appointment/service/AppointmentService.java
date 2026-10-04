@@ -9,6 +9,7 @@ import com.hospital.appointment.dto.response.SearchAppointmentResponse;
 import com.hospital.appointment.dto.response.UpdateAppointmentResponse;
 import com.hospital.appointment.repository.AppointmentRepository;
 import com.hospital.appointment.specification.AppointmentSpecification;
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JwtService;
 import com.hospital.doctor.repository.DoctorRepository;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -63,38 +65,28 @@ public class AppointmentService {
         Page<Appointment> appointmentPage = appointmentRepository.findAll(specification, pageable);
 
         List<Appointment> appointments = appointmentPage.getContent();
-        if (appointments.isEmpty()) {
-            PageResponse.<GetAppointmentResponse>builder()
-                    .data(new ArrayList<>())
-                    .page(appointmentPage.getNumber())
-                    .size(appointmentPage.getSize())
-                    .totalElements(appointmentPage.getTotalElements())
-                    .totalPages(appointmentPage.getTotalPages())
-                    .first(appointmentPage.isFirst())
-                    .last(appointmentPage.isLast())
-                    .build();
 
-        }
         List<GetAppointmentResponse> appointmentsResponse = new ArrayList<>();
 
-        for (Appointment appointment : appointments) {
-            GetAppointmentResponse appointmentResponse = new GetAppointmentResponse();
+        if (!appointments.isEmpty()) {
+            for (Appointment appointment : appointments) {
+                GetAppointmentResponse appointmentResponse = new GetAppointmentResponse();
 
-            appointmentResponse
-                    .setId(appointment.getId())
-                    .setTiming(appointment.getTiming())
-                    .setAppointmentType(appointment.getAppointmentType())
-                    .setDoctorId(appointment.getDoctor().getId())
-                    .setPatientId(appointment.getPatient().getId())
-                    .setCreatedBy(appointment.getCreatedBy())
-                    .setCreatedAt(appointment.getCreatedAt())
-                    .setUpdatedBy(appointment.getUpdatedBy())
-                    .setUpdatedAt(LocalDateTime.now())
-                    .setStatusId(appointment.getDoctor().getId());
+                appointmentResponse
+                        .setId(appointment.getId())
+                        .setTiming(appointment.getTiming())
+                        .setAppointmentType(appointment.getAppointmentType())
+                        .setDoctorId(appointment.getDoctor().getId())
+                        .setPatientId(appointment.getPatient().getId())
+                        .setCreatedBy(appointment.getCreatedBy())
+                        .setCreatedAt(appointment.getCreatedAt())
+                        .setUpdatedBy(appointment.getUpdatedBy())
+                        .setUpdatedAt(LocalDateTime.now())
+                        .setStatusId(appointment.getDoctor().getId());
 
-            appointmentsResponse.add(appointmentResponse);
+                appointmentsResponse.add(appointmentResponse);
+            }
         }
-
         return PageResponse.<GetAppointmentResponse>builder()
                 .data(appointmentsResponse)
                 .page(appointmentPage.getNumber())
@@ -110,7 +102,8 @@ public class AppointmentService {
     public GetAppointmentResponse getAppointmentById(Long id) {
         Optional<Appointment> appointment = appointmentRepository.findById(id);
         if (appointment.isEmpty()) {
-            throw new HospitalBusinessException("no appointment found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.Appointment_NOT_FOUND.name(),
+                    "Appointment with id ("+id+") not found");
         }
         Appointment appointmentDb = appointment.get();
         GetAppointmentResponse appointmentResponse = new GetAppointmentResponse();
@@ -136,13 +129,14 @@ public class AppointmentService {
         Optional<AppointmentStatus> statusOp = appointmentStatusRepository.findById(createAppointmentRequest.getStatusId());
 
         if (patientOp.isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+createAppointmentRequest.getPatientId()+") not found");        }
         if (doctorOp.isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+createAppointmentRequest.getDoctorId()+") not found");
         }
         if (statusOp.isEmpty()) {
-            throw new HospitalBusinessException("invalid status id");
+            throw new HospitalBusinessException(HttpStatus.CONFLICT, ErrorCode.INVALID_ID.name(), "invalid status id");
         }
         Appointment appointment = new Appointment();
         appointment.setTiming(createAppointmentRequest.getTiming());
@@ -161,13 +155,15 @@ public class AppointmentService {
     public UpdateAppointmentResponse updateAppointment(UpdateAppointmentRequest updateAppointmentRequest) {
 
         if (patientRepository.findById(updateAppointmentRequest.getPatientId()).isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+updateAppointmentRequest.getPatientId()+") not found");
         }
         if (doctorRepository.findById(updateAppointmentRequest.getDoctorId()).isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+updateAppointmentRequest.getDoctorId()+") not found");
         }
         if (appointmentStatusRepository.findById(updateAppointmentRequest.getStatusId()).isEmpty()) {
-            throw new HospitalBusinessException("invalid status id");
+            throw new HospitalBusinessException(HttpStatus.CONFLICT, ErrorCode.INVALID_ID.name(), "invalid status id");
         }
         Optional<Appointment> appointmentTemp = appointmentRepository.findById(updateAppointmentRequest.getId());
         if (appointmentTemp.isPresent()) {
@@ -182,13 +178,13 @@ public class AppointmentService {
             appointmentResponse.setId(appointment.getId());
             return appointmentResponse;
         }else
-            throw new HospitalBusinessException("no appointment found");
-    }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.Appointment_NOT_FOUND.name(),
+                    "Appointment with id ("+updateAppointmentRequest.getId()+") not found");    }
 
     public void deleteAppointment(Long id) {
         if (appointmentRepository.findById(id).isEmpty())
-            throw new HospitalBusinessException("appointment not found");
-        else
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.Appointment_NOT_FOUND.name(),
+                    "Appointment with id ("+id+") not found");        else
             appointmentRepository.deleteById(id);
 
     }
@@ -197,34 +193,34 @@ public class AppointmentService {
         Optional<TimeSlots> timeSlotsOp = timeSlotsRepository.findById(bookRequestDto.getTimeSlotsId());
         Optional<Patient> patientOp = patientRepository.findById(bookRequestDto.getPatientId());
         Optional<Doctor> doctorOp = doctorRepository.findById(bookRequestDto.getDoctorId());
-        Optional<AppointmentStatus> appointmentOp = appointmentStatusRepository.findById(1L);
+        Optional<AppointmentStatus> appointmentStatusOp = appointmentStatusRepository.findById(1L);
         if (timeSlotsOp.isEmpty()) {
-            throw new HospitalBusinessException("no time slots found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TIME_SLOTS_NOT_FOUND.name(), "no time slots found");
         }
         if (patientOp.isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+bookRequestDto.getPatientId()+") not found");
         }
         if (doctorOp.isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+bookRequestDto.getDoctorId()+") not found");
         }
-        if (appointmentOp.isEmpty()) {
-            throw new HospitalBusinessException("invalid status id");
+        if (appointmentStatusOp.isEmpty()) {
+            throw new HospitalBusinessException(HttpStatus.CONFLICT, ErrorCode.INVALID_ID.name(), "invalid status id");
         }
-//        if (appointmentRepository.findFirstByPatientIdOrderByCreatedAtAsc(bookRequestDto.getPatientId()).isPresent()) {
-//            throw new HospitalBusinessException("");
-//        }
         Appointment appointment = new Appointment();
         appointment.setTiming(bookRequestDto.getAppointmentTiming())
                 .setAppointmentType(bookRequestDto.getAppointmentType())
                 .setPatient(patientOp.get())
                 .setDoctor(doctorOp.get())
                 .setTimeSlots(timeSlotsOp.get())
-                .setStatus(appointmentOp.get());
+                .setStatus(appointmentStatusOp.get());
         appointmentRepository.save(appointment);
 
         List<Appointment> appointments = appointmentRepository.appointmentsStatusNewPaidPending();
         if (appointments.isEmpty())
-            throw new HospitalBusinessException("there is no appointments before you");
+            throw new HospitalBusinessException(HttpStatus.CONFLICT,ErrorCode.EMPTY_QUEUE.name(),"there is no appointments before you");
+
         BookResponseDto responseDto = new BookResponseDto();
         responseDto.setNumberOfWaiting(((long) appointments.size()) - 1) // number of (new + paid + pending)
                 .setStatus(appointment.getStatus());
@@ -236,13 +232,15 @@ public class AppointmentService {
     public BookResponseDto bookWithPaid(BookRequestDto bookRequestDto) {
 
         if (patientRepository.findById(bookRequestDto.getPatientId()).isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+bookRequestDto.getPatientId()+") not found");
         }
         if (doctorRepository.findById(bookRequestDto.getDoctorId()).isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+bookRequestDto.getDoctorId()+") not found");
         }
         if (appointmentStatusRepository.findById(2L).isEmpty()) {
-            throw new HospitalBusinessException("invalid status id");
+            throw new HospitalBusinessException(HttpStatus.CONFLICT, ErrorCode.INVALID_ID.name(), "invalid status id");
         }
 
         Appointment appointment = new Appointment();
@@ -257,7 +255,7 @@ public class AppointmentService {
 
         List<Appointment> appointments = appointmentRepository.appointmentsStatusPaidPending();
         if (appointments.isEmpty())
-            throw new HospitalBusinessException("there is no appointments before you");
+            throw new HospitalBusinessException(HttpStatus.CONFLICT,ErrorCode.EMPTY_QUEUE.name(),"there is no appointments before you");
         BookResponseDto responseDto = new BookResponseDto();
         responseDto.setNumberOfWaiting(((long) appointments.size()) - 1) // number of (paid + pending)
                 .setStatus(appointment.getStatus());
@@ -269,19 +267,19 @@ public class AppointmentService {
 
         Optional<Patient> patient = patientRepository.findByPhone(phoneNumber);
         if (patient.isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with phone number ("+phoneNumber+") not found");        }
 
         Optional<Appointment> appointment1 = appointmentRepository.findFirstByPatientIdAndStatusIdOrderByCreatedAtAsc(patient.get().getId(), 1L);
 
         Optional<Appointment> appointment2 = appointmentRepository.findFirstByPatientIdAndStatusIdOrderByCreatedAtAsc(patient.get().getId(), 2L);
 
         if (appointment1.isEmpty() && appointment2.isEmpty()) {
-            throw new HospitalBusinessException("no appointments found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.EMPTY_QUEUE.name(), "no appointments found");
         }
         Optional<AppointmentStatus> appointmentStatus = appointmentStatusRepository.findById(3L);
         if (appointmentStatus.isEmpty()) {
-            throw new HospitalBusinessException("invalid status id");
+            throw new HospitalBusinessException(HttpStatus.BAD_REQUEST,ErrorCode.INVALID_ID.name(),"invalid status id");
         }
 
         if (appointment1.isPresent()) {
@@ -313,7 +311,7 @@ public class AppointmentService {
 
         List<Appointment> appointments = appointmentRepository.appointmentsStatusPending();
         if (appointments.isEmpty()) {
-            throw new HospitalBusinessException("no appointments in pending");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.EMPTY_QUEUE.name(), "no appointments in pending");
         }
         Optional<Appointment> appointmentDb = appointments.stream().findFirst();
         Patient patientDb = appointmentDb.get().getPatient();
@@ -346,7 +344,7 @@ public class AppointmentService {
         List<Appointment> appointments = appointmentRepository.appointmentsStatusPending();
         GetPatientResponse patientResponse = currentPatient();
         if (appointments.isEmpty()) {
-            throw new HospitalBusinessException("no appointments in pending");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.EMPTY_QUEUE.name(), "no appointments in pending");
         }
         Optional<Appointment> currentAppointment = appointments.stream().findFirst();
         Appointment currentAppointmentDb = currentAppointment.get();

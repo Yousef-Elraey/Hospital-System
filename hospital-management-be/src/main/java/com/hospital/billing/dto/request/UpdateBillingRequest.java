@@ -22,5 +22,5 @@ public class UpdateBillingRequest {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @NotNull(message = "patient_id is required")
-    private Long patient_id;
+    private Long patientId;
 }

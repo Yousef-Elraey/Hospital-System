@@ -1,6 +1,7 @@
 package com.hospital.diagnose.service;
 
 import com.hospital.billing.specification.BillingSpecification;
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.diagnose.dto.request.CreateDiagnoseRequest;
 import com.hospital.diagnose.dto.request.SearchDiagnoseRequest;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -78,9 +80,11 @@ public class DiagnoseService {
 
     public GetDiagnoseResponse getDiagnoseById(Long id) {
        Optional<Diagnose> diagnose = diagnoseRepository.findById(id);
-       if (diagnose.isEmpty())
-           throw new HospitalBusinessException("no diagnose found");
-       Diagnose diagnoseDb = diagnose.get();
+       if (diagnose.isEmpty()) {
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DIAGNOSE_NOT_FOUND.name()
+                   , "diagnose with id (" +id+ ") not found");
+       }
+        Diagnose diagnoseDb = diagnose.get();
        GetDiagnoseResponse getDiagnoseResponse = new GetDiagnoseResponse();
         getDiagnoseResponse.setId(diagnoseDb.getId())
                 .setNameEn(diagnoseDb.getNameEn())
@@ -111,7 +115,8 @@ public class DiagnoseService {
          diagnoseResponse.setId(diagnoseDb.getId());
          return diagnoseResponse;
      }else {
-         throw new HospitalBusinessException("no diagnose found");
+         throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DIAGNOSE_NOT_FOUND.name()
+                 , "diagnose with id (" +updateDiagnoseRequest.getId()+ ") not found");
      }
     }
 
@@ -121,8 +126,8 @@ public class DiagnoseService {
        if(diagnose.isPresent())
            diagnoseRepository.delete(diagnose.get());
        else
-           throw new HospitalBusinessException("no diagnose found");
-
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DIAGNOSE_NOT_FOUND.name()
+                   , "diagnose with id (" +id+ ") not found");
 
     }
 }

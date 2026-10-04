@@ -1,6 +1,7 @@
 package com.hospital.medical_record.service;
 
 import com.hospital.appointment.specification.AppointmentSpecification;
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JwtService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -93,7 +95,8 @@ public class MedicalRecordService {
     public GetMedicalRecordResponse getMedicalRecordById(Long id) {
         Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findById(id);
         if (medicalRecord.isEmpty()){
-            throw new HospitalBusinessException("no medical_record found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.MEDICAL_RECORD_NOT_FOUND.name()
+                    , "medical_record with id (" +id+ ") not found");
         }
         GetMedicalRecordResponse medicalRecordResponse = new GetMedicalRecordResponse();
 
@@ -113,15 +116,20 @@ public class MedicalRecordService {
     public CreateMedicalRecordResponse addMedicalRecord(CreateMedicalRecordRequest medicalRecordRequest) {
 
         if (patientRepository.findById(medicalRecordRequest.getPatientId()).isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+medicalRecordRequest.getPatientId()+") not found");
         }
         if (doctorRepository.findById(medicalRecordRequest.getDoctorId()).isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+medicalRecordRequest.getDoctorId()+") not found");
         }
         if (diagnoseRepository.findById(medicalRecordRequest.getDiagnoseId()).isEmpty()) {
-            throw new HospitalBusinessException("no diagnose found");
-        }   if (treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).isEmpty()) {
-            throw new HospitalBusinessException("no treatment found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DIAGNOSE_NOT_FOUND.name()
+                    , "diagnose with id (" +medicalRecordRequest.getDiagnoseId()+ ") not found");
+        }
+        if (treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).isEmpty()) {
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TREATMENT_NOT_FOUND.name()
+                    , "treatment with id (" +medicalRecordRequest.getTreatmentId()+ ") not found");
         }
 
         MedicalRecord dbMedicalRecord = new MedicalRecord();
@@ -140,15 +148,20 @@ public class MedicalRecordService {
     public UpdateMedicalRecordResponse updateMedicalRecordData(UpdateMedicalRecordRequest medicalRecordRequest) {
 
         if (patientRepository.findById(medicalRecordRequest.getPatientId()).isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+medicalRecordRequest.getPatientId()+") not found");
         }
         if (doctorRepository.findById(medicalRecordRequest.getDoctorId()).isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+medicalRecordRequest.getDoctorId()+") not found");
         }
         if (diagnoseRepository.findById(medicalRecordRequest.getDiagnoseId()).isEmpty()) {
-            throw new HospitalBusinessException("no diagnose found");
-        }   if (treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).isEmpty()) {
-            throw new HospitalBusinessException("no treatment found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DIAGNOSE_NOT_FOUND.name()
+                    , "diagnose with id (" +medicalRecordRequest.getDiagnoseId()+ ") not found");
+        }
+        if (treatmentRepository.findById(medicalRecordRequest.getTreatmentId()).isEmpty()) {
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TREATMENT_NOT_FOUND.name()
+                    , "treatment with id (" +medicalRecordRequest.getTreatmentId()+ ") not found");
         }
 
         Optional<MedicalRecord> medicalRecordTemp = medicalRecordRepository.findById(medicalRecordRequest.getId());
@@ -166,15 +179,15 @@ public class MedicalRecordService {
             return medicalRecordResponse;
 
         } else {
-            throw new HospitalBusinessException("no medical_record found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.MEDICAL_RECORD_NOT_FOUND.name()
+                    , "medical_record with id (" +medicalRecordRequest+ ") not found");        }
     }
 
     public void deleteMedicalRecord(Long id) {
         Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findById(id);
         if (medicalRecord.isEmpty())
-            throw new HospitalBusinessException("medicalRecord not found");
-        else
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.MEDICAL_RECORD_NOT_FOUND.name()
+                    , "medical_record with id (" +id+ ") not found");        else
             medicalRecordRepository.deleteById(id);
     }
 

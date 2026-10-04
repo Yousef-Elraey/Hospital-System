@@ -1,10 +1,22 @@
 package com.hospital.common.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class HospitalBusinessException extends RuntimeException {
-    public HospitalBusinessException(String message) {
+    private final HttpStatus status;
+    private final String errorCode;
+
+    public HospitalBusinessException(HttpStatus status, String errorCode, String message) {
         super(message);
+        this.status = status;
+        this.errorCode = errorCode;
     }
-    public HospitalBusinessException(String message,String code) {
-        super(message);
+
+    public HttpStatus getStatus() {
+        return status;
+    }
+
+    public String getErrorCode() {
+        return errorCode;
     }
 }

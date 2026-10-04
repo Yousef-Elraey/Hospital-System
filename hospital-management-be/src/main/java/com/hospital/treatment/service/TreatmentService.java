@@ -1,5 +1,6 @@
 package com.hospital.treatment.service;
 
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.diagnose.specification.DiagnoseSpecification;
 import com.hospital.dto.PageResponse;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -71,8 +73,10 @@ public class TreatmentService {
 
     public GetTreatmentResponse getTreatmentById(Long id) {
        Optional<Treatment> treatment = treatmentRepository.findById(id);
-       if (treatment.isEmpty())
-           throw new HospitalBusinessException("no treatment found");
+       if (treatment.isEmpty()){
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TREATMENT_NOT_FOUND.name()
+                   , "treatment with id (" + id + ") not found");
+       }
        Treatment treatmentDb = treatment.get();
        GetTreatmentResponse getTreatmentResponse = new GetTreatmentResponse();
         getTreatmentResponse.setId(treatmentDb.getId())
@@ -107,8 +111,8 @@ public class TreatmentService {
          treatmentResponse.setId(treatmentDb.getId());
          return treatmentResponse;
      }else {
-         throw new HospitalBusinessException("no treatment found");
-     }
+         throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TREATMENT_NOT_FOUND.name()
+                 , "treatment with id (" + updateTreatmentRequest.getId() + ") not found");     }
     }
 
 
@@ -116,9 +120,10 @@ public class TreatmentService {
        Optional<Treatment> treatment = treatmentRepository.findById(id);
        if(treatment.isPresent())
            treatmentRepository.delete(treatment.get());
-       else
-           throw new HospitalBusinessException("no treatment found");
-
+       else{
+           throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TREATMENT_NOT_FOUND.name()
+                   , "treatment with id (" + id + ") not found");
+       }
 
     }
 }

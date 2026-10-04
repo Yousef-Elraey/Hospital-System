@@ -10,6 +10,7 @@ import com.hospital.billing.dto.response.SearchBillingResponse;
 import com.hospital.billing.dto.response.UpdateBillingResponse;
 import com.hospital.billing.repository.BillingRepository;
 import com.hospital.billing.specification.BillingSpecification;
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JwtService;
 import com.hospital.dto.PageResponse;
@@ -23,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -89,7 +91,7 @@ public class BillingService {
     public GetBillingResponse getBillingById(Long id) {
         Optional<Billing> billing = billingRepository.findById(id);
         if(billing.isEmpty()){
-            throw new HospitalBusinessException("no billing found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.BILLING_NOT_FOUND.name(),"billing with id ("+id+") not found");
         }
 
             GetBillingResponse billingResponse = new GetBillingResponse();
@@ -107,7 +109,8 @@ public class BillingService {
     public CreateBillingResponse createBilling(CreateBillingRequest createBillingRequest) {
         Optional<Patient> patient = patientRepository.findById(createBillingRequest.getPatient_id());
         if (patient.isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+createBillingRequest.getPatient_id()+") not found");
         }
         Billing billing = new Billing();
         billing.setAmount(createBillingRequest.getAmount())
@@ -122,9 +125,10 @@ public class BillingService {
 
     public UpdateBillingResponse updateBilling(UpdateBillingRequest billingRequest) {
 
-        Optional<Patient> patient = patientRepository.findById(billingRequest.getPatient_id());
+        Optional<Patient> patient = patientRepository.findById(billingRequest.getPatientId());
         if (patient.isEmpty()) {
-            throw new HospitalBusinessException("no patient found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+billingRequest.getPatientId()+") not found");
         }
         Optional<Billing> billing = billingRepository.findById(billingRequest.getId());
         if (billing.isPresent()) {
@@ -137,14 +141,16 @@ public class BillingService {
             billingResponse.setId(dbbilling.getId());
             return billingResponse;
         } else {
-            throw new HospitalBusinessException("no billing found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.BILLING_NOT_FOUND.name()
+                    ,"billing with id ("+billingRequest.getId()+") not found");
         }
     }
 
     public void deleteBilling(Long id) {
         Optional<Billing> billing = billingRepository.findById(id);
         if (billing.isEmpty())
-            throw new HospitalBusinessException("medicalRecord not found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND,ErrorCode.BILLING_NOT_FOUND.name()
+                    ,"billing with id ("+id+") not found");
         else
             billingRepository.deleteById(id);
     }

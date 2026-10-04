@@ -1,6 +1,7 @@
 package com.hospital.doctor.service;
 
 import com.hospital.appointment.service.AppointmentService;
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JwtService;
 import com.hospital.diagnose.repository.DiagnoseRepository;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -101,7 +103,8 @@ public class DoctorService {
     public GetDoctorResponse getDoctorById(Long id) {
         Optional<Doctor> doctorDb = doctorRepository.findById(id);
         if (doctorDb.isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+id+") not found");
         } else {
             Doctor doc = doctorDb.get();
             GetDoctorResponse getDoctorResponse = new GetDoctorResponse();
@@ -123,11 +126,11 @@ public class DoctorService {
         Optional<Speciality> specialityOp = specialityRepository.findById(createDoctorRequest.getSpecialityId());
        Optional<Doctor> doctorOp =  doctorRepository.findByContactNumber(createDoctorRequest.getContactNumber());
         if (specialityOp.isEmpty()) {
-            throw new HospitalBusinessException("no speciality found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.SPECIALITY_NOT_FOUND.name()
+                    ,"speciality with id ("+createDoctorRequest.getSpecialityId()+") not found");        }
         if (doctorOp.isPresent()){
-            throw new HospitalBusinessException("this number is already on system");
-        }
+            throw new HospitalBusinessException(HttpStatus.CONFLICT,ErrorCode.DOCTOR_ALREADY_EXIST.name()
+                    ,"doctor with phone ("+createDoctorRequest.getContactNumber()+") already exist");        }
         Doctor doctor = new Doctor();
         doctor.setName(createDoctorRequest.getName());
         doctor.setSpeciality(specialityOp.get());
@@ -154,16 +157,16 @@ public class DoctorService {
             return doctorResponse;
 
         } else {
-            throw new HospitalBusinessException("no doctor found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+doctorRequest.getId()+") not found");        }
     }
 
 
     public void deleteDoctorById(Long id) {
         Optional<Doctor> doctorDb = doctorRepository.findById(id);
         if (doctorDb.isEmpty()) {
-            throw new HospitalBusinessException("no doctor found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DOCTOR_NOT_FOUND.name()
+                    ,"doctor with id ("+id+") not found");        }
         doctorRepository.deleteById(id);
 
 
@@ -176,16 +179,22 @@ public class DoctorService {
         Optional<Doctor> doctorDb = doctorRepository.findById(createMedicalRecordRequest.getDoctorId());
         Optional<Diagnose> diagnoseDb = diagnoseRepository.findById(createMedicalRecordRequest.getDiagnoseId());
         Optional<Treatment> treatmentDb = treatmentRepository.findById(createMedicalRecordRequest.getTreatmentId());
-        if (patientDb.isEmpty())
-            throw new HospitalBusinessException("no patient found");
-        if (doctorDb.isEmpty())
-            throw new HospitalBusinessException("no doctor found");
-        if (diagnoseDb.isEmpty())
-            throw new HospitalBusinessException("no diagnose found");
-        if (treatmentDb.isEmpty())
-            throw new HospitalBusinessException("no treatment found");
-
-
+        if (patientDb.isEmpty()){
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.PATIENT_NOT_FOUND.name()
+                    ,"patient with id ("+createMedicalRecordRequest.getPatientId()+") not found");
+        }
+        if (doctorDb.isEmpty()) {
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DOCTOR_NOT_FOUND.name()
+                    , "doctor with id (" + createMedicalRecordRequest.getDoctorId() + ") not found");
+        }
+        if (diagnoseDb.isEmpty()) {
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.DIAGNOSE_NOT_FOUND.name()
+                    , "diagnose with id (" + createMedicalRecordRequest.getDiagnoseId() + ") not found");
+        }
+        if (treatmentDb.isEmpty()) {
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.TREATMENT_NOT_FOUND.name()
+                    , "treatment with id (" + createMedicalRecordRequest.getTreatmentId() + ") not found");
+        }
         GetPatientResponse patientResponse = appointmentService.next();
         MedicalRecord medicalRecordDb = new MedicalRecord();
         medicalRecordDb.setDiagnose(diagnoseDb.get())

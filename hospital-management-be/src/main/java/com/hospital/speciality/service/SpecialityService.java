@@ -1,5 +1,6 @@
 package com.hospital.speciality.service;
 
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.diagnose.specification.DiagnoseSpecification;
 import com.hospital.dto.PageResponse;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -75,9 +77,12 @@ public class SpecialityService {
 
     public GetSpecialityResponse getSpecialityById(Long id) {
         Optional<Speciality> speciality = specialityRepository.findById(id);
-        if (speciality.isEmpty())
-            throw new HospitalBusinessException("no speciality found");
+        if (speciality.isEmpty()){
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.SPECIALITY_NOT_FOUND.name()
+                    ,"speciality with id ("+id+") not found");
+        }
         Speciality specialityDb = speciality.get();
+
         GetSpecialityResponse getSpecialityResponse = new GetSpecialityResponse();
         getSpecialityResponse.setId(specialityDb.getId())
                 .setNameEn(specialityDb.getNameEn())
@@ -109,7 +114,8 @@ public class SpecialityService {
             specialityResponse.setId(specialityDb.getId());
             return specialityResponse;
         }else {
-            throw new HospitalBusinessException("no speciality found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.SPECIALITY_NOT_FOUND.name()
+                    ,"speciality with id ("+updateSpecialityRequest.getId()+") not found");
         }
     }
 
@@ -118,9 +124,10 @@ public class SpecialityService {
         Optional<Speciality> speciality = specialityRepository.findById(id);
         if (speciality.isPresent())
             specialityRepository.delete(speciality.get());
-        else
-            throw new HospitalBusinessException("no speciality found");
-
+        else{
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.SPECIALITY_NOT_FOUND.name()
+                    ,"speciality with id ("+id+") not found");
+        }
 
     }
 }

@@ -1,5 +1,6 @@
 package com.hospital.user.service;
 
+import com.hospital.common.exception.ErrorCode;
 import com.hospital.common.exception.HospitalBusinessException;
 import com.hospital.common.security.JwtService;
 import com.hospital.dto.PageResponse;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -97,8 +99,8 @@ public class UserService {
     public GetUserResponse getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
-            throw new HospitalBusinessException("no user found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND.name()
+                    , "user with id (" + id + ") not found");        }
         User userDb = user.get();
         GetUserResponse userResponse = new GetUserResponse();
         userResponse.setUserName(userDb.getUserName())
@@ -118,7 +120,8 @@ public class UserService {
     public UpdateUserResponse updateUser(UpdateUserRequest userRequest) {
         Optional<User> user = userRepository.findById(userRequest.getId());
         if (user.isEmpty()) {
-            throw new HospitalBusinessException("no user found");
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND.name()
+                    , "user with id (" + userRequest.getId() + ") not found");
         }
         User userDb = user.get();
         userDb.setUserName(userRequest.getUserName())
@@ -132,8 +135,8 @@ public class UserService {
     public void deleteUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isEmpty()) {
-            throw new HospitalBusinessException("no user found");
-        }
+            throw new HospitalBusinessException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND.name()
+                    , "user with id (" + id + ") not found");        }
         userRepository.deleteById(id);
     }
 }
